@@ -28,6 +28,14 @@ export function PwaInstallBanner() {
     const handleCustomTrigger = () => {
       if (isIosDevice) {
         setShowIOSModal(true);
+      } else if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choice: any) => {
+          if (choice.outcome === 'accepted') {
+            setShowBanner(false);
+          }
+          setDeferredPrompt(null);
+        });
       } else {
         setShowBanner(true);
       }
@@ -36,7 +44,6 @@ export function PwaInstallBanner() {
     window.addEventListener('beforeinstallprompt', handleBeforeInstall);
     window.addEventListener('open-pwa-install', handleCustomTrigger);
 
-    // Auto-show banner on initial visit if not installed
     if (!isStandalone) {
       setShowBanner(true);
     }
@@ -45,7 +52,7 @@ export function PwaInstallBanner() {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
       window.removeEventListener('open-pwa-install', handleCustomTrigger);
     };
-  }, []);
+  }, [deferredPrompt]);
 
   const handleInstallClick = async () => {
     if (isIOS) {
@@ -61,7 +68,7 @@ export function PwaInstallBanner() {
       }
       setDeferredPrompt(null);
     } else {
-      alert('لتثبيت المنصة: اضغط القائمة (Three Dots) أعلى المتصفح ثم اختر "إضافة إلى الشاشة الرئيسية" أو "تثبيت التطبيق".');
+      setShowIOSModal(true);
     }
   };
 
@@ -83,7 +90,7 @@ export function PwaInstallBanner() {
                 <div>
                   <h4 className="font-baloo font-bold text-[#E8A93B] text-sm sm:text-base">تثبيت المنصة على جهازك 📲</h4>
                   <p className="font-tajawal text-xs text-[#FFFDF7]/85 leading-snug">
-                    للحصول على أفضل أداء وتشغيل أسرع للدروس بدون إنترنت.
+                    اضغط تثبيت لإضافة آيقونة المنصة على شاشتك التشغيلية بدون إنترنت.
                   </p>
                 </div>
               </div>
@@ -118,28 +125,37 @@ export function PwaInstallBanner() {
           >
             <div className="w-full max-w-sm rounded-3xl border-2 border-[#E8A93B] bg-[#FFFDF7] p-6 text-[#1B3B36] shadow-2xl">
               <div className="flex items-center justify-between border-b pb-3">
-                <h3 className="font-baloo text-lg font-bold text-[#1B3B36]">تثبيت المنصة على الآيفون 🍏</h3>
+                <h3 className="font-baloo text-lg font-bold text-[#1B3B36]">تعليمات التثبيت 📲</h3>
                 <button onClick={() => setShowIOSModal(false)}>
                   <X className="h-5 w-5" />
                 </button>
               </div>
 
               <div className="mt-4 space-y-3 font-tajawal text-xs">
-                <div className="flex items-center gap-3 rounded-2xl bg-[#F2E6C4] p-3">
-                  <Share className="h-6 w-6 text-[#3E92B0] shrink-0" />
-                  <span>1. اضغط على زر <strong>مشاركة (Share)</strong> أسفل متصفح Safari.</span>
-                </div>
-                <div className="flex items-center gap-3 rounded-2xl bg-[#F2E6C4] p-3">
-                  <PlusSquare className="h-6 w-6 text-[#4F7942] shrink-0" />
-                  <span>2. اختر <strong>إضافة إلى الشاشة الرئيسية (Add to Home Screen)</strong>.</span>
-                </div>
+                {isIOS ? (
+                  <>
+                    <div className="flex items-center gap-3 rounded-2xl bg-[#F2E6C4] p-3">
+                      <Share className="h-6 w-6 text-[#3E92B0] shrink-0" />
+                      <span>1. اضغط زر <strong>مشاركة (Share)</strong> في Safari.</span>
+                    </div>
+                    <div className="flex items-center gap-3 rounded-2xl bg-[#F2E6C4] p-3">
+                      <PlusSquare className="h-6 w-6 text-[#4F7942] shrink-0" />
+                      <span>2. اختر <strong>إضافة إلى الشاشة الرئيسية (Add to Home Screen)</strong>.</span>
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex items-center gap-3 rounded-2xl bg-[#F2E6C4] p-3">
+                    <Download className="h-6 w-6 text-[#3E92B0] shrink-0" />
+                    <span>اضغط زر القائمة (الثلاث نقاط) بالمتصفح ثم اختر <strong>"تثبيت التطبيق"</strong> أو <strong>"إضافة للشاشة الرئيسية"</strong>.</span>
+                  </div>
+                )}
               </div>
 
               <button
                 onClick={() => setShowIOSModal(false)}
                 className="mt-5 w-full rounded-xl bg-[#1B3B36] py-2.5 font-tajawal text-xs font-bold text-[#FFFDF7]"
               >
-                تم، فهمت ذلك!
+                فهمت ذلك!
               </button>
             </div>
           </motion.div>

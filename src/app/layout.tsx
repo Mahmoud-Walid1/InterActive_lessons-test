@@ -3,6 +3,7 @@ import './globals.css';
 import { AntiTamperGuard } from '@/components/security/AntiTamperGuard';
 import { SecurityWatermark } from '@/components/security/SecurityWatermark';
 import { PwaInstallBanner } from '@/components/pwa/PwaInstallBanner';
+import { SwRegister } from '@/components/pwa/SwRegister';
 
 export const metadata: Metadata = {
   title: 'منصة الدروس التفاعلية للأجهزة المحمولة',
@@ -30,6 +31,7 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-[#FBF3DE] text-[#1B3B36] antialiased">
+        <SwRegister />
         <AntiTamperGuard />
         <SecurityWatermark />
         {children}
