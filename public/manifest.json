@@ -1,0 +1,22 @@
+{
+  "name": "منصة الدروس التفاعلية للأجهزة المحمولة",
+  "short_name": "الدروس التفاعلية",
+  "description": "منصة تعليمية تفاعلية للمرحلة الابتدائية تعمل بدون إنترنت مع حماية وتشفير عالي الأمان.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#FBF3DE",
+  "theme_color": "#1B3B36",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

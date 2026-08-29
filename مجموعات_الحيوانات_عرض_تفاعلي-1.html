@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مجموعات الحيوانات - عرض تفاعلي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FBF3DE;
+    --paper-dark:#F2E6C4;
+    --ink:#1B3B36;
+    --clay:#C1502E;
+    --leaf:#4F7942;
+    --sky:#3E92B0;
+    --gold:#E8A93B;
+    --white:#FFFDF7;
+    --shadow: 0 10px 30px rgba(27,59,54,0.18);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    font-family:'Tajawal', sans-serif;
+    background:
+      radial-gradient(circle at 15% 15%, rgba(232,169,59,0.18), transparent 45%),
+      radial-gradient(circle at 90% 85%, rgba(62,146,176,0.18), transparent 45%),
+      var(--paper);
+    color:var(--ink);
+    overflow:hidden;
+    height:100vh;
+    width:100vw;
+  }
+  h1,h2,h3,.display{font-family:'Baloo 2', sans-serif;}
+
+  /* ---------- APP SHELL ---------- */
+  .app{
+    position:relative;
+    width:100%;
+    height:100%;
+  }
+  .slides{
+    position:relative;
+    width:100%;
+    height:100%;
+  }
+  .slide{
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:70px 8% 130px;
+    opacity:0;
+    transform:translateY(24px) scale(0.98);
+    pointer-events:none;
+    transition:opacity .5s ease, transform .5s ease;
+    overflow-y:auto;
+  }
+  .slide.active{
+    opacity:1;
+    transform:translateY(0) scale(1);
+    pointer-events:auto;
+  }
+  .slide::-webkit-scrollbar{width:6px;}
+  .slide::-webkit-scrollbar-thumb{background:rgba(27,59,54,0.25); border-radius:10px;}
+
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--white);
+    border:2px dashed var(--clay);
+    color:var(--clay);
+    font-weight:700;
+    padding:6px 18px;
+    border-radius:999px;
+    font-size:0.95rem;
+    margin-bottom:14px;
+  }
+  .slide h1{ font-size:clamp(2rem,4.4vw,3.4rem); color:var(--ink); margin-bottom:10px; }
+  .slide h2{ font-size:clamp(1.5rem,3vw,2.2rem); color:var(--ink); margin-bottom:14px; }
+  .subtitle{ font-size:clamp(1rem,1.6vw,1.25rem); color:#40564F; max-width:780px; text-align:center; margin-bottom:20px; line-height:1.9;}
+
+  .stamp{
+    position:relative;
+    width:120px;height:120px;
+    border-radius:50%;
+    border:4px solid currentColor;
+    display:flex;align-items:center;justify-content:center;
+    font-size:2.6rem;
+    transform:rotate(-8deg);
+    box-shadow: inset 0 0 0 3px currentColor;
+    background:var(--white);
+  }
+  .stamp::after{
+    content:'';
+    position:absolute; inset:8px;
+    border-radius:50%;
+    border:1.5px dotted currentColor;
+  }
+
+  .card{
+    background:var(--white);
+    border-radius:22px;
+    box-shadow:var(--shadow);
+    border:2px solid rgba(27,59,54,0.08);
+    padding:22px 26px;
+  }
+
+  .stitch-border{
+    border:3px dashed rgba(27,59,54,0.35);
+    border-radius:24px;
+  }
+
+  /* ---------- NAV ---------- */
+  .navbar{
+    position:fixed; bottom:0; right:0; left:0;
+    min-height:96px;
+    background:linear-gradient(0deg, rgba(27,59,54,0.97), rgba(27,59,54,0.9));
+    display:flex; align-items:center; justify-content:center;
+    flex-wrap:wrap;
+    gap:14px; row-gap:8px;
+    z-index:50;
+    padding:10px 16px;
+  }
+  .nav-btn{
+    background:var(--gold);
+    color:var(--ink);
+    border:none;
+    width:52px;height:52px;
+    border-radius:50%;
+    font-size:1.4rem;
+    cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 6px 14px rgba(0,0,0,0.25);
+    transition:transform .15s;
+    flex-shrink:0;
+  }
+  .nav-btn:hover{ transform:scale(1.08); }
+  .nav-btn:active{ transform:scale(0.94); }
+  .dots{ display:flex; gap:7px; flex-wrap:nowrap; overflow-x:auto; max-width:40vw; padding:4px 2px; scrollbar-width:thin;}
+  .dots::-webkit-scrollbar{ height:4px; }
+  .dot{
+    width:11px;height:11px;border-radius:50%;
+    background:rgba(255,255,255,0.35);
+    cursor:pointer;
+    transition:.25s;
+    flex-shrink:0;
+  }
+  .dot.active{ background:var(--gold); transform:scale(1.35); }
+  .slide-counter{
+    color:var(--white); font-family:'Baloo 2'; font-weight:700;
+    min-width:56px; text-align:center; font-size:1rem;
+    flex-shrink:0;
+  }
+
+  /* ---------- MASCOT ROBERT ---------- */
+  .mascot-wrap{
+    position:fixed;
+    left:14px; top:50%;
+    transform:translateY(-50%);
+    z-index:60;
+    display:flex; flex-direction:column; align-items:center; gap:8px;
+    max-width:150px;
+    pointer-events:none;
+  }
+  .bubble{
+    background:var(--white);
+    border:3px solid var(--ink);
+    border-radius:16px;
+    padding:10px 12px;
+    font-size:0.8rem;
+    line-height:1.55;
+    font-weight:700;
+    box-shadow:var(--shadow);
+    text-align:center;
+    order:2;
+  }
+  .robert{
+    order:1;
+    width:56px; height:66px; flex-shrink:0;
+    position:relative;
+    animation:floatY 3.2s ease-in-out infinite;
+  }
+  .robert .hat{
+    position:absolute; top:-10px; left:50%; transform:translateX(-50%);
+    width:58px; height:20px;
+    background:var(--clay);
+    border-radius:50% 50% 0 0 / 100% 100% 0 0;
+    border:2.5px solid var(--ink);
+    animation:wiggleHat 3.2s ease-in-out infinite;
+    z-index:3;
+  }
+  .robert .hat::after{
+    content:''; position:absolute; bottom:-5px; left:50%; transform:translateX(-50%);
+    width:34px; height:8px; background:var(--gold); border-radius:5px; border:2px solid var(--ink);
+  }
+  .robert .head{
+    position:absolute; top:6px; left:50%; transform:translateX(-50%);
+    width:41px; height:32px;
+    background:var(--sky);
+    border:2.5px solid var(--ink);
+    border-radius:11px;
+    z-index:2;
+  }
+  .robert .eye{
+    position:absolute; top:12px; width:7px; height:7px; background:var(--ink); border-radius:50%;
+    animation:blink 4s infinite;
+  }
+  .robert .eye.l{ left:8px; }
+  .robert .eye.r{ right:8px; }
+  .robert .antenna{
+    position:absolute; top:-20px; left:50%; transform:translateX(-50%);
+    width:2.5px; height:12px; background:var(--ink);
+  }
+  .robert .antenna::after{
+    content:''; position:absolute; top:-6px; left:-2.5px;
+    width:7px;height:7px;border-radius:50%; background:var(--clay); border:1.5px solid var(--ink);
+  }
+  .robert .body{
+    position:absolute; top:34px; left:50%; transform:translateX(-50%);
+    width:47px; height:29px;
+    background:var(--gold);
+    border:2.5px solid var(--ink);
+    border-radius:9px;
+  }
+  .robert .body::after{
+    content:'روبرت';
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    font-family:'Baloo 2'; font-size:0.48rem; font-weight:700; color:var(--ink);
+  }
+
+  /* ---------- TEACHER TIP ---------- */
+  .tip-toggle{
+    margin-top:18px;
+    background:var(--leaf);
+    color:var(--white);
+    border:none;
+    padding:10px 20px;
+    border-radius:999px;
+    font-family:'Tajawal'; font-weight:700;
+    cursor:pointer;
+    font-size:0.92rem;
+    box-shadow:0 6px 14px rgba(79,121,66,0.35);
+  }
+  .tip-box{
+    max-width:640px;
+    margin-top:12px;
+    background:#EAF3E4;
+    border:2px solid var(--leaf);
+    border-radius:16px;
+    padding:14px 18px;
+    font-size:0.92rem;
+    line-height:1.8;
+    display:none;
+  }
+  .tip-box.show{ display:block; }
+
+  /* ---------- SCENE / ANIMATION AREAS ---------- */
+  .scene{
+    width:100%; max-width:760px;
+    height:180px;
+    position:relative;
+    margin:10px 0 6px;
+    display:flex; align-items:flex-end; justify-content:center; gap:60px;
+  }
+  .scene .emoji-anim{ font-size:4.2rem; display:inline-block; }
+  .anim-bounce{ animation:bounce 1.6s ease-in-out infinite; }
+  .anim-flap{ animation:flap 1.1s ease-in-out infinite; }
+  .anim-swim{ animation:swim 2.6s ease-in-out infinite; }
+  .anim-slither{ animation:slither 1.4s ease-in-out infinite; }
+  .anim-pulse{ animation:pulse 1.8s ease-in-out infinite; }
+  .anim-float{ animation:floatY 3s ease-in-out infinite; }
+
+  @keyframes floatY{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+  @keyframes bounce{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-26px)} }
+  @keyframes flap{ 0%,100%{transform:rotate(0deg) translateY(0)} 25%{transform:rotate(-10deg) translateY(-12px)} 75%{transform:rotate(10deg) translateY(-12px)} }
+  @keyframes swim{ 0%{transform:translateX(-40px) rotate(-4deg)} 50%{transform:translateX(40px) rotate(4deg)} 100%{transform:translateX(-40px) rotate(-4deg)} }
+  @keyframes slither{ 0%,100%{transform:translateX(0) rotate(0deg)} 25%{transform:translateX(18px) rotate(6deg)} 75%{transform:translateX(-18px) rotate(-6deg)} }
+  @keyframes pulse{ 0%,100%{transform:scale(1)} 50%{transform:scale(1.18)} }
+  @keyframes wiggleHat{ 0%,100%{transform:translateX(-50%) rotate(-4deg)} 50%{transform:translateX(-50%) rotate(4deg)} }
+  @keyframes blink{ 0%,90%,100%{transform:scaleY(1)} 95%{transform:scaleY(0.1)} }
+  @keyframes popIn{ 0%{transform:scale(0.4); opacity:0} 80%{transform:scale(1.06)} 100%{transform:scale(1); opacity:1} }
+
+  /* ---------- GRIDS / CHIPS ---------- */
+  .group-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(150px,1fr));
+    gap:16px;
+    width:100%; max-width:780px;
+    margin-top:16px;
+  }
+  .group-chip{
+    background:var(--white);
+    border:2.5px solid var(--ink);
+    border-radius:18px;
+    padding:16px 10px;
+    text-align:center;
+    cursor:pointer;
+    transition:transform .18s, box-shadow .18s;
+    user-select:none;
+  }
+  .group-chip:hover{ transform:translateY(-6px); box-shadow:var(--shadow); }
+  .group-chip .g-emoji{ font-size:2.4rem; display:block; margin-bottom:6px; }
+  .group-chip .g-name{ font-family:'Baloo 2'; font-weight:700; }
+  .group-chip .g-detail{
+    font-size:0.82rem; margin-top:8px; line-height:1.6; color:#40564F;
+    display:none;
+  }
+  .group-chip.open .g-detail{ display:block; }
+
+  .reveal-q{
+    margin-top:22px;
+    width:100%; max-width:640px;
+    background:#FFF; border:2.5px solid var(--clay); border-radius:18px;
+    padding:16px 20px; text-align:center; cursor:pointer;
+  }
+  .reveal-q .qtext{ font-weight:700; color:var(--clay); font-family:'Baloo 2'; font-size:1.05rem;}
+  .reveal-q .atext{
+    margin-top:10px; font-size:0.95rem; line-height:1.8; color:var(--ink);
+    display:none;
+  }
+  .reveal-q.open .atext{ display:block; }
+  .reveal-q .hint{ font-size:0.78rem; color:#9a9a9a; margin-top:6px; }
+
+  .examples-row{ display:flex; gap:18px; flex-wrap:wrap; justify-content:center; margin-top:14px;}
+  .ex-item{ text-align:center; font-size:0.9rem; }
+  .ex-item .ee{ font-size:2.6rem; display:block; }
+
+  .traits{
+    list-style:none; margin-top:14px; display:flex; flex-direction:column; gap:8px;
+    max-width:560px; width:100%;
+  }
+  .traits li{
+    background:var(--white); border-radius:12px; padding:10px 16px;
+    display:flex; align-items:center; gap:10px; font-size:0.98rem; box-shadow:0 3px 8px rgba(0,0,0,0.06);
+  }
+  .traits li::before{ content:'✔'; color:var(--leaf); font-weight:900; }
+
+  /* ---------- FUN FACT ---------- */
+  .fact-card{
+    max-width:640px; text-align:center;
+    background:linear-gradient(135deg, var(--gold), var(--clay));
+    color:var(--white); border-radius:26px; padding:30px 26px;
+    box-shadow:var(--shadow);
+  }
+  .fact-card h2{ color:var(--white); }
+
+  /* ---------- GAME ---------- */
+  .game-wrap{ width:100%; max-width:760px; display:flex; flex-direction:column; align-items:center; }
+  .game-progress{
+    width:100%; height:10px; background:var(--paper-dark); border-radius:99px; overflow:hidden; margin-bottom:18px;
+  }
+  .game-progress-fill{ height:100%; background:var(--leaf); width:0%; transition:width .3s; }
+  .game-card{
+    background:var(--white); border:3px solid var(--ink); border-radius:24px;
+    padding:26px; text-align:center; width:100%; max-width:420px;
+    box-shadow:var(--shadow);
+    animation:popIn .35s ease;
+  }
+  .game-emoji{ font-size:5rem; }
+  .game-name{ font-family:'Baloo 2'; font-size:1.3rem; margin-top:6px; }
+  .game-question{ margin-top:6px; color:#40564F; font-size:0.95rem;}
+  .game-options{
+    display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;
+    width:100%; max-width:640px; margin-top:20px;
+  }
+  .opt-btn{
+    background:var(--sky); color:var(--white); border:none; border-radius:14px;
+    padding:12px 6px; font-family:'Tajawal'; font-weight:700; cursor:pointer; font-size:0.9rem;
+    transition:transform .15s, background .2s;
+  }
+  .opt-btn:hover{ transform:translateY(-3px); }
+  .opt-btn.correct{ background:var(--leaf); }
+  .opt-btn.wrong{ background:var(--clay); }
+  .opt-btn:disabled{ cursor:default; opacity:0.85;}
+  .feedback{
+    margin-top:14px; font-family:'Baloo 2'; font-weight:700; font-size:1.05rem; min-height:28px;
+  }
+  .score-line{ margin-top:10px; font-weight:700; color:var(--ink); }
+
+  .result-card{ text-align:center; }
+  .result-stars{ font-size:2.6rem; letter-spacing:6px; margin:10px 0; }
+  .replay-btn{
+    margin-top:18px; background:var(--clay); color:var(--white); border:none;
+    padding:12px 28px; border-radius:999px; font-weight:700; cursor:pointer; font-family:'Baloo 2'; font-size:1rem;
+  }
+
+  .confetti{
+    position:fixed; top:0; width:10px; height:16px; z-index:80; pointer-events:none;
+    animation:confettiFall linear forwards;
+  }
+  @keyframes confettiFall{
+    0%{ transform:translateY(-10vh) rotate(0deg); opacity:1; }
+    100%{ transform:translateY(110vh) rotate(380deg); opacity:0.9; }
+  }
+
+  .start-btn{
+    margin-top:26px;
+    background:var(--clay); color:var(--white); border:none;
+    padding:16px 46px; border-radius:999px; font-family:'Baloo 2'; font-weight:700; font-size:1.15rem;
+    cursor:pointer; box-shadow:0 10px 22px rgba(193,80,46,0.4);
+    transition:transform .15s;
+  }
+  .start-btn:hover{ transform:translateY(-3px); }
+
+  .title-scene{
+    position:relative; width:100%; max-width:820px; height:190px;
+    margin-bottom:6px;
+    display:flex; align-items:flex-end; justify-content:space-around;
+  }
+  .sun{
+    position:absolute; top:-6px; left:50%; transform:translateX(-50%);
+    font-size:3rem; animation:pulse 3.4s ease-in-out infinite;
+  }
+
+  @media (max-width:760px){
+    .mascot-wrap{ max-width:100px; left:6px; top:auto; bottom:112px; transform:none;}
+    .robert{ width:44px; height:52px;}
+    .bubble{ font-size:0.66rem; padding:6px 8px; line-height:1.4;}
+    .slide{ padding:60px 5% 150px; }
+    .game-options{ grid-template-columns:1fr 1fr; }
+    .scene{ gap:24px; }
+    .scene .emoji-anim{ font-size:3rem; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="slides" id="slides">
+
+    <!-- 0: TITLE -->
+    <section class="slide active">
+      <div class="eyebrow">🦁 درس العلوم · الصف الثاني الابتدائي</div>
+      <div class="title-scene">
+        <div class="sun">☀️</div>
+        <span class="emoji-anim anim-float" style="font-size:4.5rem;">🐘</span>
+        <span class="emoji-anim anim-float" style="font-size:5.2rem; animation-delay:.4s;">🦒</span>
+        <span class="emoji-anim anim-float" style="font-size:4rem; animation-delay:.8s;">🦓</span>
+      </div>
+      <h1>مَجْمُوعَاتُ الْحَيَوَانَاتِ</h1>
+      <p class="subtitle">تُوجَدُ آلافُ الأنواعِ المختلفةِ مِنَ الحيواناتِ. فيمَ تَختلِفُ الحيواناتُ، وفيمَ تَتشابَه؟ تعالوا نكتشف معًا! 🔍</p>
+      <button class="start-btn" onclick="goTo(1)">هيا نبدأ الرحلة 🚀</button>
+    </section>
+
+    <!-- 1: HOOK -->
+    <section class="slide">
+      <div class="eyebrow">🔎 أنظر وأتساءل</div>
+      <h2>ما الذي يجعل هذه الحيوانات مختلفة؟</h2>
+      <div class="scene">
+        <span class="emoji-anim anim-bounce">🐘</span>
+        <span class="emoji-anim anim-flap" style="animation-delay:.3s;">🦅</span>
+        <span class="emoji-anim anim-swim" style="animation-delay:.6s;">🐟</span>
+        <span class="emoji-anim anim-slither" style="animation-delay:.9s;">🐍</span>
+      </div>
+      <p class="subtitle">فِيمَ تَختَلِفُ الحَيَواناتُ، وَفِيمَ تَتَشَابَهُ؟ فكّر قليلًا قبل أن تكمل! 🤔</p>
+      <div class="reveal-q" onclick="this.classList.toggle('open'); sndOpen();">
+        <div class="qtext">اضغط هنا لتكتشف الفكرة 💡</div>
+        <div class="atext">الحيواناتُ تَختَلِفُ في شَكلِ جِسمِها وَغِطائِها وَطَريقَةِ تَنَفُّسِها وَتَكاثُرِها، لِذَلِكَ يُصَنِّفُها العُلَماءُ في مَجموعاتٍ لِتَسهُلَ دِراستُها.</div>
+        <div class="hint">اضغط للإغلاق</div>
+      </div>
+      <button class="tip-toggle" onclick="toggleTip(this)">💡 استراتيجية للمعلم</button>
+      <div class="tip-box">🎯 <b>عصف ذهني:</b> اسأل الطلاب بصوتٍ عالٍ: "ما اسم أكبر حيوان تعرفونه؟ وما اسم أصغر حيوان؟" ودوّني إجاباتهم على السبورة لتكون بداية حماسية للدرس.</div>
+    </section>
+
+    <!-- 2: MAIN QUESTION + VOCAB -->
+    <section class="slide">
+      <div class="eyebrow">❓ السؤال الأساسي</div>
+      <h1>كَيفَ نُصَنِّفُ الحَيَواناتِ؟</h1>
+      <p class="subtitle">تَشتَرِكُ جَميعُ الحَيَواناتِ في حاجَتِها إلى الغِذاءِ وَالماءِ وَالهَواءِ وَمَكانٍ لِتَعيشَ فيه، وَتَختَلِفُ في كَيفِيَّةِ الحُصولِ عَلَيها.</p>
+      <div class="group-grid">
+        <div class="group-chip" style="border-color:var(--sky)"><span class="g-emoji">🦴</span><span class="g-name">فقاريّات</span></div>
+        <div class="group-chip" style="border-color:var(--clay)"><span class="g-emoji">🐛</span><span class="g-name">لافقاريّات</span></div>
+        <div class="group-chip" style="border-color:var(--leaf)"><span class="g-emoji">🦴</span><span class="g-name">عمود فقري</span></div>
+        <div class="group-chip" style="border-color:var(--gold)"><span class="g-emoji">🌾</span><span class="g-name">غطاء الجسم</span></div>
+      </div>
+      <button class="tip-toggle" onclick="toggleTip(this)">💡 استراتيجية للمعلم</button>
+      <div class="tip-box">🎯 <b>المفردات البصرية:</b> اعرضي بطاقة لكل مفردة جديدة (فقاريات - لافقاريات) واطلبي من الطلاب ترديد الكلمة معًا ثلاث مرات بصوت واضح قبل المتابعة.</div>
+    </section>
+
+    <!-- 3: TWO MAIN GROUPS -->
+    <section class="slide">
+      <div class="eyebrow">🧩 المجموعتان الرئيسيتان</div>
+      <h2>صَنَّفَ العُلَماءُ الحَيَواناتِ إلى مَجموعَتَينِ رَئيسَتَينِ</h2>
+      <div class="group-grid">
+        <div class="card stitch-border" style="text-align:center; color:var(--sky);">
+          <div class="stamp" style="margin:0 auto 10px;">🦴</div>
+          <h3>فَقارِيّاتٌ</h3>
+          <p style="margin-top:8px; font-size:0.95rem;">مَجموعةٌ لَها عَمودٌ فَقَريٌّ (سِلسِلَةُ عِظامٍ في الظَّهرِ)</p>
+        </div>
+        <div class="card stitch-border" style="text-align:center; color:var(--clay);">
+          <div class="stamp" style="margin:0 auto 10px;">🐛</div>
+          <h3>لَافَقارِيّاتٌ</h3>
+          <p style="margin-top:8px; font-size:0.95rem;">مَجموعةٌ لَيسَ لَها عَمودٌ فَقَريٌّ</p>
+        </div>
+      </div>
+      <button class="tip-toggle" onclick="toggleTip(this)">💡 استراتيجية للمعلم</button>
+      <div class="tip-box">🎯 <b>نشاط حسي:</b> اطلبي من كل طالب أن يلمس ظهره بلطف ليشعر بعموده الفقري، ثم اسأليهم: "هل تشعرون بعمودكم الفقري؟ إذن أنتم من الفقاريات!"</div>
+    </section>
+
+    <!-- 4: MAMMALS -->
+    <section class="slide">
+      <div class="eyebrow" style="border-color:var(--clay); color:var(--clay);">🐫 المجموعة الأولى</div>
+      <h1 style="color:var(--clay)">الثَّدْيِيَّاتُ</h1>
+      <div class="scene">
+        <span class="emoji-anim anim-bounce">🐫</span>
+        <span class="emoji-anim anim-bounce" style="animation-delay:.4s;">🐑</span>
+        <span class="emoji-anim anim-bounce" style="animation-delay:.8s;">🐘</span>
+      </div>
+      <ul class="traits">
+        <li>تَتَنَفَّسُ بِالرِّئَتَينِ</li>
+        <li>جِسمُها مُغَطًّى بِالشَّعرِ أَوِ الفَرْوِ</li>
+        <li>أُنثاها تُرضِعُ صِغارَها الحَليبَ</li>
+      </ul>
+      <div class="reveal-q" onclick="this.classList.toggle('open'); sndOpen();">
+        <div class="qtext">لِماذا يُصَنَّفُ الجَمَلُ مِنَ الثَّدْيِيَّاتِ؟ 🐫</div>
+        <div class="atext">لِأَنَّهُ يَتَنَفَّسُ بِالرِّئَتَينِ، وَجِسمُهُ مُغَطًّى بِالفَرْوِ، وَأُنثاهُ تُرضِعُ صَغيرَها الحَليبَ.</div>
+        <div class="hint">اضغط للكشف عن الإجابة</div>
+      </div>
+      <button class="tip-toggle" onclick="toggleTip(this)">💡 استراتيجية للمعلم</button>
+      <div class="tip-box">🎯 <b>تمثيل حركي:</b> اطلبي من الطلاب تقليد مِشية الجمل الهادئة أو قفزة الأرنب لمدة عشر ثوانٍ لتثبيت الفكرة بالحركة.</div>
+    </section>
+
+    <!-- 5: BIRDS -->
+    <section class="slide">
+      <div class="eyebrow" style="border-color:var(--sky); color:var(--sky);">🦅 المجموعة الثانية</div>
+      <h1 style="color:var(--sky)">الطُّيُورُ</h1>
+      <div class="scene">
+        <span class="emoji-anim anim-flap">🐦</span>
+        <span class="emoji-anim anim-flap" style="animation-delay:.3s;">🦩</span>
+        <span class="emoji-anim anim-flap" style="animation-delay:.6s;">🦅</span>
+      </div>
+      <ul class="traits">
+        <li>الحَيَوانَاتُ الوَحيدَةُ الَّتي يُغَطّي جِسمَها الرِّيشُ</li>
+        <li>لَها جَنَاحَانِ وَمِنقارٌ</li>
+        <li>تَضَعُ بَيضًا يَفقِسُ مِنهُ الصِّغارُ</li>
+      </ul>
+      <button class="tip-toggle" onclick="toggleTip(this)">💡 استراتيجية للمعلم</button>
+      <div class="tip-box">🎯 <b>نشاط تمثيلي:</b> اطلبي من الطلاب فرد أذرعهم كأجنحة والتحليق حول الفصل بهدوء لعشر ثوانٍ، ثم الجلوس بسرعة عند إشارة معينة.</div>
+    </section>
+
+    <!-- 6: FISH -->
+    <section class="slide">
+      <div class="eyebrow" style="border-color:var(--sky); color:var(--sky);">🐟 المجموعة الثالثة</div>
+      <h1 style="color:var(--sky)">الأَسْمَاكُ</h1>
+      <div class="scene">
+        <span class="emoji-anim anim-swim">🐠</span>
+        <span class="emoji-anim anim-swim" style="animation-delay:.5s;">🐟</span>
+        <span class="emoji-anim anim-swim" style="animation-delay:1s;">🫧</span>
+      </div>
+      <ul class="traits">
+        <li>جِسمُها مُغَطًّى بِقُشُورٍ</li>
+        <li>تَعيشُ في الماءِ</li>
+        <li>تَستَخدِمُ خَياشيمَها لِتَتَنَفَّسَ</li>
+      </ul>
+      <button class="tip-toggle" onclick="toggleTip(this)">💡 استراتيجية للمعلم</button>
+      <div class="tip-box">🎯 <b>لعب أدوار:</b> اطلبي من الطلاب تحريك أيديهم كزعانف وهم يمشون في صفوف هادئة، وتخيّل التنفس بالخياشيم بدلًا من الأنف.</div>
+    </section>
+
+    <!-- 7: REPTILES -->
+    <section class="slide">
+      <div class="eyebrow" style="border-color:var(--leaf); color:var(--leaf);">🦎 المجموعة الرابعة</div>
+      <h1 style="color:var(--leaf)">الزَّوَاحِفُ</h1>
+      <div class="scene">
+        <span class="emoji-anim anim-slither">🐍</span>
+        <span class="emoji-anim anim-bounce" style="animation-delay:.3s;">🦎</span>
+        <span class="emoji-anim anim-bounce" style="animation-delay:.6s;">🐊</span>
+      </div>
+      <ul class="traits">
+        <li>جِلدُها خَشِنٌ وَمُغَطًّى بِالحَراشِفِ</li>
+        <li>الحَراشِفُ تَحمي جِسمَها</li>
+        <li>مِنها: الضَّبُّ، الثَّعابينُ، التَّماسيحُ</li>
+      </ul>
+      <button class="tip-toggle" onclick="toggleTip(this)">💡 استراتيجية للمعلم</button>
+      <div class="tip-box">🎯 <b>حس ولمس:</b> اعرضي صورةً مقرَّبةً لجلد ثعبان أو تمساح، واطلبي من الطلاب وصف الملمس المتوقع بكلماتهم الخاصة.</div>
+    </section>
+
+    <!-- 8: AMPHIBIANS -->
+    <section class="slide">
+      <div class="eyebrow" style="border-color:var(--leaf); color:var(--leaf);">🐸 المجموعة الخامسة</div>
+      <h1 style="color:var(--leaf)">البَرْمَائِيَّاتُ</h1>
+      <div class="scene">
+        <span class="emoji-anim anim-bounce">🐸</span>
+        <span class="emoji-anim anim-float" style="animation-delay:.4s;">💧</span>
+      </div>
+      <ul class="traits">
+        <li>جِلدُها رَطبٌ</li>
+        <li>تَبدَأُ حَياتَها في الماءِ</li>
+        <li>يُمكِنُها لاحِقًا العَيشُ عَلى اليابِسَةِ أَيضًا</li>
+      </ul>
+      <button class="tip-toggle" onclick="toggleTip(this)">💡 استراتيجية للمعلم</button>
+      <div class="tip-box">🎯 <b>مقارنة:</b> اسألي الطلاب: "كيف يختلف جلد الضفدع الرطب عن جلد الثعبان الجاف؟" لتعزيز التفكير المقارن.</div>
+    </section>
+
+    <!-- 9: INVERTEBRATES -->
+    <section class="slide">
+      <div class="eyebrow" style="border-color:var(--clay); color:var(--clay);">🐝 المجموعة الأخيرة</div>
+      <h1 style="color:var(--clay)">اللَّافَقَارِيَّاتُ</h1>
+      <div class="scene">
+        <span class="emoji-anim anim-pulse">🪼</span>
+        <span class="emoji-anim anim-bounce" style="animation-delay:.3s;">🐞</span>
+        <span class="emoji-anim anim-flap" style="animation-delay:.6s;">🦋</span>
+      </div>
+      <ul class="traits">
+        <li>لَيسَ لَها عَمودٌ فَقَريٌّ</li>
+        <li>بَعضُها كَالحَشَراتِ لَهُ غِطاءٌ خارِجيٌّ صُلبٌ لِلحِمايَةِ</li>
+        <li>الحَشَرَةُ لَها سِتُّ أَرجُلٍ وَقَرنا اسْتِشْعارٍ</li>
+      </ul>
+      <div class="examples-row">
+        <div class="ex-item"><span class="ee">🐞</span>خُنفُساء</div>
+        <div class="ex-item"><span class="ee">🪼</span>قِنديل بحر</div>
+        <div class="ex-item"><span class="ee">🪱</span>دودة أرض</div>
+        <div class="ex-item"><span class="ee">🦞</span>جراد بحر</div>
+      </div>
+      <button class="tip-toggle" onclick="toggleTip(this)">💡 استراتيجية للمعلم</button>
+      <div class="tip-box">🎯 <b>عدّ الأرجل:</b> اعرضي صورة حشرة، واطلبي من الطلاب عدّ أرجلها معًا بصوت مرتفع (1-2-3-4-5-6) لتثبيت خاصية الحشرات.</div>
+    </section>
+
+    <!-- 10: FUN FACT -->
+    <section class="slide">
+      <div class="eyebrow">✨ حقيقة ممتعة</div>
+      <div class="fact-card">
+        <span style="font-size:3rem;">🥚</span>
+        <h2>هَل تَعلَم؟</h2>
+        <p style="line-height:2; margin-top:10px;">الطُّيُورُ لَيسَتِ الحَيَواناتِ الوَحيدَةَ الَّتي تَبيضُ! فَهُناكَ حَيَواناتٌ أُخرى — مِنها التَّماسيحُ وَالفَراشُ وَالثَّعابينُ — تَتَكاثَرُ بِالبَيضِ أَيضًا! 🐊🦋🐍</p>
+      </div>
+      <button class="tip-toggle" onclick="toggleTip(this)">💡 استراتيجية للمعلم</button>
+      <div class="tip-box">🎯 <b>تشويق قبل الكشف:</b> اسألي الطلاب أولًا: "من غير الطيور برأيكم يضع بيضًا؟" ودوّني تخميناتهم قبل عرض الإجابة الصحيحة.</div>
+    </section>
+
+    <!-- 11: RECAP -->
+    <section class="slide">
+      <div class="eyebrow">📒 لِنُراجِع</div>
+      <h2>اضغط على كل مجموعة لتتذكر خصائصها</h2>
+      <div class="group-grid" id="recapGrid">
+        <div class="group-chip" style="border-color:var(--clay)" onclick="this.classList.toggle('open'); sndOpen();">
+          <span class="g-emoji">🐫</span><span class="g-name">ثدييات</span>
+          <div class="g-detail">شعر أو فرو، ترضع صغارها الحليب</div>
+        </div>
+        <div class="group-chip" style="border-color:var(--sky)" onclick="this.classList.toggle('open'); sndOpen();">
+          <span class="g-emoji">🦅</span><span class="g-name">طيور</span>
+          <div class="g-detail">ريش، جناحان، منقار، تبيض</div>
+        </div>
+        <div class="group-chip" style="border-color:var(--sky)" onclick="this.classList.toggle('open'); sndOpen();">
+          <span class="g-emoji">🐟</span><span class="g-name">أسماك</span>
+          <div class="g-detail">قشور، تعيش في الماء، خياشيم</div>
+        </div>
+        <div class="group-chip" style="border-color:var(--leaf)" onclick="this.classList.toggle('open'); sndOpen();">
+          <span class="g-emoji">🐊</span><span class="g-name">زواحف</span>
+          <div class="g-detail">جلد خشن مغطى بحراشف</div>
+        </div>
+        <div class="group-chip" style="border-color:var(--leaf)" onclick="this.classList.toggle('open'); sndOpen();">
+          <span class="g-emoji">🐸</span><span class="g-name">برمائيات</span>
+          <div class="g-detail">جلد رطب، تبدأ حياتها في الماء</div>
+        </div>
+        <div class="group-chip" style="border-color:var(--gold)" onclick="this.classList.toggle('open'); sndOpen();">
+          <span class="g-emoji">🦋</span><span class="g-name">لافقاريات</span>
+          <div class="g-detail">بلا عمود فقري، بعضها له غطاء صلب</div>
+        </div>
+      </div>
+      <button class="tip-toggle" onclick="toggleTip(this)">💡 استراتيجية للمعلم</button>
+      <div class="tip-box">🎯 <b>تقويم تكويني سريع:</b> اطلبي رفع الأيدي كلما ذكر أحد الطلاب خاصية صحيحة لمجموعة معينة، وامنحيه تصفيقًا جماعيًا.</div>
+    </section>
+
+    <!-- 12: GAME -->
+    <section class="slide">
+      <div class="eyebrow">🎮 لعبة التصنيف</div>
+      <h2 id="gameTitle">هَيَّا نُصَنِّفُ الحَيَوانَاتِ!</h2>
+      <div class="game-wrap">
+        <div id="gameStart" style="text-align:center;">
+          <p class="subtitle">اضغط على المجموعة الصحيحة لكل حيوان يظهر أمامك. جاهز؟</p>
+          <button class="start-btn" onclick="startGame()">ابدأ اللعب 🏁</button>
+        </div>
+
+        <div id="gamePlay" style="display:none; width:100%; align-items:center; flex-direction:column;">
+          <div class="game-progress"><div class="game-progress-fill" id="progFill"></div></div>
+          <div class="game-card">
+            <div class="game-emoji" id="qEmoji">🐫</div>
+            <div class="game-name" id="qName">الجمل</div>
+            <div class="game-question">إلى أي مجموعة ينتمي؟</div>
+          </div>
+          <div class="game-options" id="gameOptions"></div>
+          <div class="feedback" id="feedback"></div>
+          <div class="score-line" id="scoreLine">النقاط: 0 / 0</div>
+        </div>
+
+        <div id="gameResult" style="display:none;" class="result-card">
+          <div class="stamp" style="margin:0 auto 14px; color:var(--leaf); width:110px;height:110px; font-size:2.4rem;">🏆</div>
+          <h2>أحسنت! أنهيت اللعبة</h2>
+          <div class="result-stars" id="resultStars">⭐⭐⭐</div>
+          <p id="resultText" class="subtitle"></p>
+          <button class="replay-btn" onclick="startGame()">🔁 العب مرة أخرى</button>
+        </div>
+      </div>
+      <button class="tip-toggle" onclick="toggleTip(this)">💡 استراتيجية للمعلم</button>
+      <div class="tip-box">🎯 <b>تعلم باللعب:</b> قسّمي الفصل إلى فريقين، وامنحي نقطة لفريق كل طالب يجيب بشكل صحيح على السبورة التفاعلية أو بصوت مرتفع.</div>
+    </section>
+
+    <!-- 13: CLOSING -->
+    <section class="slide">
+      <div class="eyebrow">🎉 أحسنتم!</div>
+      <div class="scene">
+        <span class="emoji-anim anim-bounce">🐘</span>
+        <span class="emoji-anim anim-flap" style="animation-delay:.2s;">🦅</span>
+        <span class="emoji-anim anim-swim" style="animation-delay:.4s;">🐟</span>
+        <span class="emoji-anim anim-slither" style="animation-delay:.6s;">🐍</span>
+        <span class="emoji-anim anim-bounce" style="animation-delay:.8s;">🐸</span>
+      </div>
+      <h1>أَنتُم الآنَ خُبَراءُ تَصنيفِ الحَيَواناتِ! 🏅</h1>
+      <p class="subtitle">تَذَكَّروا: الفَقارِيّاتُ لَها عَمودٌ فَقَريٌّ وَتَنقَسِمُ إلى خَمسِ مَجموعاتٍ، وَاللَّافَقارِيّاتُ لَيسَ لَها عَمودٌ فَقَريٌّ. أَحسَنتُم! 👏</p>
+      <button class="tip-toggle" onclick="toggleTip(this)">💡 استراتيجية للمعلم</button>
+      <div class="tip-box">🎯 <b>تعزيز إيجابي:</b> امنحي كل طالب نجمة ورقية أو ملصق تقدير عند إتمام الدرس، واطلبي منهم رسم حيوانهم المفضل وكتابة اسم مجموعته في المنزل.</div>
+    </section>
+
+  </div>
+
+  <!-- MASCOT -->
+  <div class="mascot-wrap">
+    <div class="robert">
+      <div class="antenna"></div>
+      <div class="hat"></div>
+      <div class="head">
+        <div class="eye l"></div>
+        <div class="eye r"></div>
+      </div>
+      <div class="body"></div>
+    </div>
+    <div class="bubble" id="mascotText">أهلًا بكم! أنا رُوبِرت المُستَكشِف 🧭 هيا نكتشف عالم الحيوانات معًا!</div>
+  </div>
+
+  <!-- NAVBAR -->
+  <div class="navbar">
+    <button class="nav-btn" onclick="prevSlide()">▶</button>
+    <div class="dots" id="dots"></div>
+    <div class="slide-counter" id="counter">1 / 14</div>
+    <button class="nav-btn" onclick="nextSlide()">◀</button>
+    <button class="nav-btn" id="soundBtn" onclick="toggleSound()" style="background:var(--sky); color:var(--white);">🔊</button>
+  </div>
+</div>
+
+<script>
+  const mascotLines = [
+    "أهلًا بكم! أنا رُوبِرت المُستَكشِف 🧭 هيا نكتشف عالم الحيوانات معًا!",
+    "انظروا حولكم... كل حيوان مختلف عن الآخر! لماذا يا ترى؟ 🤔",
+    "لِنَتَعَلَّم كلمتين جديدتين: فقاريات ولافقاريات! ردّدوهما معي 🗣️",
+    "المفتاح السحري هو العمود الفقري! المسوا ظهوركم وستشعرون به 🦴",
+    "الجمل والخروف والفيل من الثدييات، لأنها ترضع صغارها الحليب 🍼",
+    "فرفرررر! أنا أطير كالطيور... ريش وجناحان ومنقار 🪶",
+    "عمت! أنا أسبح كالأسماك... أتنفس بالخياشيم تحت الماء 🫧",
+    "أزحف مثل الثعبان... جلدي خشن ومغطى بالحراشف 🐍",
+    "أقفز كالضفدع من الماء إلى اليابسة، جلدي رطب دائمًا 🐸",
+    "انظروا! هذه الحشرة الصغيرة ليس لها عمود فقري أبدًا 🐞",
+    "هل تصدقون أن التماسيح والفراش تبيض أيضًا مثل الطيور؟ 🥚",
+    "هيا نراجع سويًا! اضغطوا على كل بطاقة لتتذكروا 📒",
+    "حان وقت اللعب! هل أنتم مستعدون لتصنيف الحيوانات؟ 🎮",
+    "أحسنتم يا أبطال! أنتم الآن خبراء في تصنيف الحيوانات 🏅"
+  ];
+
+  /* ================= SOUND ENGINE (no external audio files) ================= */
+  let soundOn = true;
+  let audioCtx = null;
+  function ensureAudio(){
+    if(!audioCtx){
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if(audioCtx.state === 'suspended') audioCtx.resume();
+  }
+  function tone(freq, duration, type, delay, vol){
+    if(!soundOn) return;
+    ensureAudio();
+    const t0 = audioCtx.currentTime + (delay||0);
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type || 'sine';
+    osc.frequency.setValueAtTime(freq, t0);
+    gain.gain.setValueAtTime(0.0001, t0);
+    gain.gain.linearRampToValueAtTime(vol||0.16, t0+0.012);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t0+duration);
+    osc.connect(gain).connect(audioCtx.destination);
+    osc.start(t0);
+    osc.stop(t0+duration+0.03);
+  }
+  function sndClick(){ tone(560,0.07,'triangle',0,0.12); }
+  function sndSlide(){ tone(440,0.1,'sine',0,0.12); tone(660,0.12,'sine',0.05,0.1); }
+  function sndOpen(){ tone(500,0.09,'sine',0,0.12); tone(720,0.09,'sine',0.05,0.1); }
+  function sndCorrect(){ [523,659,784].forEach((f,i)=>tone(f,0.18,'triangle',i*0.09,0.18)); }
+  function sndWrong(){ tone(200,0.28,'sawtooth',0,0.13); tone(160,0.28,'sawtooth',0.05,0.1); }
+  function sndWin(){ [523,659,784,1046].forEach((f,i)=>tone(f,0.24,'triangle',i*0.11,0.2)); }
+  function sndStart(){ [392,523,659].forEach((f,i)=>tone(f,0.16,'square',i*0.08,0.12)); }
+
+  function toggleSound(){
+    soundOn = !soundOn;
+    document.getElementById('soundBtn').textContent = soundOn ? '🔊' : '🔇';
+    if(soundOn){ ensureAudio(); tone(600,0.1,'sine',0,0.12); }
+  }
+
+  const slides = document.querySelectorAll('.slide');
+  const dotsWrap = document.getElementById('dots');
+  let current = 0;
+
+  slides.forEach((s,i)=>{
+    const d = document.createElement('div');
+    d.className = 'dot' + (i===0 ? ' active' : '');
+    d.onclick = ()=>goTo(i);
+    dotsWrap.appendChild(d);
+  });
+
+  function updateUI(){
+    document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active', i===current));
+    document.getElementById('counter').textContent = (current+1)+' / '+slides.length;
+    document.getElementById('mascotText').textContent = mascotLines[current];
+  }
+
+  function goTo(i){
+    if(i<0 || i>=slides.length) return;
+    slides[current].classList.remove('active');
+    current = i;
+    slides[current].classList.add('active');
+    updateUI();
+    sndSlide();
+  }
+  function nextSlide(){ goTo(current+1); }
+  function prevSlide(){ goTo(current-1); }
+
+  document.addEventListener('keydown', (e)=>{
+    if(e.key === 'ArrowLeft') nextSlide();
+    if(e.key === 'ArrowRight') prevSlide();
+  });
+
+  function toggleTip(btn){
+    const box = btn.nextElementSibling;
+    box.classList.toggle('show');
+    sndClick();
+  }
+
+  updateUI();
+
+  /* ================= GAME LOGIC ================= */
+  const groupLabels = {
+    mammal:'ثدييات', bird:'طيور', fish:'أسماك',
+    reptile:'زواحف', amphibian:'برمائيات', invert:'لافقاريات'
+  };
+  const allAnimals = [
+    {e:'🐫',n:'الجَمَل',g:'mammal'},
+    {e:'🐑',n:'الخَرُوف',g:'mammal'},
+    {e:'🐘',n:'الفِيل',g:'mammal'},
+    {e:'🦓',n:'الحِمار الوَحشي',g:'mammal'},
+    {e:'🐦',n:'العُصفُور',g:'bird'},
+    {e:'🦩',n:'الفَلامِنجو',g:'bird'},
+    {e:'🦅',n:'النَّسر',g:'bird'},
+    {e:'🐟',n:'السَّمَكَة',g:'fish'},
+    {e:'🐊',n:'التِّمساح',g:'reptile'},
+    {e:'🦎',n:'السِّحلِيَّة',g:'reptile'},
+    {e:'🐍',n:'الثُّعبان',g:'reptile'},
+    {e:'🐸',n:'الضِّفدَع',g:'amphibian'},
+    {e:'🦋',n:'الفَراشَة',g:'invert'},
+    {e:'🐝',n:'النَّحلَة',g:'invert'},
+    {e:'🪱',n:'دُودَة الأرض',g:'invert'},
+    {e:'🪼',n:'قِندِيل البَحر',g:'invert'}
+  ];
+
+  let gameQueue = [];
+  let gIndex = 0;
+  let score = 0;
+
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]] = [a[j],a[i]];
+    }
+    return a;
+  }
+
+  function startGame(){
+    sndStart();
+    gameQueue = shuffle(allAnimals);
+    gIndex = 0;
+    score = 0;
+    document.getElementById('gameStart').style.display='none';
+    document.getElementById('gameResult').style.display='none';
+    document.getElementById('gamePlay').style.display='flex';
+    renderQuestion();
+  }
+
+  function renderQuestion(){
+    const item = gameQueue[gIndex];
+    document.getElementById('qEmoji').textContent = item.e;
+    document.getElementById('qName').textContent = item.n;
+    document.getElementById('feedback').textContent = '';
+    document.getElementById('progFill').style.width = ((gIndex)/gameQueue.length*100)+'%';
+    document.getElementById('scoreLine').textContent = 'النقاط: '+score+' / '+gIndex;
+
+    const optsWrap = document.getElementById('gameOptions');
+    optsWrap.innerHTML = '';
+    const keys = Object.keys(groupLabels);
+    keys.forEach(k=>{
+      const btn = document.createElement('button');
+      btn.className = 'opt-btn';
+      btn.textContent = groupLabels[k];
+      btn.onclick = ()=>checkAnswer(k, btn);
+      optsWrap.appendChild(btn);
+    });
+  }
+
+  function checkAnswer(chosen, btnEl){
+    const item = gameQueue[gIndex];
+    const buttons = document.querySelectorAll('.opt-btn');
+    buttons.forEach(b=>b.disabled = true);
+    const fb = document.getElementById('feedback');
+
+    if(chosen === item.g){
+      score++;
+      btnEl.classList.add('correct');
+      fb.textContent = 'إجابة صحيحة! 🎉 '+item.n+' من ال'+groupLabels[item.g];
+      fb.style.color = 'var(--leaf)';
+      sndCorrect();
+    }else{
+      btnEl.classList.add('wrong');
+      buttons.forEach(b=>{ if(b.textContent===groupLabels[item.g]) b.classList.add('correct'); });
+      fb.textContent = 'ليست هذه المجموعة 🙈 الصحيح: '+item.n+' من ال'+groupLabels[item.g];
+      fb.style.color = 'var(--clay)';
+      sndWrong();
+    }
+
+    setTimeout(()=>{
+      gIndex++;
+      if(gIndex >= gameQueue.length){
+        finishGame();
+      }else{
+        renderQuestion();
+      }
+    }, 1300);
+  }
+
+  function finishGame(){
+    document.getElementById('gamePlay').style.display='none';
+    document.getElementById('gameResult').style.display='block';
+    const pct = Math.round((score/gameQueue.length)*100);
+    let stars = '⭐';
+    if(pct>=90) stars='⭐⭐⭐';
+    else if(pct>=60) stars='⭐⭐';
+    document.getElementById('resultStars').textContent = stars;
+    document.getElementById('resultText').textContent = 'حصلت على '+score+' من '+gameQueue.length+' (%'+pct+') — ';
+    document.getElementById('resultText').textContent += pct>=80 ? 'أداء رائع يا بطل! 🏆' : pct>=50 ? 'جيد جدًا! راجع الدرس وحاول مجددًا 💪' : 'لا بأس، راجع الدرس وستتحسن بالتأكيد! 🌟';
+    sndWin();
+    if(pct>=80) launchConfetti();
+  }
+
+  function launchConfetti(){
+    const colors = ['#C1502E','#E8A93B','#4F7942','#3E92B0'];
+    for(let i=0;i<60;i++){
+      const c = document.createElement('div');
+      c.className='confetti';
+      c.style.left = Math.random()*100+'vw';
+      c.style.background = colors[Math.floor(Math.random()*colors.length)];
+      c.style.animationDuration = (2+Math.random()*2)+'s';
+      c.style.borderRadius = Math.random()>0.5 ? '50%':'2px';
+      document.body.appendChild(c);
+      setTimeout(()=>c.remove(), 4200);
+    }
+  }
+</script>
+</body>
+</html>

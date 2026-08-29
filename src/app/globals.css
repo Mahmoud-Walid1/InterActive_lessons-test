@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --paper: #FBF3DE;
+    --paper-dark: #F2E6C4;
+    --ink: #1B3B36;
+    --clay: #C1502E;
+    --leaf: #4F7942;
+    --sky: #3E92B0;
+    --gold: #E8A93B;
+    --white: #FFFDF7;
+  }
+
+  body {
+    background-color: var(--paper);
+    color: var(--ink);
+    font-family: 'Tajawal', sans-serif;
+    min-height: 100vh;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  h1, h2, h3, h4, .font-baloo {
+    font-family: 'Baloo 2', sans-serif;
+  }
+}
