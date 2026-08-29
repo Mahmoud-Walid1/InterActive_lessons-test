@@ -36,25 +36,8 @@ export function SlideCard({ slide }: SlideCardProps) {
         </p>
       )}
 
-      {/* Inline Mascot Fateen Tip Card - Fits naturally without covering text */}
-      {slide.mascotTip && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="my-2.5 flex items-center gap-2.5 rounded-2xl border-2 border-[#0284C7]/30 bg-[#0284C7]/10 px-3.5 py-2 text-right shadow-xs max-w-lg w-full"
-        >
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#0F3D4C] text-[#F59E0B] shadow-sm">
-            <Bot className="h-5 w-5" />
-          </div>
-          <div>
-            <span className="font-baloo text-[11px] font-extrabold text-[#0284C7] block leading-none">نصيحة فطين 💡</span>
-            <p className="font-tajawal text-xs font-bold text-[#0F2C3B] leading-snug mt-0.5">{slide.mascotTip}</p>
-          </div>
-        </motion.div>
-      )}
-
       {slide.traits && (
-        <ul className="mt-2 flex flex-col gap-1.5 w-full max-w-md text-right">
+        <ul className="mt-2.5 flex flex-col gap-1.5 w-full max-w-md text-right">
           {slide.traits.map((trait, idx) => (
             <motion.li
               key={idx}
@@ -134,6 +117,25 @@ export function SlideCard({ slide }: SlideCardProps) {
             </div>
           ))}
         </div>
+      )}
+
+      {/* Mascot Fateen Tip Card placed at the VERY BOTTOM under all slide content */}
+      {slide.mascotTip && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-4 flex items-center gap-2.5 rounded-2xl border-2 border-[#0284C7]/30 bg-[#0284C7]/10 px-3.5 py-2 text-right shadow-xs max-w-lg w-full"
+        >
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#0F3D4C] text-[#F59E0B] shadow-sm">
+            <Bot className="h-5 w-5" />
+          </div>
+          <div>
+            <span className="font-baloo text-[11px] font-extrabold text-[#0284C7] block leading-none">نصيحة فطين 💡</span>
+            <p className="font-tajawal text-xs font-bold text-[#0F2C3B] leading-snug mt-0.5">
+              {slide.mascotTip.replace(/روبرت/g, 'فطين')}
+            </p>
+          </div>
+        </motion.div>
       )}
     </motion.div>
   );
