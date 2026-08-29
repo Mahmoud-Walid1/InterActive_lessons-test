@@ -5,7 +5,6 @@ import { LessonData } from '@/types/lesson';
 import { SlideCard } from './SlideCard';
 import { InteractiveQuiz } from './InteractiveQuiz';
 import { StarRewardScreen } from './StarRewardScreen';
-import { MascotRobert } from './MascotRobert';
 import { LandscapeGuard } from '../orientation/LandscapeGuard';
 import { ChevronRight, ChevronLeft, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
@@ -32,28 +31,28 @@ export function LessonPlayerShell({ lesson }: LessonPlayerShellProps) {
   };
 
   return (
-    <div className="relative flex h-[100dvh] w-screen flex-col items-center justify-between overflow-hidden bg-[#FBF3DE]">
+    <div className="relative flex h-[100dvh] w-screen flex-col items-center justify-between overflow-hidden bg-[#F8FAFC]">
       <LandscapeGuard />
 
       {/* Top Bar - Compact for 16:9 Landscape screens */}
-      <div className="z-20 flex h-10 w-full shrink-0 items-center justify-between border-b border-[#1B3B36]/10 bg-[#FFFDF7]/90 px-4 py-1 backdrop-blur-sm">
+      <div className="z-20 flex h-10 w-full shrink-0 items-center justify-between border-b border-[#0F3D4C]/10 bg-[#FFFFFF]/90 px-4 py-1 backdrop-blur-sm">
         <Link
           href={`/grades/${lesson.gradeId}/subjects/${lesson.subjectId}/lessons`}
-          className="flex items-center gap-1 font-tajawal text-xs font-bold text-[#1B3B36] hover:text-[#C1502E]"
+          className="flex items-center gap-1 font-tajawal text-xs font-bold text-[#0F2C3B] hover:text-[#D97706]"
         >
           <ArrowRight className="h-3.5 w-3.5" />
           العودة
         </Link>
-        <h2 className="font-baloo text-xs font-bold text-[#1B3B36] sm:text-sm truncate max-w-[50vw]">
+        <h2 className="font-baloo text-xs font-bold text-[#0F2C3B] sm:text-sm truncate max-w-[50vw]">
           {lesson.title}
         </h2>
-        <span className="rounded-full bg-[#E8A93B] px-2.5 py-0.5 font-baloo text-[11px] font-bold text-[#1B3B36]">
+        <span className="rounded-full bg-[#F59E0B] px-2.5 py-0.5 font-baloo text-[11px] font-bold text-[#0F2C3B]">
           {currentSlideIdx + 1} / {slidesCount}
         </span>
       </div>
 
-      {/* Main Slide Workspace - Fits 16:9 screen perfectly */}
-      <div className="relative z-10 flex h-[calc(100dvh-5.5rem)] w-full max-w-5xl items-center justify-center p-2 overflow-y-auto">
+      {/* Main Slide Workspace - Clean layout without any floating overlaps */}
+      <div className="relative z-10 flex h-[calc(100dvh-5.5rem)] w-full max-w-4xl items-center justify-center p-2 overflow-y-auto">
         {currentSlide.type === 'quiz' && currentSlide.quiz ? (
           <InteractiveQuiz quiz={currentSlide.quiz} onAnswerSelected={() => {}} />
         ) : currentSlide.type === 'summary' ? (
@@ -63,15 +62,12 @@ export function LessonPlayerShell({ lesson }: LessonPlayerShellProps) {
         )}
       </div>
 
-      {/* Mascot Robert Floating */}
-      <MascotRobert tipText={currentSlide.mascotTip} />
-
-      {/* Bottom Navigation Shell - Compact height */}
-      <div className="z-20 flex h-12 w-full shrink-0 items-center justify-between border-t-2 border-[#1B3B36] bg-[#1B3B36] px-6 text-[#FFFDF7]">
+      {/* Bottom Navigation Shell */}
+      <div className="z-20 flex h-12 w-full shrink-0 items-center justify-between border-t-2 border-[#0F3D4C] bg-[#0F3D4C] px-6 text-[#FFFFFF]">
         <button
           onClick={handlePrev}
           disabled={currentSlideIdx === 0}
-          className="flex h-8 w-8 items-center justify-center rounded-full bg-[#E8A93B] text-[#1B3B36] shadow transition hover:scale-105 disabled:opacity-40"
+          className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F59E0B] text-[#0F2C3B] shadow transition hover:scale-105 disabled:opacity-40"
         >
           <ChevronRight className="h-5 w-5" />
         </button>
@@ -83,7 +79,7 @@ export function LessonPlayerShell({ lesson }: LessonPlayerShellProps) {
               key={idx}
               onClick={() => setCurrentSlideIdx(idx)}
               className={`h-2.5 rounded-full transition-all ${
-                idx === currentSlideIdx ? 'w-6 bg-[#E8A93B]' : 'w-2.5 bg-[#FFFDF7]/30'
+                idx === currentSlideIdx ? 'w-6 bg-[#F59E0B]' : 'w-2.5 bg-[#FFFFFF]/30'
               }`}
             />
           ))}
@@ -92,7 +88,7 @@ export function LessonPlayerShell({ lesson }: LessonPlayerShellProps) {
         <button
           onClick={handleNext}
           disabled={currentSlideIdx === slidesCount - 1}
-          className="flex h-8 w-8 items-center justify-center rounded-full bg-[#E8A93B] text-[#1B3B36] shadow transition hover:scale-105 disabled:opacity-40"
+          className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F59E0B] text-[#0F2C3B] shadow transition hover:scale-105 disabled:opacity-40"
         >
           <ChevronLeft className="h-5 w-5" />
         </button>

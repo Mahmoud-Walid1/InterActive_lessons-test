@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport = {
-  themeColor: '#1B3B36',
+  themeColor: '#0F3D4C',
 };
 
 export default function RootLayout({
@@ -30,7 +30,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="bg-[#FBF3DE] text-[#1B3B36] antialiased">
+      <body className="bg-[#F8FAFC] text-[#0F2C3B] antialiased">
         <SwRegister />
         <AntiTamperGuard />
         <SecurityWatermark />

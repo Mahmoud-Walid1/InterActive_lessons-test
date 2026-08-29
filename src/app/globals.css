@@ -2,14 +2,14 @@
 
 @layer base {
   :root {
-    --paper: #FBF3DE;
-    --paper-dark: #F2E6C4;
-    --ink: #1B3B36;
-    --clay: #C1502E;
-    --leaf: #4F7942;
-    --sky: #3E92B0;
-    --gold: #E8A93B;
-    --white: #FFFDF7;
+    --paper: #F8FAFC;
+    --paper-dark: #E2E8F0;
+    --ink: #0F2C3B;
+    --clay: #D97706;
+    --leaf: #0D9488;
+    --sky: #0284C7;
+    --gold: #F59E0B;
+    --white: #FFFFFF;
   }
 
   body {

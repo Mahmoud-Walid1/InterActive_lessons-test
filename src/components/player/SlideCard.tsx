@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { LessonSlide } from '@/types/lesson';
-import { CheckCircle2, HelpCircle, ChevronDown } from 'lucide-react';
+import { CheckCircle2, HelpCircle, ChevronDown, Bot } from 'lucide-react';
 
 interface SlideCardProps {
   slide: LessonSlide;
@@ -21,32 +21,49 @@ export function SlideCard({ slide }: SlideCardProps) {
       className="flex w-full max-w-3xl flex-col items-center justify-center p-2 text-center my-auto"
     >
       {slide.eyebrow && (
-        <span className="mb-1.5 inline-flex items-center gap-1 rounded-full border border-dashed border-[#C1502E] bg-[#FFFDF7] px-3 py-0.5 font-tajawal text-[11px] font-bold text-[#C1502E]">
+        <span className="mb-1 inline-flex items-center gap-1 rounded-full border border-dashed border-[#D97706] bg-[#FFFFFF] px-3 py-0.5 font-tajawal text-[11px] font-bold text-[#D97706]">
           {slide.eyebrow}
         </span>
       )}
 
-      <h1 className="font-baloo text-xl font-extrabold text-[#1B3B36] sm:text-3xl">
+      <h1 className="font-baloo text-xl font-extrabold text-[#0F2C3B] sm:text-3xl">
         {slide.title}
       </h1>
 
       {slide.subtitle && (
-        <p className="mt-1 max-w-xl font-tajawal text-xs text-[#1B3B36]/80 sm:text-sm leading-relaxed">
+        <p className="mt-1 max-w-xl font-tajawal text-xs text-[#0F2C3B]/80 sm:text-sm leading-relaxed">
           {slide.subtitle}
         </p>
       )}
 
+      {/* Inline Mascot Fateen Tip Card - Fits naturally without covering text */}
+      {slide.mascotTip && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="my-2.5 flex items-center gap-2.5 rounded-2xl border-2 border-[#0284C7]/30 bg-[#0284C7]/10 px-3.5 py-2 text-right shadow-xs max-w-lg w-full"
+        >
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#0F3D4C] text-[#F59E0B] shadow-sm">
+            <Bot className="h-5 w-5" />
+          </div>
+          <div>
+            <span className="font-baloo text-[11px] font-extrabold text-[#0284C7] block leading-none">نصيحة فطين 💡</span>
+            <p className="font-tajawal text-xs font-bold text-[#0F2C3B] leading-snug mt-0.5">{slide.mascotTip}</p>
+          </div>
+        </motion.div>
+      )}
+
       {slide.traits && (
-        <ul className="mt-3 flex flex-col gap-1.5 w-full max-w-md text-right">
+        <ul className="mt-2 flex flex-col gap-1.5 w-full max-w-md text-right">
           {slide.traits.map((trait, idx) => (
             <motion.li
               key={idx}
               initial={{ opacity: 0, x: 10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: idx * 0.1 }}
-              className="flex items-center gap-2 rounded-lg border border-[#1B3B36]/10 bg-[#FFFDF7] p-2 shadow-sm font-tajawal text-xs text-[#1B3B36]"
+              className="flex items-center gap-2 rounded-xl border border-[#0F2C3B]/10 bg-[#FFFFFF] p-2.5 shadow-xs font-tajawal text-xs text-[#0F2C3B]"
             >
-              <CheckCircle2 className="h-4 w-4 shrink-0 text-[#4F7942]" />
+              <CheckCircle2 className="h-4 w-4 shrink-0 text-[#0D9488]" />
               <span>{trait}</span>
             </motion.li>
           ))}
@@ -54,7 +71,7 @@ export function SlideCard({ slide }: SlideCardProps) {
       )}
 
       {slide.groups && (
-        <div className="mt-3 grid w-full grid-cols-1 sm:grid-cols-3 gap-2.5 max-w-2xl">
+        <div className="mt-2.5 grid w-full grid-cols-1 sm:grid-cols-3 gap-2 max-w-2xl">
           {slide.groups.map((group) => {
             const isOpen = openChipId === group.id;
             return (
@@ -62,10 +79,10 @@ export function SlideCard({ slide }: SlideCardProps) {
                 key={group.id}
                 whileHover={{ scale: 1.02 }}
                 onClick={() => setOpenChipId(isOpen ? null : group.id)}
-                className="cursor-pointer rounded-xl border-2 border-[#1B3B36] bg-[#FFFDF7] p-2.5 text-center shadow-sm transition hover:shadow-md"
+                className="cursor-pointer rounded-xl border-2 border-[#0F3D4C] bg-[#FFFFFF] p-2.5 text-center shadow-xs transition hover:shadow-md"
               >
                 <span className="text-2xl block mb-1">{group.emoji}</span>
-                <div className="flex items-center justify-center gap-1 font-baloo text-sm font-bold text-[#1B3B36]">
+                <div className="flex items-center justify-center gap-1 font-baloo text-sm font-bold text-[#0F2C3B]">
                   <span>{group.name}</span>
                   <ChevronDown className={`h-3.5 w-3.5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
                 </div>
@@ -73,7 +90,7 @@ export function SlideCard({ slide }: SlideCardProps) {
                   <motion.p
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
-                    className="mt-1.5 border-t border-[#1B3B36]/10 pt-1.5 font-tajawal text-[11px] text-[#1B3B36]/80 leading-normal text-right"
+                    className="mt-1.5 border-t border-[#0F2C3B]/10 pt-1.5 font-tajawal text-[11px] text-[#0F2C3B]/80 leading-normal text-right"
                   >
                     {group.detail}
                   </motion.p>
@@ -85,10 +102,10 @@ export function SlideCard({ slide }: SlideCardProps) {
       )}
 
       {slide.reveal && (
-        <div className="mt-3 w-full max-w-lg">
+        <div className="mt-2.5 w-full max-w-lg">
           <button
             onClick={() => setShowReveal(!showReveal)}
-            className="flex w-full items-center justify-between rounded-xl border-2 border-[#C1502E] bg-[#FFFDF7] p-2.5 font-baloo font-bold text-xs text-[#C1502E] shadow-sm transition hover:bg-[#F2E6C4]/30"
+            className="flex w-full items-center justify-between rounded-xl border-2 border-[#D97706] bg-[#FFFFFF] p-2.5 font-baloo font-bold text-xs text-[#D97706] shadow-xs transition hover:bg-[#D97706]/10"
           >
             <div className="flex items-center gap-1.5">
               <HelpCircle className="h-4 w-4" />
@@ -100,7 +117,7 @@ export function SlideCard({ slide }: SlideCardProps) {
             <motion.div
               initial={{ opacity: 0, y: 5 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mt-1.5 rounded-xl border border-[#4F7942] bg-[#4F7942]/10 p-2.5 font-tajawal text-xs text-[#1B3B36] text-right leading-relaxed"
+              className="mt-1.5 rounded-xl border border-[#0D9488] bg-[#0D9488]/10 p-2.5 font-tajawal text-xs text-[#0F2C3B] text-right leading-relaxed"
             >
               {slide.reveal.answer}
             </motion.div>
@@ -109,11 +126,11 @@ export function SlideCard({ slide }: SlideCardProps) {
       )}
 
       {slide.examples && (
-        <div className="mt-3 flex flex-wrap justify-center gap-4">
+        <div className="mt-2.5 flex flex-wrap justify-center gap-4">
           {slide.examples.map((ex, idx) => (
             <div key={idx} className="flex flex-col items-center">
               <span className="text-3xl">{ex.emoji}</span>
-              <span className="mt-0.5 font-baloo font-bold text-xs text-[#1B3B36]">{ex.name}</span>
+              <span className="mt-0.5 font-baloo font-bold text-xs text-[#0F2C3B]">{ex.name}</span>
             </div>
           ))}
         </div>

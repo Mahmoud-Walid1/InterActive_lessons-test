@@ -1,13 +1,13 @@
 {
-  "name": "منصة الدروس التفاعلية للأجهزة المحمولة",
-  "short_name": "الدروس التفاعلية",
+  "name": "متجر العلوم والتقنية للجميع - الدروس التفاعلية",
+  "short_name": "العلوم والتقنية",
   "description": "منصة تعليمية تفاعلية للمرحلة الابتدائية تعمل بدون إنترنت مع حماية وتشفير عالي الأمان.",
   "start_url": "/",
   "id": "/",
   "display": "standalone",
   "orientation": "landscape",
-  "background_color": "#FBF3DE",
-  "theme_color": "#1B3B36",
+  "background_color": "#F8FAFC",
+  "theme_color": "#0F3D4C",
   "icons": [
     {
       "src": "/icons/icon-192.png",
