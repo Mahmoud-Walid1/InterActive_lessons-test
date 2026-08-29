@@ -9,29 +9,29 @@ interface MascotRobertProps {
 
 export function MascotRobert({ tipText }: MascotRobertProps) {
   return (
-    <div className="fixed bottom-24 right-6 z-30 flex items-end gap-3 max-w-xs pointer-events-none">
+    <div className="fixed bottom-14 left-4 z-30 flex items-end gap-2 max-w-xs pointer-events-none sm:left-6 sm:bottom-16">
       <motion.div
-        animate={{ y: [0, -8, 0] }}
+        animate={{ y: [0, -4, 0] }}
         transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}
-        className="relative flex flex-col items-center"
+        className="relative flex flex-col items-center shrink-0"
       >
-        <div className="flex h-16 w-16 items-center justify-center rounded-2xl border-2 border-[#1B3B36] bg-[#3E92B0] shadow-xl text-[#FFFDF7]">
-          <Bot className="h-10 w-10 text-[#E8A93B]" />
+        <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl border-2 border-[#1B3B36] bg-[#3E92B0] shadow-md text-[#FFFDF7]">
+          <Bot className="h-6 w-6 text-[#E8A93B]" />
         </div>
-        <span className="mt-1 rounded-full bg-[#E8A93B] px-2 py-0.5 font-baloo text-[10px] font-bold text-[#1B3B36]">
-          روبرت
+        <span className="mt-0.5 rounded-full bg-[#E8A93B] px-2 py-0.2 font-baloo text-[9px] font-bold text-[#1B3B36]">
+          فطين
         </span>
       </motion.div>
 
       {tipText && (
         <motion.div
-          initial={{ opacity: 0, scale: 0.9, y: 10 }}
+          initial={{ opacity: 0, scale: 0.9, y: 5 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          className="pointer-events-auto relative rounded-2xl border-2 border-[#1B3B36] bg-[#FFFDF7] p-3 shadow-lg text-[#1B3B36]"
+          className="pointer-events-auto relative rounded-xl border-2 border-[#1B3B36] bg-[#FFFDF7] p-2 shadow-md text-[#1B3B36] max-w-[200px] sm:max-w-xs"
         >
-          <div className="flex items-start gap-2">
-            <MessageSquare className="h-4 w-4 shrink-0 text-[#C1502E] mt-1" />
-            <p className="font-tajawal text-xs font-bold leading-relaxed">{tipText}</p>
+          <div className="flex items-start gap-1.5">
+            <MessageSquare className="h-3.5 w-3.5 shrink-0 text-[#C1502E] mt-0.5" />
+            <p className="font-tajawal text-[11px] font-bold leading-tight">{tipText}</p>
           </div>
         </motion.div>
       )}

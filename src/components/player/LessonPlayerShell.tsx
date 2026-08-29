@@ -32,26 +32,28 @@ export function LessonPlayerShell({ lesson }: LessonPlayerShellProps) {
   };
 
   return (
-    <div className="relative flex h-screen w-screen flex-col items-center justify-between overflow-hidden bg-[#FBF3DE]">
+    <div className="relative flex h-[100dvh] w-screen flex-col items-center justify-between overflow-hidden bg-[#FBF3DE]">
       <LandscapeGuard />
 
-      {/* Top Bar */}
-      <div className="z-20 flex w-full items-center justify-between border-b border-[#1B3B36]/10 bg-[#FFFDF7]/80 px-6 py-3 backdrop-blur-sm">
+      {/* Top Bar - Compact for 16:9 Landscape screens */}
+      <div className="z-20 flex h-10 w-full shrink-0 items-center justify-between border-b border-[#1B3B36]/10 bg-[#FFFDF7]/90 px-4 py-1 backdrop-blur-sm">
         <Link
           href={`/grades/${lesson.gradeId}/subjects/${lesson.subjectId}/lessons`}
-          className="flex items-center gap-1.5 font-tajawal text-sm font-bold text-[#1B3B36] hover:text-[#C1502E]"
+          className="flex items-center gap-1 font-tajawal text-xs font-bold text-[#1B3B36] hover:text-[#C1502E]"
         >
-          <ArrowRight className="h-4 w-4" />
-          العودة للدروس
+          <ArrowRight className="h-3.5 w-3.5" />
+          العودة
         </Link>
-        <h2 className="font-baloo text-base font-bold text-[#1B3B36] md:text-lg">{lesson.title}</h2>
-        <span className="rounded-full bg-[#E8A93B] px-3 py-1 font-baloo text-xs font-bold text-[#1B3B36]">
-          {currentSlideIdx + 1} من {slidesCount}
+        <h2 className="font-baloo text-xs font-bold text-[#1B3B36] sm:text-sm truncate max-w-[50vw]">
+          {lesson.title}
+        </h2>
+        <span className="rounded-full bg-[#E8A93B] px-2.5 py-0.5 font-baloo text-[11px] font-bold text-[#1B3B36]">
+          {currentSlideIdx + 1} / {slidesCount}
         </span>
       </div>
 
-      {/* Main Slide Workspace */}
-      <div className="relative z-10 flex h-full w-full items-center justify-center p-4">
+      {/* Main Slide Workspace - Fits 16:9 screen perfectly */}
+      <div className="relative z-10 flex h-[calc(100dvh-5.5rem)] w-full max-w-5xl items-center justify-center p-2 overflow-y-auto">
         {currentSlide.type === 'quiz' && currentSlide.quiz ? (
           <InteractiveQuiz quiz={currentSlide.quiz} onAnswerSelected={() => {}} />
         ) : currentSlide.type === 'summary' ? (
@@ -64,24 +66,24 @@ export function LessonPlayerShell({ lesson }: LessonPlayerShellProps) {
       {/* Mascot Robert Floating */}
       <MascotRobert tipText={currentSlide.mascotTip} />
 
-      {/* Bottom Navigation Shell */}
-      <div className="z-20 flex h-20 w-full items-center justify-between border-t-2 border-[#1B3B36] bg-[#1B3B36] px-8 text-[#FFFDF7]">
+      {/* Bottom Navigation Shell - Compact height */}
+      <div className="z-20 flex h-12 w-full shrink-0 items-center justify-between border-t-2 border-[#1B3B36] bg-[#1B3B36] px-6 text-[#FFFDF7]">
         <button
           onClick={handlePrev}
           disabled={currentSlideIdx === 0}
-          className="flex h-12 w-12 items-center justify-center rounded-full bg-[#E8A93B] text-[#1B3B36] shadow-lg transition hover:scale-105 disabled:opacity-40"
+          className="flex h-8 w-8 items-center justify-center rounded-full bg-[#E8A93B] text-[#1B3B36] shadow transition hover:scale-105 disabled:opacity-40"
         >
-          <ChevronRight className="h-6 w-6" />
+          <ChevronRight className="h-5 w-5" />
         </button>
 
         {/* Progress Dots */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           {lesson.slides.map((_, idx) => (
             <button
               key={idx}
               onClick={() => setCurrentSlideIdx(idx)}
-              className={`h-3 rounded-full transition-all ${
-                idx === currentSlideIdx ? 'w-8 bg-[#E8A93B]' : 'w-3 bg-[#FFFDF7]/30'
+              className={`h-2.5 rounded-full transition-all ${
+                idx === currentSlideIdx ? 'w-6 bg-[#E8A93B]' : 'w-2.5 bg-[#FFFDF7]/30'
               }`}
             />
           ))}
@@ -90,9 +92,9 @@ export function LessonPlayerShell({ lesson }: LessonPlayerShellProps) {
         <button
           onClick={handleNext}
           disabled={currentSlideIdx === slidesCount - 1}
-          className="flex h-12 w-12 items-center justify-center rounded-full bg-[#E8A93B] text-[#1B3B36] shadow-lg transition hover:scale-105 disabled:opacity-40"
+          className="flex h-8 w-8 items-center justify-center rounded-full bg-[#E8A93B] text-[#1B3B36] shadow transition hover:scale-105 disabled:opacity-40"
         >
-          <ChevronLeft className="h-6 w-6" />
+          <ChevronLeft className="h-5 w-5" />
         </button>
       </div>
     </div>

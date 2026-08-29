@@ -20,13 +20,13 @@ export function InteractiveQuiz({ quiz, onAnswerSelected }: InteractiveQuizProps
   };
 
   return (
-    <div className="flex w-full max-w-xl flex-col items-center justify-center p-4">
-      <div className="rounded-3xl border-3 border-[#1B3B36] bg-[#FFFDF7] p-6 text-center shadow-xl w-full">
-        <span className="text-6xl block mb-2">{quiz.emoji}</span>
-        <h3 className="font-baloo text-xl font-bold text-[#1B3B36]">{quiz.name}</h3>
-        <p className="mt-2 font-tajawal text-sm font-semibold text-[#1B3B36]/80">{quiz.question}</p>
+    <div className="flex w-full max-w-lg flex-col items-center justify-center p-2 my-auto">
+      <div className="rounded-2xl border-2 border-[#1B3B36] bg-[#FFFDF7] p-4 text-center shadow-lg w-full">
+        <span className="text-3xl block mb-1">{quiz.emoji}</span>
+        <h3 className="font-baloo text-base font-bold text-[#1B3B36]">{quiz.name}</h3>
+        <p className="mt-1 font-tajawal text-xs font-semibold text-[#1B3B36]/80">{quiz.question}</p>
 
-        <div className="mt-6 flex flex-col gap-3">
+        <div className="mt-3 flex flex-col sm:flex-row gap-2">
           {quiz.choices.map((choice) => {
             const isSelected = selectedChoiceId === choice.id;
             let btnStyle = 'border-[#3E92B0] bg-[#3E92B0] text-[#FFFDF7] hover:bg-[#3E92B0]/90';
@@ -43,11 +43,11 @@ export function InteractiveQuiz({ quiz, onAnswerSelected }: InteractiveQuizProps
                 whileHover={{ scale: selectedChoiceId ? 1 : 1.02 }}
                 whileTap={{ scale: selectedChoiceId ? 1 : 0.98 }}
                 onClick={() => handleChoice(choice.id, choice.isCorrect)}
-                className={`flex w-full items-center justify-between rounded-xl border-2 p-3.5 font-tajawal font-bold transition shadow-md ${btnStyle}`}
+                className={`flex flex-1 items-center justify-between rounded-xl border-2 p-2.5 font-tajawal text-xs font-bold transition shadow-sm ${btnStyle}`}
               >
                 <span>{choice.text}</span>
                 {isSelected && (
-                  choice.isCorrect ? <CheckCircle2 className="h-5 w-5" /> : <XCircle className="h-5 w-5" />
+                  choice.isCorrect ? <CheckCircle2 className="h-4 w-4" /> : <XCircle className="h-4 w-4" />
                 )}
               </motion.button>
             );
@@ -56,11 +56,11 @@ export function InteractiveQuiz({ quiz, onAnswerSelected }: InteractiveQuizProps
 
         {selectedChoiceId && (
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 5 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-4 flex items-center justify-center gap-2 font-baloo font-bold text-[#1B3B36]"
+            className="mt-2 flex items-center justify-center gap-1 font-baloo text-xs font-bold text-[#1B3B36]"
           >
-            <Trophy className="h-5 w-5 text-[#E8A93B]" />
+            <Trophy className="h-4 w-4 text-[#E8A93B]" />
             <span>ممتاز! اضغط التالي للمتابعة في الدرس</span>
           </motion.div>
         )}

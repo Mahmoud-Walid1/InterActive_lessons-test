@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { getAuthState } from '@/lib/db/offlineStore';
-import { GraduationCap, Key, ShieldCheck } from 'lucide-react';
+import { GraduationCap, Key, ShieldCheck, Download } from 'lucide-react';
 
 export function Header() {
   const [phone, setPhone] = useState<string | null>(null);
@@ -13,6 +13,12 @@ export function Header() {
       if (auth && auth.phone) setPhone(auth.phone);
     });
   }, []);
+
+  const triggerPwaInstall = () => {
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('open-pwa-install'));
+    }
+  };
 
   return (
     <header className="sticky top-0 z-30 flex items-center justify-between border-b-2 border-[#1B3B36]/10 bg-[#FFFDF7]/90 px-6 py-4 backdrop-blur-md">
@@ -27,6 +33,14 @@ export function Header() {
       </Link>
 
       <div className="flex items-center gap-3">
+        <button
+          onClick={triggerPwaInstall}
+          className="flex items-center gap-1.5 rounded-full border-2 border-[#E8A93B] bg-[#E8A93B]/20 px-3.5 py-1.5 font-tajawal text-xs font-bold text-[#1B3B36] transition hover:bg-[#E8A93B]"
+        >
+          <Download className="h-4 w-4 text-[#C1502E]" />
+          <span>تثبيت المنصة 📲</span>
+        </button>
+
         {phone ? (
           <div className="flex items-center gap-2 rounded-full border border-[#4F7942] bg-[#4F7942]/10 px-3.5 py-1.5 font-tajawal text-xs font-bold text-[#4F7942]">
             <ShieldCheck className="h-4 w-4" />
@@ -41,13 +55,6 @@ export function Header() {
             تفعيل الاشتراك
           </Link>
         )}
-
-        <Link
-          href="/admin/licenses"
-          className="rounded-full border border-[#1B3B36]/20 bg-[#F2E6C4] px-3.5 py-1.5 font-tajawal text-xs font-bold text-[#1B3B36] hover:bg-[#E8A93B]"
-        >
-          مولّد سيرة سلة
-        </Link>
       </div>
     </header>
   );
