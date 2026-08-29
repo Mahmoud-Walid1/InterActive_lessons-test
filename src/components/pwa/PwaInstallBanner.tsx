@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Download, Smartphone, Share, PlusSquare, X } from 'lucide-react';
+import { Download, Smartphone, Share, PlusSquare, X, ExternalLink } from 'lucide-react';
 
 export function PwaInstallBanner() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [showBanner, setShowBanner] = useState<boolean>(false);
   const [isIOS, setIsIOS] = useState<boolean>(false);
   const [showIOSModal, setShowIOSModal] = useState<boolean>(false);
+  const [showAndroidNotice, setShowAndroidNotice] = useState<boolean>(false);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -37,7 +38,7 @@ export function PwaInstallBanner() {
           setDeferredPrompt(null);
         });
       } else {
-        setShowBanner(true);
+        setShowAndroidNotice(true);
       }
     };
 
@@ -68,7 +69,7 @@ export function PwaInstallBanner() {
       }
       setDeferredPrompt(null);
     } else {
-      setShowIOSModal(true);
+      setShowAndroidNotice(true);
     }
   };
 
@@ -90,7 +91,7 @@ export function PwaInstallBanner() {
                 <div>
                   <h4 className="font-baloo font-bold text-[#E8A93B] text-sm sm:text-base">تثبيت المنصة على جهازك 📲</h4>
                   <p className="font-tajawal text-xs text-[#FFFDF7]/85 leading-snug">
-                    اضغط تثبيت لإضافة آيقونة المنصة على شاشتك التشغيلية بدون إنترنت.
+                    اضغط تثبيت الآن لإضافة آيقونة التطبيق لشاشتك فوراً وبدون إنترنت.
                   </p>
                 </div>
               </div>
@@ -98,7 +99,7 @@ export function PwaInstallBanner() {
               <div className="flex items-center gap-2 shrink-0">
                 <button
                   onClick={handleInstallClick}
-                  className="flex items-center gap-1.5 rounded-xl bg-[#C1502E] px-3.5 py-2 font-tajawal text-xs font-bold text-[#FFFDF7] transition hover:bg-[#C1502E]/90 shadow-sm"
+                  className="flex items-center gap-1.5 rounded-xl bg-[#C1502E] px-3.5 py-2 font-tajawal text-xs font-bold text-[#FFFDF7] transition hover:bg-[#C1502E]/90 shadow-sm animate-pulse"
                 >
                   <Download className="h-4 w-4" />
                   تثبيت الآن
@@ -116,6 +117,44 @@ export function PwaInstallBanner() {
       </AnimatePresence>
 
       <AnimatePresence>
+        {showAndroidNotice && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+          >
+            <div className="w-full max-w-sm rounded-3xl border-2 border-[#E8A93B] bg-[#FFFDF7] p-6 text-[#1B3B36] shadow-2xl">
+              <div className="flex items-center justify-between border-b pb-3">
+                <h3 className="font-baloo text-lg font-bold text-[#1B3B36]">تثبيت أندرويد الفوري 🤖</h3>
+                <button onClick={() => setShowAndroidNotice(false)}>
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              <div className="mt-4 space-y-3 font-tajawal text-xs leading-relaxed text-[#1B3B36]/90">
+                <div className="flex items-center gap-3 rounded-2xl bg-[#F2E6C4] p-3.5">
+                  <ExternalLink className="h-6 w-6 text-[#3E92B0] shrink-0" />
+                  <span>إذا كنت تفتح الرابط من داخل الواتساب، يرجى فتح الموقع في متصفح <strong>Google Chrome</strong> لتظهر لك نافذة التثبيت الفورية بضغطة زر واحدة.</span>
+                </div>
+                <div className="flex items-center gap-3 rounded-2xl bg-[#4F7942]/10 p-3.5 text-[#4F7942] font-bold">
+                  <Download className="h-6 w-6 shrink-0" />
+                  <span>أو اضغط زر القائمة (الثلاث نقاط) بال متصفح ➔ اختر <strong>"تثبيت التطبيق"</strong>.</span>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setShowAndroidNotice(false)}
+                className="mt-5 w-full rounded-xl bg-[#1B3B36] py-2.5 font-tajawal text-xs font-bold text-[#FFFDF7]"
+              >
+                حسناً، فهمت ذلك!
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
         {showIOSModal && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -125,30 +164,21 @@ export function PwaInstallBanner() {
           >
             <div className="w-full max-w-sm rounded-3xl border-2 border-[#E8A93B] bg-[#FFFDF7] p-6 text-[#1B3B36] shadow-2xl">
               <div className="flex items-center justify-between border-b pb-3">
-                <h3 className="font-baloo text-lg font-bold text-[#1B3B36]">تعليمات التثبيت 📲</h3>
+                <h3 className="font-baloo text-lg font-bold text-[#1B3B36]">تثبيت الآيفون 🍏</h3>
                 <button onClick={() => setShowIOSModal(false)}>
                   <X className="h-5 w-5" />
                 </button>
               </div>
 
               <div className="mt-4 space-y-3 font-tajawal text-xs">
-                {isIOS ? (
-                  <>
-                    <div className="flex items-center gap-3 rounded-2xl bg-[#F2E6C4] p-3">
-                      <Share className="h-6 w-6 text-[#3E92B0] shrink-0" />
-                      <span>1. اضغط زر <strong>مشاركة (Share)</strong> في Safari.</span>
-                    </div>
-                    <div className="flex items-center gap-3 rounded-2xl bg-[#F2E6C4] p-3">
-                      <PlusSquare className="h-6 w-6 text-[#4F7942] shrink-0" />
-                      <span>2. اختر <strong>إضافة إلى الشاشة الرئيسية (Add to Home Screen)</strong>.</span>
-                    </div>
-                  </>
-                ) : (
-                  <div className="flex items-center gap-3 rounded-2xl bg-[#F2E6C4] p-3">
-                    <Download className="h-6 w-6 text-[#3E92B0] shrink-0" />
-                    <span>اضغط زر القائمة (الثلاث نقاط) بالمتصفح ثم اختر <strong>"تثبيت التطبيق"</strong> أو <strong>"إضافة للشاشة الرئيسية"</strong>.</span>
-                  </div>
-                )}
+                <div className="flex items-center gap-3 rounded-2xl bg-[#F2E6C4] p-3">
+                  <Share className="h-6 w-6 text-[#3E92B0] shrink-0" />
+                  <span>1. اضغط زر <strong>مشاركة (Share)</strong> أسفل Safari.</span>
+                </div>
+                <div className="flex items-center gap-3 rounded-2xl bg-[#F2E6C4] p-3">
+                  <PlusSquare className="h-6 w-6 text-[#4F7942] shrink-0" />
+                  <span>2. اختر <strong>إضافة إلى الشاشة الرئيسية (Add to Home Screen)</strong>.</span>
+                </div>
               </div>
 
               <button
