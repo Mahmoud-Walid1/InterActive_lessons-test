@@ -471,9 +471,24 @@
     renderExplain: function (slide) {
       var html = '';
       var themes = [
-        { key: 'theme-water', stamp: '💧', label: 'الماء العذب', color: 'var(--sky)' },
-        { key: 'theme-air', stamp: '💨', label: 'الهواء النقي', color: 'var(--leaf)' },
-        { key: 'theme-food', stamp: '🥗', label: 'الغذاء والمأوى', color: 'var(--clay)' }
+        {
+          key: 'theme-water',
+          stamp: '<svg class="concept-stamp-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>',
+          label: 'الماء العذب',
+          color: 'var(--sky)'
+        },
+        {
+          key: 'theme-air',
+          stamp: '<svg class="concept-stamp-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg>',
+          label: 'الهواء النقي',
+          color: 'var(--leaf)'
+        },
+        {
+          key: 'theme-food',
+          stamp: '<svg class="concept-stamp-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22v-9"/><path d="M12 13c0-4.418 3.582-8 8-8 0 4.418-3.582 8-8 8z"/><path d="M12 9C8.686 9 6 6.314 6 3c3.314 0 6 2.686 6 6z"/></svg>',
+          label: 'الغذاء والمأوى',
+          color: 'var(--clay)'
+        }
       ];
 
       var examples = (slide.examples && slide.examples.length > 0) ? slide.examples : [
@@ -496,7 +511,7 @@
             '<div class="stamp" style="color:' + t.color + '">' + t.stamp + '</div>' +
             '<h3 class="concept-card-title">' + title + '</h3>' +
             '<p class="concept-card-desc">' + desc + '</p>' +
-            '<div class="concept-card-example"><span>🌱 مثال:</span> <span>' + ex.name + '</span></div>' +
+            '<div class="concept-card-example"><span><svg class="inline-tag-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22v-8"/><path d="M12 14c0-3.5 3-6 7-6 0 3.5-3 6-7 6z"/></svg> مثال:</span> <span>' + ex.name + '</span></div>' +
             '</div>';
         });
         html += '</div>';
@@ -556,8 +571,14 @@
         '<div class="card game-card">' +
         '<div class="game-q">' + tf.statement + '</div>' +
         '<div class="game-options-grid" style="max-width:380px; margin:0 auto;">' +
-        '<button class="quiz-opt-btn tf-btn" type="button" data-answer="true" style="background:var(--leaf); font-size:1.15rem;">صح ✔</button>' +
-        '<button class="quiz-opt-btn tf-btn" type="button" data-answer="false" style="background:var(--clay); font-size:1.15rem;">خطأ ✖</button>' +
+        '<button class="quiz-opt-btn tf-btn" type="button" data-answer="true" style="background:var(--leaf); font-size:1.15rem; display:inline-flex; align-items:center; justify-content:center; gap:8px;">' +
+        '  <svg class="opt-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>' +
+        '  <span>صح</span>' +
+        '</button>' +
+        '<button class="quiz-opt-btn tf-btn" type="button" data-answer="false" style="background:var(--clay); font-size:1.15rem; display:inline-flex; align-items:center; justify-content:center; gap:8px;">' +
+        '  <svg class="opt-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>' +
+        '  <span>خطأ</span>' +
+        '</button>' +
         '</div>' +
         '<div class="feedback-msg"></div>' +
         '</div>'
@@ -767,7 +788,9 @@
       // Hotspot detail info box below the diagram
       html +=
         '<div class="hotspot-detail-box" id="hotspot-detail-box">' +
-        '<div class="hotspot-detail-icon">🌱</div>' +
+        '<div class="hotspot-detail-icon">' +
+        '  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="var(--leaf)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22v-9"/><path d="M12 13c0-4.418 3.582-8 8-8 0 4.418-3.582 8-8 8z"/><path d="M12 9C8.686 9 6 6.314 6 3c3.314 0 6 2.686 6 6z"/></svg>' +
+        '</div>' +
         '<div class="hotspot-detail-text">' +
         '<div class="hotspot-detail-title">استكشف أجزاء النبتة</div>' +
         '<div class="hotspot-detail-desc">اضغط على أي زر من الأزرار النباضة بالأعلى لتكتشف وظيفة هذا الجزء وسرّه العلمي!</div>' +
@@ -808,7 +831,9 @@
           '<div class="mem-card" data-idx="' + idx + '" data-match-id="' + c.matchId + '" role="button" aria-label="بطاقة ذاكرة">' +
           '<div class="mem-card-inner">' +
           '  <div class="mem-card-face mem-back">' +
-          '    <div class="mem-back-icon">❓</div>' +
+          '    <div class="mem-back-icon">' +
+          '      <svg class="lordicon-mystery-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17" stroke-width="3.5"></line></svg>' +
+          '    </div>' +
           '  </div>' +
           '  <div class="mem-card-face mem-front">' +
           '    <div class="mem-emoji">' + c.emoji + '</div>' +
@@ -898,7 +923,10 @@
       html += '</div>'; // close .apple-branch-scene
 
       html += '<div class="feedback-msg" id="tap-count-feedback"></div>';
-      html += '<button class="tap-count-reset-btn" id="tap-count-reset" type="button" style="display:none;">🔄 أعد قطف التفاح</button>';
+      html += '<button class="tap-count-reset-btn" id="tap-count-reset" type="button" style="display:none;">' +
+              '  <svg class="lordicon-refresh-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>' +
+              '  <span>أعد قطف التفاح</span>' +
+              '</button>';
       html += '</div>'; // close .tap-count-container
       return html;
     },
@@ -907,11 +935,45 @@
     renderSummary: function (slide) {
       return (
         '<div class="card result-card" style="text-align:center; max-width:620px; padding:32px 24px;">' +
-        '<div class="stamp" style="color:var(--leaf); width:100px; height:100px; font-size:2.6rem;">🏆</div>' +
+        '<div class="trophy-stamp">' +
+        '  <svg class="lordicon-trophy-svg" viewBox="0 0 64 64" fill="none">' +
+        '    <path d="M24 54h16v4H24z" fill="#D97706"/>' +
+        '    <path d="M18 58h28v3H18z" fill="#92400E" rx="1.5"/>' +
+        '    <path d="M30 44h4v10h-4z" fill="#F59E0B"/>' +
+        '    <path d="M27 42h10v2H27z" fill="#D97706"/>' +
+        '    <path d="M19 18H13a5 5 0 0 0-5 5v3a5 5 0 0 0 5 5h6" stroke="#D97706" stroke-width="3.5" stroke-linecap="round"/>' +
+        '    <path d="M45 18h6a5 5 0 0 1 5 5v3a5 5 0 0 1-5 5h-6" stroke="#D97706" stroke-width="3.5" stroke-linecap="round"/>' +
+        '    <path d="M18 14h28v13c0 7.732-6.268 14-14 14s-14-6.268-14-14V14z" fill="url(#trophyGoldGrad)"/>' +
+        '    <rect x="16" y="12" width="32" height="4" rx="2" fill="#FDE68A" stroke="#D97706" stroke-width="1.5"/>' +
+        '    <polygon points="32,22 33.8,26.2 38.3,26.6 34.8,29.7 35.8,34.2 32,31.8 28.2,34.2 29.2,29.7 25.7,26.6 30.2,26.2" fill="#FFFFFF" opacity="0.95"/>' +
+        '    <defs>' +
+        '      <linearGradient id="trophyGoldGrad" x1="18" y1="14" x2="46" y2="41" gradientUnits="userSpaceOnUse">' +
+        '        <stop stop-color="#FCD34D"/>' +
+        '        <stop offset="0.5" stop-color="#F59E0B"/>' +
+        '        <stop offset="1" stop-color="#D97706"/>' +
+        '      </linearGradient>' +
+        '    </defs>' +
+        '  </svg>' +
+        '</div>' +
         '<h1>مبروك يا بطل! أتممت الدرس بنجاح</h1>' +
-        '<div style="font-size:2.4rem; letter-spacing:8px; margin:10px 0;" id="sum-stars">⭐⭐⭐</div>' +
+        '<div class="summary-stars-container" id="sum-stars">' +
+        '  <svg class="star-badge-svg" viewBox="0 0 24 24" fill="#F59E0B" stroke="#D97706" stroke-width="1.5" stroke-linejoin="round">' +
+        '    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>' +
+        '  </svg>' +
+        '  <svg class="star-badge-svg" viewBox="0 0 24 24" fill="#FBBF24" stroke="#D97706" stroke-width="1.5" stroke-linejoin="round">' +
+        '    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>' +
+        '  </svg>' +
+        '  <svg class="star-badge-svg" viewBox="0 0 24 24" fill="#F59E0B" stroke="#D97706" stroke-width="1.5" stroke-linejoin="round">' +
+        '    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>' +
+        '  </svg>' +
+        '</div>' +
         '<p class="subtitle" id="sum-desc" style="margin:0 auto 18px;">لقد أظهرت ذكاءً وتميزاً رائعاً في حل كافة الأنشطة والتحديات!</p>' +
-        '<button class="nav-btn" type="button" onclick="location.reload()" style="border-radius:999px; width:auto; padding:12px 34px; font-size:1.05rem; margin:0 auto; font-family:\'Baloo 2\';">🔁 إعادة الدرس من البداية</button>' +
+        '<button class="summary-reload-btn" type="button" onclick="location.reload()" aria-label="إعادة الدرس من البداية">' +
+        '  <svg class="lordicon-refresh-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">' +
+        '    <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>' +
+        '  </svg>' +
+        '  <span>إعادة الدرس من البداية</span>' +
+        '</button>' +
         '</div>'
       );
     },

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>استوديو معاينة الدروس التفاعلية | Lesson Preview Studio</title>
-  <link rel="stylesheet" href="../template/style.css?v=3.3">
+  <link rel="stylesheet" href="../template/style.css?v=3.4">
   <style>
     :root {
       --st-bg: #070B14;
@@ -561,10 +561,18 @@
 
           <!-- NAVBAR (Bottom Fixed / Absolute) -->
           <footer class="navbar" id="il-navbar" role="navigation" aria-label="شريط التحكم والتنقل">
-            <button class="nav-btn" id="il-prev-btn" type="button" title="السابق" aria-label="السابق">▶</button>
+            <button class="nav-btn" id="il-prev-btn" type="button" title="السابق" aria-label="السابق">
+              <svg class="nav-arrow-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
             <div class="dots" id="il-dots" title="مؤشر الشرائح"></div>
             <div class="slide-counter" id="il-counter"><bdi dir="ltr">1 / 12</bdi></div>
-            <button class="nav-btn" id="il-next-btn" type="button" title="التالي" aria-label="التالي">◀</button>
+            <button class="nav-btn" id="il-next-btn" type="button" title="التالي" aria-label="التالي">
+              <svg class="nav-arrow-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </button>
             <button class="nav-btn sound-btn" id="il-sound-btn" type="button" title="كتم / تشغيل المؤثرات الصوتية" aria-label="كتم / تشغيل المؤثرات الصوتية">
               <svg class="sound-nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
@@ -581,7 +589,7 @@
   </div>
 
   <!-- Runtime Engine -->
-  <script src="../template/script.js?v=3.3"></script>
+  <script src="../template/script.js?v=3.4"></script>
 
   <!-- Studio Controller Logic -->
   <script>

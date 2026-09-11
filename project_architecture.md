@@ -101,7 +101,17 @@ The `lessons-workspace/` directory is designed to be pushed or distributed as an
   - Typography: Google Fonts `Baloo 2` (headings, badges, counters, buttons) + `Tajawal` (body & questions).
   - Mascot ("فصيح"): Left-positioned fixed interactive robot mascot (`top: 50%; transform: translateY(-50%)`) with antenna, grad cap, blinking eyes, chest badge "فصيح", and dynamic speech bubble guide.
   - Concept Cards (Slide 1): Clean cardboard stitch-border style (`.card.stitch-border`) with circular stamp badges (`.stamp`), clean typography, and integrated example tags with zero vertical overlap.
-  - Deep Teal Navigation Bar: Fixed bottom bar (`.navbar`) with circular gold action buttons (`52px × 52px`), center dot stepper, counter (`X / Y`), and dedicated SFX toggle button (`#il-sound-btn` with 🔊/🔇 icons for pure sound effects mute/unmute).
+  - Deep Teal Navigation Bar: Fixed bottom bar (`.navbar`) with circular gold action buttons (`52px × 52px`), SVG navigation chevrons, center dot stepper, counter (`X / Y`), and dedicated SFX toggle button (`#il-sound-btn` with SVG sound icons for pure sound effects mute/unmute).
+  - **Lordicon / Lottie Animated Vector Icon System**:
+    - Strictly eliminated hardcoded emojis across functional buttons and UI controls.
+    - Added animated Lordicon-style interactive SVGs:
+      - `.summary-reload-btn` with 360° rotating `.lordicon-refresh-svg` on hover.
+      - `.tap-count-reset-btn` with spinning `.lordicon-refresh-svg`.
+      - `.trophy-stamp` with `@keyframes trophyFloat` and gold gradient `.lordicon-trophy-svg`.
+      - `.summary-stars-container` with `@keyframes starPop` staggered popping star badges.
+      - True/False vector check/X icons (`.opt-icon-svg`).
+      - Memory card back mystery vector icon (`.lordicon-mystery-svg`).
+      - Navigation chevrons (`.nav-arrow-svg`).
   - **Universal Drag & Drop Engine (`DragDropEngine`)**:
     - Pointer Events engine (`pointerdown`, `pointermove`, `pointerup`) with `setPointerCapture` supporting both mouse and touch.
     - **Dual-Mode Fallback (Tap-to-Place)**: Children on mobile can tap any draggable item to select it (`.selected-for-drop`), then tap the target drop zone to place it immediately.

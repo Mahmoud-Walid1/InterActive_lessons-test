@@ -1168,6 +1168,14 @@ h1, h2, h3, .display {
   100% { transform: translate(-50%, -50%) scale(1.06) rotate(0deg); }
 }
 
+/* Animated Lordicon Refresh & Reload Icons */
+.lordicon-refresh-svg {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  transition: transform 0.65s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
 .tap-count-reset-btn {
   background: var(--white);
   border: 2px solid var(--ink);
@@ -1175,20 +1183,174 @@ h1, h2, h3, .display {
   font-family: 'Baloo 2', sans-serif;
   font-weight: 800;
   font-size: 1rem;
-  padding: 6px 20px;
+  padding: 8px 22px;
   border-radius: 999px;
   cursor: pointer;
   box-shadow: var(--clay-shadow-sm);
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
+  gap: 8px;
   margin-top: 6px;
-  transition: transform 0.15s, background 0.2s;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s, box-shadow 0.2s;
 }
 
 .tap-count-reset-btn:hover {
   transform: translateY(-2px);
   background: #FFF8EB;
+  box-shadow: 0 4px 12px rgba(194, 93, 44, 0.25);
+}
+
+.tap-count-reset-btn:hover .lordicon-refresh-svg {
+  transform: rotate(-360deg);
+}
+
+/* Premium Summary Reload Button */
+.summary-reload-btn {
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+  border: 2px solid #B45309;
+  color: #FFFFFF;
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 800;
+  font-size: 1.15rem;
+  padding: 13px 38px;
+  border-radius: 999px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 12px auto 0;
+  box-shadow: 0 6px 16px rgba(217, 119, 6, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease, background 0.25s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.summary-reload-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 10px 24px rgba(217, 119, 6, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  background: linear-gradient(135deg, #FBBF24 0%, #D97706 100%);
+}
+
+.summary-reload-btn:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: 0 3px 8px rgba(217, 119, 6, 0.3);
+}
+
+.summary-reload-btn:hover .lordicon-refresh-svg {
+  transform: rotate(-360deg);
+}
+
+/* Trophy & Celebration Visuals */
+.trophy-stamp {
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #FFFBEB 0%, #FEF3C7 65%, #FDE68A 100%);
+  border: 3.5px solid #F59E0B;
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.3), inset 0 0 12px rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+  animation: trophyFloat 3s ease-in-out infinite, trophyGlow 2.5s ease-in-out infinite alternate;
+}
+
+.lordicon-trophy-svg {
+  width: 62px;
+  height: 62px;
+  filter: drop-shadow(0 3px 6px rgba(180, 83, 9, 0.25));
+}
+
+@keyframes trophyFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-7px) rotate(-1.5deg); }
+}
+
+@keyframes trophyGlow {
+  0% { box-shadow: 0 6px 20px rgba(245, 158, 11, 0.25), inset 0 0 12px rgba(255, 255, 255, 0.7); }
+  100% { box-shadow: 0 10px 30px rgba(245, 158, 11, 0.5), inset 0 0 18px rgba(255, 255, 255, 0.95); }
+}
+
+/* Summary Stars Container */
+.summary-stars-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin: 12px 0 16px;
+}
+
+.star-badge-svg {
+  width: 44px;
+  height: 44px;
+  filter: drop-shadow(0 4px 10px rgba(245, 158, 11, 0.45));
+  animation: starPop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.star-badge-svg:nth-child(1) { animation-delay: 0.15s; }
+.star-badge-svg:nth-child(2) {
+  width: 54px;
+  height: 54px;
+  animation-delay: 0.32s;
+}
+.star-badge-svg:nth-child(3) { animation-delay: 0.48s; }
+
+@keyframes starPop {
+  0% { transform: scale(0) rotate(-45deg); opacity: 0; }
+  75% { transform: scale(1.22) rotate(8deg); }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+/* Button Vector Icons */
+.opt-icon-svg {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.nav-arrow-svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2.8;
+  display: block;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.nav-btn:hover .nav-arrow-svg {
+  transform: scale(1.15);
+}
+
+#il-prev-btn:hover .nav-arrow-svg {
+  transform: translateX(-2px) scale(1.15);
+}
+
+#il-next-btn:hover .nav-arrow-svg {
+  transform: translateX(2px) scale(1.15);
+}
+
+.lordicon-mystery-svg {
+  width: 32px;
+  height: 32px;
+  stroke: var(--deep-teal);
+  filter: drop-shadow(0 2px 4px rgba(27, 59, 54, 0.15));
+}
+
+.concept-stamp-svg {
+  width: 38px;
+  height: 38px;
+  display: block;
+}
+
+.inline-tag-svg {
+  width: 16px;
+  height: 16px;
+  vertical-align: -2px;
+  display: inline-block;
+  margin-left: 4px;
 }
 
 /* ==========================================================================
