@@ -201,7 +201,7 @@
       this.dom.nextBtn = document.getElementById('il-next-btn');
       this.dom.soundBtn = document.getElementById('il-sound-btn');
       this.dom.mascotWrap = document.getElementById('il-mascot-wrap');
-      this.dom.robertCharacter = document.getElementById('il-robert-character');
+      this.dom.robertCharacter = document.getElementById('il-faseeh-character') || document.getElementById('il-robert-character');
       this.dom.mascotBubble = document.getElementById('il-mascot-bubble');
     },
 
@@ -975,12 +975,12 @@
       if (this.dom.prevBtn) this.dom.prevBtn.disabled = index === 0;
       if (this.dom.nextBtn) this.dom.nextBtn.disabled = index === this.data.slides.length - 1;
 
-      // Update Robert Mascot Companion Speech Bubble
+      // Update Faseeh Mascot Companion Speech Bubble
       if (this.dom.mascotBubble) {
         if (currentSlideData.mascotTip) {
           this.dom.mascotBubble.textContent = currentSlideData.mascotTip;
         } else {
-          this.dom.mascotBubble.textContent = 'أهلاً بك يا بطل! استكشف معنا أسرار هذا الدرس الممتع!';
+          this.dom.mascotBubble.textContent = 'أهلاً بك يا بطل! أنا صديقك فصيح 💡 استكشف معنا أسرار هذا الدرس الممتع!';
         }
       }
 
