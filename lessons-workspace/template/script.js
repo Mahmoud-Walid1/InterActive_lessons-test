@@ -173,6 +173,8 @@
       this.dom.counter = document.getElementById('il-counter');
       this.dom.prevBtn = document.getElementById('il-prev-btn');
       this.dom.nextBtn = document.getElementById('il-next-btn');
+      this.dom.sidePrevBtn = document.getElementById('il-side-prev-btn');
+      this.dom.sideNextBtn = document.getElementById('il-side-next-btn');
       this.dom.soundBtn = document.getElementById('il-sound-btn');
       this.dom.subjectBadge = document.getElementById('il-subject-badge');
     },
@@ -185,6 +187,12 @@
       if (this.dom.nextBtn) {
         this.dom.nextBtn.addEventListener('click', function () { self.nextSlide(); });
       }
+      if (this.dom.sidePrevBtn) {
+        this.dom.sidePrevBtn.addEventListener('click', function () { self.prevSlide(); });
+      }
+      if (this.dom.sideNextBtn) {
+        this.dom.sideNextBtn.addEventListener('click', function () { self.nextSlide(); });
+      }
       if (this.dom.soundBtn) {
         this.dom.soundBtn.addEventListener('click', function () {
           var state = AudioEngine.toggleSound();
@@ -193,8 +201,9 @@
       }
 
       document.addEventListener('keydown', function (e) {
-        if (e.key === 'ArrowLeft') self.nextSlide();
-        if (e.key === 'ArrowRight') self.prevSlide();
+        if (['INPUT', 'TEXTAREA'].indexOf(e.target.tagName) !== -1) return;
+        if (e.key === 'ArrowLeft' || e.key === 'PageDown') self.nextSlide();
+        if (e.key === 'ArrowRight' || e.key === 'PageUp') self.prevSlide();
       });
     },
 
@@ -264,11 +273,28 @@
       }
       if (slide.mascotTip) {
         html +=
-          '<div class="il-mascot-tip">' +
-          '<div class="il-mascot-badge">' +
-          '<svg class="il-svg-icon" viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-7 7c0 2.5 1.5 4.5 3 6h8c1.5-1.5 3-3.5 3-6a7 7 0 0 0-7-7z"></path></svg>' +
+          '<div class="il-mascot-wrap">' +
+          '<div class="il-faseeh-robot" title="فصيح المساعد الذكي">' +
+          '<div class="il-faseeh-antenna"></div>' +
+          '<div class="il-faseeh-hat"></div>' +
+          '<div class="il-faseeh-head">' +
+          '<div class="il-faseeh-eyes-row">' +
+          '<div class="il-faseeh-eye"></div>' +
+          '<div class="il-faseeh-eye"></div>' +
           '</div>' +
-          '<p class="il-mascot-text">' + slide.mascotTip + '</p>' +
+          '<div class="il-faseeh-mouth"></div>' +
+          '</div>' +
+          '<div class="il-faseeh-body">' +
+          '<span class="il-faseeh-name">فصيح</span>' +
+          '</div>' +
+          '</div>' +
+          '<div class="il-mascot-bubble">' +
+          '<div class="il-bubble-author">' +
+          '<svg style="width: 14px; height: 14px; color: var(--il-gold-dark);" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"/></svg>' +
+          '<span>فصيح ينصحك:</span>' +
+          '</div>' +
+          '<p class="il-bubble-text">' + slide.mascotTip + '</p>' +
+          '</div>' +
           '</div>';
       }
 
@@ -875,6 +901,8 @@
       }
       if (this.dom.prevBtn) this.dom.prevBtn.disabled = index === 0;
       if (this.dom.nextBtn) this.dom.nextBtn.disabled = index === this.data.slides.length - 1;
+      if (this.dom.sidePrevBtn) this.dom.sidePrevBtn.disabled = index === 0;
+      if (this.dom.sideNextBtn) this.dom.sideNextBtn.disabled = index === this.data.slides.length - 1;
 
       // Summary Slide handling
       if (this.data.slides[index].type === 'summary') {

@@ -242,48 +242,209 @@
   flex-shrink: 0;
 }
 
-/* Robot / Mascot Speech Bubble */
-.il-mascot-tip {
+/* ==========================================================================
+   MASCOT CHARACTER: "فصيح" (Faseeh the Smart Animated Learning Robot)
+   ========================================================================== */
+.il-mascot-wrap {
+  display: flex;
+  align-items: center;
+  gap: 16px;
   max-width: 680px;
   width: 100%;
+  margin-bottom: 16px;
+  direction: rtl;
+  flex-shrink: 0;
+  position: relative;
+}
+
+/* The Animated Robot Body */
+.il-faseeh-robot {
+  width: 50px;
+  height: 60px;
+  position: relative;
+  flex-shrink: 0;
+  animation: il-faseeh-float 3.5s infinite ease-in-out;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.il-faseeh-robot:hover {
+  transform: scale(1.1) rotate(-3deg);
+}
+
+/* Antenna & Pulsing Energy Light */
+.il-faseeh-antenna {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 12px;
+  background: var(--il-ink-primary);
+  border-radius: 2px;
+}
+
+.il-faseeh-antenna::after {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: -4px;
+  width: 10px;
+  height: 10px;
+  background: radial-gradient(circle, #FDE047, var(--il-gold));
+  border: 1.5px solid var(--il-ink-primary);
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.9);
+  animation: il-faseeh-glow 1.8s infinite alternate ease-in-out;
+}
+
+/* Graduation / Thinking Cap */
+.il-faseeh-hat {
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 34px;
+  height: 9px;
+  background: var(--il-clay);
+  border: 2px solid var(--il-ink-primary);
+  border-radius: 6px 6px 0 0;
+  z-index: 3;
+}
+
+/* Head Box */
+.il-faseeh-head {
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 42px;
+  height: 30px;
+  background: linear-gradient(180deg, #38BDF8, #0284C7);
+  border: 2px solid var(--il-ink-primary);
+  border-radius: 11px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.4);
+}
+
+/* Eyes */
+.il-faseeh-eyes-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.il-faseeh-eye {
+  width: 6px;
+  height: 6px;
+  background: #0F172A;
+  border-radius: 50%;
+  animation: il-faseeh-blink 4s infinite;
+}
+
+/* Smile */
+.il-faseeh-mouth {
+  width: 11px;
+  height: 4px;
+  border-bottom: 2px solid #0F172A;
+  border-radius: 0 0 8px 8px;
+  margin-top: 2px;
+}
+
+/* Torso / Body with Name Tag */
+.il-faseeh-body {
+  position: absolute;
+  top: 34px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 38px;
+  height: 22px;
+  background: linear-gradient(180deg, #FCD34D, var(--il-gold));
+  border: 2px solid var(--il-ink-primary);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.il-faseeh-name {
+  font-size: 0.62rem;
+  font-weight: 900;
+  color: #78350F;
+  letter-spacing: -0.3px;
+}
+
+/* Speech Bubble */
+.il-mascot-bubble {
+  flex: 1;
   background: linear-gradient(135deg, #FFFDF5, #FEF9C3);
   border: 1.5px solid var(--il-gold);
   border-radius: 16px;
-  padding: 12px 18px;
+  padding: 10px 16px;
+  position: relative;
+  text-align: right;
+  box-shadow: 0 3px 10px rgba(245, 158, 11, 0.1), 0 3px 0 rgba(217, 119, 6, 0.18);
+}
+
+.il-mascot-bubble::before {
+  content: '';
+  position: absolute;
+  right: -8px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 7px 0 7px 8px;
+  border-style: solid;
+  border-color: transparent transparent transparent var(--il-gold);
+}
+
+.il-mascot-bubble::after {
+  content: '';
+  position: absolute;
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 5px 0 5px 6px;
+  border-style: solid;
+  border-color: transparent transparent transparent #FEF9C3;
+}
+
+.il-bubble-author {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  gap: 14px;
-  direction: rtl;
-  text-align: right;
-  margin-bottom: 16px;
-  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.1), 0 3px 0 rgba(217, 119, 6, 0.15);
-  animation: il-float-subtle 4s infinite ease-in-out;
-  flex-shrink: 0;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 900;
+  color: var(--il-gold-dark);
+  margin-bottom: 2px;
 }
 
-.il-mascot-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  min-width: 36px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, var(--il-gold), var(--il-gold-dark));
-  color: #FFFFFF;
-  box-shadow: 0 3px 8px rgba(245, 158, 11, 0.3);
-  flex-shrink: 0;
-}
-
-.il-mascot-text {
-  flex: 1 1 auto;
-  text-align: right;
+.il-bubble-text {
   font-size: 0.96rem;
   font-weight: 700;
-  color: #78350F;
-  line-height: 1.6;
+  color: var(--il-ink-primary);
+  line-height: 1.55;
   margin: 0;
+}
+
+@keyframes il-faseeh-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes il-faseeh-blink {
+  0%, 90%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.1); }
+}
+
+@keyframes il-faseeh-glow {
+  from { box-shadow: 0 0 4px rgba(245, 158, 11, 0.5); }
+  to { box-shadow: 0 0 14px rgba(245, 158, 11, 1); }
 }
 
 /* Feedback Message Display */
@@ -1146,6 +1307,18 @@
   transform: none;
 }
 
+.il-nav-btn.il-btn-primary {
+  background: linear-gradient(135deg, var(--il-emerald), var(--il-emerald-dark));
+  color: #FFFFFF;
+  border: none;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35), 0 3px 0 #047857;
+}
+
+.il-nav-btn.il-btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #059669, #047857);
+  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.45), 0 4px 0 #065F46;
+}
+
 .il-nav-btn.il-btn-secondary {
   background: #FFFFFF;
   color: var(--il-ink-primary);
@@ -1156,6 +1329,55 @@
 .il-nav-btn.il-btn-secondary:hover:not(:disabled) {
   background: var(--il-bg-cream);
   border-color: var(--il-ink-muted);
+}
+
+/* Floating Side Navigation Buttons */
+.il-side-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 2px solid var(--il-bg-cream-dark);
+  color: var(--il-ink-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 45;
+  box-shadow: 0 6px 18px rgba(18, 40, 36, 0.12), 0 3px 0 var(--il-bg-cream-dark);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+.il-side-nav-btn:hover:not(:disabled) {
+  background: #FFFFFF;
+  border-color: var(--il-sky);
+  color: var(--il-sky-dark);
+  transform: translateY(-50%) scale(1.12);
+  box-shadow: 0 10px 24px rgba(14, 165, 233, 0.3);
+}
+
+.il-side-nav-btn:active:not(:disabled) {
+  transform: translateY(-50%) scale(0.94);
+}
+
+.il-side-nav-btn:disabled {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* In RTL: Next is on Left (pointing left), Prev is on Right (pointing right) */
+.il-side-next {
+  left: 16px;
+}
+
+.il-side-prev {
+  right: 16px;
 }
 
 .il-dots-container {

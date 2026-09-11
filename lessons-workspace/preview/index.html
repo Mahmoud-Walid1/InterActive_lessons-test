@@ -330,37 +330,59 @@
     }
 
     .st-device-frame {
-      width: 100%;
-      max-width: 1060px;
-      height: 94%;
-      max-height: 740px;
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.8), 0 0 0 1px var(--st-border);
       position: relative;
       background: var(--il-bg-cream, #FAF6ED);
       transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
       display: flex;
       flex-direction: column;
+      overflow: hidden;
     }
 
-    /* Viewport Sizing Modes */
+    /* Viewport Sizing Modes - Authentic Hardware Ratios */
     .st-device-frame.view-desktop {
-      max-width: 1060px;
+      width: 100%;
+      max-width: 1080px;
       height: 94%;
-      max-height: 740px;
+      max-height: 720px;
+      border-radius: 20px;
+      border: 1px solid var(--st-border);
+      box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.85);
     }
 
     .st-device-frame.view-tablet {
-      max-width: 840px;
-      height: 90%;
-      max-height: 640px;
+      width: 860px;
+      max-width: 95%;
+      height: 570px;
+      max-height: 86vh;
+      border-radius: 28px;
+      border: 8px solid #1E293B;
+      box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.9);
     }
 
     .st-device-frame.view-mobile {
-      max-width: 760px;
-      height: 88%;
-      max-height: 540px;
+      width: 820px;
+      max-width: 95%;
+      height: 395px;
+      max-height: 84vh;
+      border-radius: 38px;
+      border: 10px solid #1E293B;
+      box-shadow: 0 30px 75px -15px rgba(0, 0, 0, 0.95), 0 0 0 1px rgba(255, 255, 255, 0.12);
+    }
+
+    /* Smartphone Camera Notch & Speaker Grill in Landscape Mode */
+    .st-device-frame.view-mobile::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      width: 5px;
+      height: 40px;
+      background: #0B1120;
+      border-radius: 10px;
+      z-index: 100;
+      pointer-events: none;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.8);
     }
 
     #pw-file-input { display: none; }
@@ -533,6 +555,14 @@
 
           <main class="il-stage" id="il-stage"></main>
 
+          <!-- Floating Side Navigation Arrows -->
+          <button class="il-side-nav-btn il-side-next" id="il-side-next-btn" type="button" title="الشريحة التالية (أو سهم يسار)" aria-label="التالي">
+            <svg class="il-svg-icon" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </button>
+          <button class="il-side-nav-btn il-side-prev" id="il-side-prev-btn" type="button" title="الشريحة السابقة (أو سهم يمين)" aria-label="السابق">
+            <svg class="il-svg-icon" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+
           <footer class="il-footer">
             <button class="il-nav-btn il-btn-secondary" id="il-prev-btn" type="button">
               <svg class="il-svg-icon" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
@@ -541,7 +571,7 @@
             <div class="il-dots-container" id="il-dots"></div>
             <div style="display: flex; align-items: center; gap: 14px;">
               <span class="il-counter-badge" id="il-counter">1 / 1</span>
-              <button class="il-nav-btn" id="il-next-btn" type="button">
+              <button class="il-nav-btn il-btn-primary" id="il-next-btn" type="button">
                 <span>التالي</span>
                 <svg class="il-svg-icon" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
               </button>

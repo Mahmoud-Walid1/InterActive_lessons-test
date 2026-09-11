@@ -37,6 +37,14 @@
     <!-- Main Dynamic Presentation Stage -->
     <main class="il-stage" id="il-stage" role="region" aria-label="عرض شرائح الدرس"></main>
 
+    <!-- Floating Side Navigation Arrows -->
+    <button class="il-side-nav-btn il-side-next" id="il-side-next-btn" type="button" title="الشريحة التالية (أو سهم يسار)" aria-label="التالي">
+      <svg class="il-svg-icon" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </button>
+    <button class="il-side-nav-btn il-side-prev" id="il-side-prev-btn" type="button" title="الشريحة السابقة (أو سهم يمين)" aria-label="السابق">
+      <svg class="il-svg-icon" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+    </button>
+
     <!-- Bottom Navigation Bar -->
     <footer class="il-footer">
       <button class="il-nav-btn il-btn-secondary" id="il-prev-btn" type="button">
@@ -50,7 +58,7 @@
 
       <div style="display: flex; align-items: center; gap: 14px;">
         <span class="il-counter-badge" id="il-counter">1 / 1</span>
-        <button class="il-nav-btn" id="il-next-btn" type="button">
+        <button class="il-nav-btn il-btn-primary" id="il-next-btn" type="button">
           <span>التالي</span>
           <svg class="il-svg-icon" viewBox="0 0 24 24">
             <polyline points="15 18 9 12 15 6"></polyline>
