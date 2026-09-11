@@ -104,7 +104,7 @@ The `lessons-workspace/` directory is designed to be pushed or distributed as an
     - Mobile Landscape: Floating interactive badge in the top-left corner (`position: absolute; top: 8px; left: 12px;`) with auto-dismissing toast bubble (4.5s timer) and tap-to-toggle replay.
   - Concept Cards (Slide 1): Clean cardboard stitch-border style (`.card.stitch-border`) with circular stamp badges (`.stamp`), clean typography, and integrated example tags with zero vertical overlap.
   - Navigation & Status Architecture:
-    - Desktop: Fixed deep teal bottom bar (`.navbar`) with circular gold action buttons (`48px × 48px`), center dots stepper, counter, and sound toggle.
+    - Desktop: Fixed deep teal bottom bar (`.navbar`) with circular gold action buttons (`48px × 48px`), RTL progress dots stepper (`direction: rtl` aligned with natural right-to-left lesson progression), counter, and sound toggle.
     - Mobile Landscape (Full-Screen Gaming Mode): Bottom solid bar completely hidden (`background: transparent; pointer-events: none;`). Floating glassmorphic thumb controls in the bottom corners (`#il-prev-btn` bottom-right, `#il-next-btn` bottom-left), and compact status capsule in the top-right (`#il-counter` and `#il-sound-btn`). Freeing 100% of vertical and horizontal space for lessons and interactive activities.
   - **Lordicon / Lottie Animated Vector Icon System**:
     - Strictly eliminated hardcoded emojis across functional buttons and UI controls.

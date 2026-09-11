@@ -248,7 +248,7 @@ h1, h2, h3, .display {
   overflow-x: auto;
   max-width: 45vw;
   padding: 4px 2px;
-  direction: ltr;
+  direction: rtl;
 }
 
 .dots::-webkit-scrollbar { height: 4px; }
@@ -259,7 +259,7 @@ h1, h2, h3, .display {
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.35);
   cursor: pointer;
-  transition: .25s;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.25s ease;
   flex-shrink: 0;
 }
 
