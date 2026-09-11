@@ -1,7 +1,7 @@
 /**
  * Interactive Lesson Runtime Engine (Isolated IIFE)
- * PowerPoint & Keynote Killer Edition: Cinematic, Gamified, and Dynamic.
- * Featuring Dynamic Live Guide (Faseeh), Concept Cards, and Spring Motion.
+ * Warm Paper & Cardboard Edition + Universal Drag & Drop System
+ * Featuring Mascot Faseeh, Stitch-Border Cards, and Dual Touch/Mouse Interaction.
  */
 (function () {
   'use strict';
@@ -138,15 +138,14 @@
      2. CELEBRATION EFFECTS (CONFETTI GENERATOR)
      ========================================================================== */
   function launchConfetti(targetContainer) {
-    var root = targetContainer || document.getElementById('interactive-lesson-root');
-    if (!root) return;
-    var colors = ['#C1502E', '#3D6A35', '#0284C7', '#E8A93B', '#F59E0B', '#EF4444', '#10B981'];
-    for (var i = 0; i < 35; i++) {
+    var root = targetContainer || document.getElementById('interactive-lesson-root') || document.body;
+    var colors = ['#C1502E', '#4F7942', '#3E92B0', '#E8A93B', '#1B3B36', '#EF4444'];
+    for (var i = 0; i < 30; i++) {
       var flake = document.createElement('div');
       flake.className = 'confetti-particle';
       flake.style.left = (Math.random() * 95) + '%';
       flake.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-      flake.style.animationDelay = (Math.random() * 0.7) + 's';
+      flake.style.animationDelay = (Math.random() * 0.6) + 's';
       flake.style.animationDuration = (2 + Math.random() * 1.5) + 's';
       root.appendChild(flake);
       (function (el) {
@@ -158,69 +157,145 @@
   }
 
   /* ==========================================================================
-     2.5. ARABIC SPEECH SYNTHESIS ENGINE (FASEEH VOICE ENGINE)
+     3. UNIVERSAL DRAG & DROP ENGINE (TOUCH + MOUSE + TAP-TO-PLACE FALLBACK)
      ========================================================================== */
-  var VoiceEngine = {
-    synth: typeof window !== 'undefined' && window.speechSynthesis ? window.speechSynthesis : null,
-    isSpeaking: false,
-    currentUtterance: null,
+  var DragDropEngine = {
+    selectedItem: null,
 
-    getArabicVoice: function () {
-      if (!this.synth) return null;
-      var voices = this.synth.getVoices();
-      for (var i = 0; i < voices.length; i++) {
-        var v = voices[i];
-        if (v.lang && (v.lang.toLowerCase().indexOf('ar') === 0 || v.lang.toLowerCase().indexOf('arabic') !== -1)) {
-          return v;
+    makeDraggable: function (element, options) {
+      // options: {
+      //   zoneSelector: '.drop-zone',
+      //   onDrop: function(draggedEl, targetZone) {}
+      // }
+      var isDragging = false;
+      var startX = 0;
+      var startY = 0;
+      var origTransform = '';
+      var activeZone = null;
+      var self = this;
+
+      element.classList.add('draggable-item');
+
+      function onPointerDown(e) {
+        // Only primary click/touch
+        if (e.button !== undefined && e.button !== 0) return;
+        startX = e.clientX;
+        startY = e.clientY;
+        origTransform = element.style.transform || '';
+        isDragging = false;
+
+        element.setPointerCapture(e.pointerId);
+        element.addEventListener('pointermove', onPointerMove);
+        element.addEventListener('pointerup', onPointerUp);
+        element.addEventListener('pointercancel', onPointerCancel);
+      }
+
+      function onPointerMove(e) {
+        var dx = e.clientX - startX;
+        var dy = e.clientY - startY;
+
+        if (!isDragging && (Math.abs(dx) > 6 || Math.abs(dy) > 6)) {
+          isDragging = true;
+          element.classList.add('is-dragging');
+          // Clear any tap selection
+          if (self.selectedItem) {
+            self.selectedItem.classList.remove('selected-for-drop');
+            self.selectedItem = null;
+          }
+        }
+
+        if (isDragging) {
+          element.style.transform = 'translate3d(' + dx + 'px, ' + dy + 'px, 0) scale(1.08) rotate(3deg)';
+
+          // Find zone under pointer
+          element.style.pointerEvents = 'none';
+          var elemBelow = document.elementFromPoint(e.clientX, e.clientY);
+          element.style.pointerEvents = '';
+
+          var zone = elemBelow ? elemBelow.closest(options.zoneSelector) : null;
+          if (activeZone && activeZone !== zone) {
+            activeZone.classList.remove('drag-over');
+          }
+          if (zone) {
+            zone.classList.add('drag-over');
+            activeZone = zone;
+          } else {
+            activeZone = null;
+          }
         }
       }
-      return null;
+
+      function onPointerUp(e) {
+        element.removeEventListener('pointermove', onPointerMove);
+        element.removeEventListener('pointerup', onPointerUp);
+        element.removeEventListener('pointercancel', onPointerCancel);
+        try { element.releasePointerCapture(e.pointerId); } catch (err) {}
+
+        if (isDragging) {
+          element.classList.remove('is-dragging');
+          element.style.transform = origTransform;
+
+          if (activeZone) {
+            activeZone.classList.remove('drag-over');
+            if (options.onDrop) {
+              options.onDrop(element, activeZone);
+            }
+            activeZone = null;
+          }
+        } else {
+          // Tap-to-select fallback for touch/small screens
+          self.handleTapSelect(element, options);
+        }
+      }
+
+      function onPointerCancel() {
+        element.classList.remove('is-dragging');
+        element.style.transform = origTransform;
+        if (activeZone) activeZone.classList.remove('drag-over');
+        activeZone = null;
+      }
+
+      element.addEventListener('pointerdown', onPointerDown);
     },
 
-    speak: function (text, onStart, onEnd) {
-      if (!this.synth) {
-        AudioEngine.sndRobotChirp();
+    handleTapSelect: function (element, options) {
+      var self = this;
+      if (this.selectedItem === element) {
+        element.classList.remove('selected-for-drop');
+        this.selectedItem = null;
         return;
       }
-      this.stop();
-      if (!text || !text.trim()) return;
 
-      var cleanText = text.replace(/<[^>]*>?/gm, '').replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
-      var utter = new SpeechSynthesisUtterance(cleanText);
-      utter.lang = 'ar-SA';
-      var arVoice = this.getArabicVoice();
-      if (arVoice) utter.voice = arVoice;
-      utter.rate = 0.92;
-      utter.pitch = 1.05;
-
-      var self = this;
-      utter.onstart = function () {
-        self.isSpeaking = true;
-        if (typeof onStart === 'function') onStart();
-      };
-      utter.onend = function () {
-        self.isSpeaking = false;
-        if (typeof onEnd === 'function') onEnd();
-      };
-      utter.onerror = function () {
-        self.isSpeaking = false;
-        if (typeof onEnd === 'function') onEnd();
-      };
-
-      this.currentUtterance = utter;
-      this.synth.speak(utter);
-    },
-
-    stop: function () {
-      if (this.synth) {
-        this.synth.cancel();
+      if (this.selectedItem) {
+        this.selectedItem.classList.remove('selected-for-drop');
       }
-      this.isSpeaking = false;
+
+      this.selectedItem = element;
+      element.classList.add('selected-for-drop');
+      AudioEngine.sndClick();
+
+      // Ensure drop zones listen for tap-to-place
+      var slide = element.closest('.il-slide') || document;
+      slide.querySelectorAll(options.zoneSelector).forEach(function (zone) {
+        if (!zone.__tapPlaceBound) {
+          zone.__tapPlaceBound = true;
+          zone.addEventListener('click', function () {
+            if (self.selectedItem) {
+              var item = self.selectedItem;
+              item.classList.remove('selected-for-drop');
+              self.selectedItem = null;
+              if (options.onDrop) {
+                options.onDrop(item, zone);
+              }
+            }
+          });
+        }
+      });
     }
   };
 
   /* ==========================================================================
-     3. LESSON RUNTIME STATE & CONTROLLER
+     4. LESSON RUNTIME STATE & CONTROLLER
      ========================================================================== */
   var LessonEngine = {
     data: null,
@@ -262,9 +337,8 @@
       this.dom.prevBtn = document.getElementById('il-prev-btn');
       this.dom.nextBtn = document.getElementById('il-next-btn');
       this.dom.soundBtn = document.getElementById('il-sound-btn');
-      this.dom.voiceBtn = document.getElementById('il-voice-btn');
       this.dom.mascotWrap = document.getElementById('il-mascot-wrap');
-      this.dom.robertCharacter = document.getElementById('il-faseeh-character') || document.getElementById('il-robert-character');
+      this.dom.mascotChar = document.getElementById('il-faseeh-character');
       this.dom.mascotBubble = document.getElementById('il-mascot-bubble');
     },
 
@@ -276,25 +350,22 @@
       if (this.dom.nextBtn) {
         this.dom.nextBtn.addEventListener('click', function () { self.nextSlide(); });
       }
-      if (this.dom.voiceBtn) {
-        this.dom.voiceBtn.addEventListener('click', function () { self.toggleVoice(); });
-      }
       if (this.dom.soundBtn) {
         this.dom.soundBtn.addEventListener('click', function () {
-          var state = AudioEngine.toggleSound();
-          self.updateSoundBtnUI(state);
+          var isNowOn = AudioEngine.toggleSound();
+          self.updateSoundBtnUI(isNowOn);
         });
       }
 
-      // Faseeh Mascot Interactive Click
-      if (this.dom.robertCharacter) {
-        this.dom.robertCharacter.addEventListener('click', function () {
+      // Mascot Interactive Click
+      if (this.dom.mascotChar) {
+        this.dom.mascotChar.addEventListener('click', function () {
           AudioEngine.sndRobotChirp();
-          self.setMascotPose(null, '<span class="faseeh-name-tag">💡 فصيح يحييك:</span><br>أنا معك خطوة بخطوة، اضغط وتفاعل لتكتشف الأسرار!', true);
-          self.toggleVoice();
+          self.setMascotBubble('أنا معك خطوة بخطوة! اسحب وأسقط العناصر لتكتشف الأسرار 💡', true);
         });
       }
 
+      // Keyboard arrow navigation
       document.addEventListener('keydown', function (e) {
         if (['INPUT', 'TEXTAREA'].indexOf(e.target.tagName) !== -1) return;
         if (e.key === 'ArrowLeft' || e.key === 'PageDown') self.nextSlide();
@@ -302,84 +373,38 @@
       });
     },
 
-    toggleVoice: function () {
-      var self = this;
-      if (VoiceEngine.isSpeaking) {
-        VoiceEngine.stop();
-        if (this.dom.voiceBtn) this.dom.voiceBtn.classList.remove('speaking');
-        return;
-      }
-
-      var currentSlide = this.data.slides[this.currentIndex];
-      if (!currentSlide) return;
-
-      var textToSpeak = '';
-      if (currentSlide.type === 'quiz' && currentSlide.quiz) {
-        var arabicLetters = ['أ', 'ب', 'ج', 'د', 'هـ'];
-        textToSpeak = currentSlide.quiz.question + '. ';
-        if (currentSlide.quiz.choices) {
-          currentSlide.quiz.choices.forEach(function (c, i) {
-            textToSpeak += (arabicLetters[i] || (i + 1)) + ': ' + c.text + '. ';
-          });
-        }
-      } else if (currentSlide.type === 'true_false' && currentSlide.trueFalse) {
-        textToSpeak = currentSlide.trueFalse.statement + '. هل هذه العبارة صائبة أم خاطئة؟';
-      } else {
-        textToSpeak = (currentSlide.title || '') + '. ' + (currentSlide.subtitle || '') + '. ' + (currentSlide.mascotTip || '');
-      }
-
-      if (!textToSpeak.trim()) return;
-
-      if (this.dom.voiceBtn) this.dom.voiceBtn.classList.add('speaking');
-      VoiceEngine.speak(
-        textToSpeak,
-        function () {
-          if (self.dom.voiceBtn) self.dom.voiceBtn.classList.add('speaking');
-        },
-        function () {
-          if (self.dom.voiceBtn) self.dom.voiceBtn.classList.remove('speaking');
-        }
-      );
-    },
-
-    /* Dynamic Faseeh Motion & Explanation Controller */
-    setMascotPose: function (pose, tipHtml, isCelebrating) {
-      var wrap = this.dom.mascotWrap;
-      var bubble = this.dom.mascotBubble;
-      var char = this.dom.robertCharacter;
-      if (!wrap) return;
-
-      if (pose) {
-        wrap.classList.remove('faseeh-pos-top-left', 'faseeh-pos-top-center', 'faseeh-pos-answer-toast');
-        wrap.classList.add('faseeh-pos-' + pose);
-      }
-
-      if (char) {
-        if (isCelebrating) {
-          char.classList.add('celebrating');
-          setTimeout(function () { char.classList.remove('celebrating'); }, 2200);
-        } else {
-          char.classList.remove('celebrating');
-        }
-      }
-
-      if (bubble && tipHtml) {
-        bubble.innerHTML = tipHtml;
-        bubble.style.transform = 'scale(1.06)';
-        setTimeout(function () { bubble.style.transform = ''; }, 250);
-      }
-    },
-
     updateSoundBtnUI: function (isOn) {
       if (!this.dom.soundBtn) return;
       if (isOn) {
-        this.dom.soundBtn.innerHTML =
-          '<svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>';
+        this.dom.soundBtn.style.background = 'var(--sky)';
         this.dom.soundBtn.style.opacity = '1';
-      } else {
         this.dom.soundBtn.innerHTML =
-          '<svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>';
+          '<svg class="sound-nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:22px; height:22px;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>';
+        this.dom.soundBtn.title = 'الصوت مفعّل (اضغط للكتم)';
+      } else {
+        this.dom.soundBtn.style.background = '#6B7280';
         this.dom.soundBtn.style.opacity = '0.6';
+        this.dom.soundBtn.innerHTML =
+          '<svg class="sound-nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:22px; height:22px;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>';
+        this.dom.soundBtn.title = 'الصوت مكتوم (اضغط للتفعيل)';
+      }
+    },
+
+    setMascotBubble: function (textHtml, isCelebrating) {
+      if (this.dom.mascotBubble) {
+        this.dom.mascotBubble.innerHTML = textHtml;
+        this.dom.mascotBubble.style.transform = 'scale(1.06)';
+        var b = this.dom.mascotBubble;
+        setTimeout(function () { b.style.transform = ''; }, 220);
+      }
+      if (this.dom.mascotChar) {
+        if (isCelebrating) {
+          this.dom.mascotChar.classList.add('celebrating');
+          var c = this.dom.mascotChar;
+          setTimeout(function () { c.classList.remove('celebrating'); }, 2000);
+        } else {
+          this.dom.mascotChar.classList.remove('celebrating');
+        }
       }
     },
 
@@ -394,7 +419,7 @@
 
       this.data.slides.forEach(function (slide, idx) {
         var slideEl = document.createElement('div');
-        slideEl.className = 'il-slide';
+        slideEl.className = 'slide il-slide';
         slideEl.id = 'il-slide-' + idx;
         slideEl.innerHTML = self.generateSlideHTML(slide, idx);
 
@@ -403,7 +428,7 @@
 
         if (self.dom.dots) {
           var dot = document.createElement('div');
-          dot.className = 'dock-dot' + (idx === 0 ? ' active' : '');
+          dot.className = 'dot' + (idx === 0 ? ' active' : '');
           dot.title = 'شريحة ' + (idx + 1);
           dot.addEventListener('click', function () { self.goToSlide(idx); });
           self.dom.dots.appendChild(dot);
@@ -413,21 +438,16 @@
 
     generateSlideHTML: function (slide, idx) {
       var html = '';
-      if (slide.type !== 'quiz' && slide.type !== 'true_false') {
-        html += '<div class="challenge-header">';
-        if (slide.eyebrow) {
-          html += '<div class="badge-pill-purple">' + slide.eyebrow + '</div>';
-        }
-        if (slide.title) {
-          html += '<div class="title-sunburst-wrap"><h2 class="challenge-title">' + slide.title + '</h2></div>';
-        }
-        if (slide.subtitle) {
-          html += '<p class="challenge-subtitle">' + slide.subtitle + '</p>';
-        }
-        html += '</div>';
+      if (slide.eyebrow) {
+        html += '<div class="eyebrow">' + slide.eyebrow + '</div>';
+      }
+      if (slide.title) {
+        html += '<h1 class="title">' + slide.title + '</h1>';
+      }
+      if (slide.subtitle) {
+        html += '<p class="subtitle">' + slide.subtitle + '</p>';
       }
 
-      // 12 Slide Type Renderers with Staggered Motion and Visual Polish
       switch (slide.type) {
         case 'explain': html += this.renderExplain(slide); break;
         case 'interactive_reveal': html += this.renderReveal(slide); break;
@@ -442,104 +462,84 @@
         case 'tap_to_count': html += this.renderTapToCount(slide); break;
         case 'summary': html += this.renderSummary(slide); break;
         default:
-          html += '<p style="text-align:center; font-weight:bold; color:var(--title-navy);">نوع الشريحة قيد التطوير: ' + slide.type + '</p>';
+          html += '<p style="text-align:center; font-weight:bold; color:var(--clay);">نوع الشريحة قيد التطوير: ' + slide.type + '</p>';
       }
       return html;
     },
 
-    /* 1. Explain: Color-Coded Concept Cards (Keynote & Canva Pro Style) */
+    /* 1. Explain: Concept Cards with Stitch-Border & Stamps */
     renderExplain: function (slide) {
       var html = '';
       var themes = [
-        { key: 'theme-water', icon: '💧', label: 'الماء العذب' },
-        { key: 'theme-air', icon: '💨', label: 'الهواء النقي' },
-        { key: 'theme-food', icon: '🥗', label: 'الغذاء والمأوى' }
+        { key: 'theme-water', stamp: '💧', label: 'الماء العذب', color: 'var(--sky)' },
+        { key: 'theme-air', stamp: '💨', label: 'الهواء النقي', color: 'var(--leaf)' },
+        { key: 'theme-food', stamp: '🥗', label: 'الغذاء والمأوى', color: 'var(--clay)' }
+      ];
+
+      var examples = (slide.examples && slide.examples.length > 0) ? slide.examples : [
+        { name: 'الكائنات البحرية تحتاج الماء' },
+        { name: 'الحيوان يحتاج الغذاء' },
+        { name: 'النبات يحتاج الضوء' }
       ];
 
       if (slide.traits && slide.traits.length > 0) {
         html += '<div class="concept-cards-grid">';
         slide.traits.forEach(function (trait, i) {
           var t = themes[i % themes.length];
+          var ex = examples[i % examples.length];
           var parts = trait.split(':');
           var title = parts.length > 1 ? parts[0] : t.label;
           var desc = parts.length > 1 ? parts.slice(1).join(':') : trait;
 
           html +=
-            '<div class="concept-card ' + t.key + ' stagger-item stagger-' + (i + 1) + '">' +
-            '<div class="concept-badge ' + t.key + '">' + t.icon + '</div>' +
-            '<h3 class="concept-title">' + title + '</h3>' +
-            '<p class="concept-desc">' + desc + '</p>' +
+            '<div class="card stitch-border concept-card ' + t.key + '">' +
+            '<div class="stamp" style="color:' + t.color + '">' + t.stamp + '</div>' +
+            '<h3 class="concept-card-title">' + title + '</h3>' +
+            '<p class="concept-card-desc">' + desc + '</p>' +
+            '<div class="concept-card-example"><span>🌱 مثال:</span> <span>' + ex.name + '</span></div>' +
             '</div>';
         });
         html += '</div>';
       }
-
-      if (slide.examples && slide.examples.length > 0) {
-        html += '<div class="examples-row stagger-item stagger-4">';
-        slide.examples.forEach(function (ex) {
-          html +=
-            '<div class="ex-chip">' +
-            (ex.emoji ? '<span style="font-size:1.4rem;">' + ex.emoji + '</span>' : '') +
-            '<span>' + (ex.name || '') + '</span>' +
-            '</div>';
-        });
-        html += '</div>';
-      }
-
       return html;
     },
 
-    /* 2. Reveal: 3D tactile chips + challenge box */
+    /* 2. Interactive Reveal: Tactile Groups */
     renderReveal: function (slide) {
       var html = '';
       if (slide.groups && slide.groups.length > 0) {
-        html += '<div class="group-grid">';
+        html += '<div class="group-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:14px; width:100%; max-width:780px;">';
         slide.groups.forEach(function (grp, i) {
           html +=
-            '<div class="group-chip stagger-item stagger-' + ((i % 3) + 1) + '" data-idx="' + i + '">' +
-            '<span class="chip-ico">' + (grp.emoji || '✨') + '</span>' +
-            '<span class="chip-name">' + grp.name + '</span>' +
-            '<div class="chip-detail">' + grp.detail + '</div>' +
+            '<div class="card group-chip" data-idx="' + i + '" style="cursor:pointer; text-align:center;">' +
+            '<div style="font-size:2.4rem; margin-bottom:6px;">' + (grp.emoji || '✨') + '</div>' +
+            '<h3 style="font-size:1.1rem; color:var(--ink);">' + grp.name + '</h3>' +
+            '<div class="chip-detail" style="font-size:0.85rem; color:#40564F; margin-top:6px; display:none;">' + grp.detail + '</div>' +
             '</div>';
         });
         html += '</div>';
       }
       if (slide.reveal) {
         html +=
-          '<div class="reveal-q stagger-item stagger-4">' +
-          '<div class="q-btn"><span>' + (slide.reveal.question || 'اضغط لكشف الإجابة') + '</span></div>' +
-          '<div class="q-ans">' + slide.reveal.answer + '</div>' +
+          '<div class="card reveal-q" style="margin-top:14px; cursor:pointer; text-align:center; border:2px solid var(--clay); width:100%; max-width:640px;">' +
+          '<div class="qtext" style="color:var(--clay); font-weight:800; font-family:\'Baloo 2\';">' + (slide.reveal.question || 'اضغط لكشف الإجابة') + '</div>' +
+          '<div class="atext" style="margin-top:8px; color:var(--ink); display:none;">' + slide.reveal.answer + '</div>' +
           '</div>';
       }
       return html;
     },
 
-    /* 3. Quiz: Game card with tactile pill options & glowing selection */
+    /* 3. Quiz: Game Card */
     renderQuiz: function (slide) {
       var q = slide.quiz;
       if (!q) return '';
-      var html = '<div class="challenge-header">';
-      if (slide.eyebrow) {
-        html += '<div class="badge-pill-purple">' + slide.eyebrow + '</div>';
-      }
-      html += '<div class="title-sunburst-wrap">';
-      html += '<span class="sunburst-dash" aria-hidden="true">˗ˋˏ</span>';
-      html += '<h2 class="challenge-title">' + (slide.title || 'تحدي السؤال الذكي') + '</h2>';
-      html += '<span class="sunburst-dash" aria-hidden="true">ˎˊ˗</span>';
-      html += '</div>';
-      if (slide.subtitle) {
-        html += '<p class="challenge-subtitle">' + slide.subtitle + '</p>';
-      }
-      html += '</div>';
-
-      html += '<div class="white-question-card stagger-item stagger-1">';
-      html += '<div class="question-text-navy">' + (q.emoji ? q.emoji + ' ' : '') + q.question + '</div>';
-      html += '<div class="pill-options-grid">';
+      var html = '<div class="card game-card">';
+      html += '<div class="game-q">' + (q.emoji ? q.emoji + ' ' : '') + q.question + '</div>';
+      html += '<div class="game-options-grid">';
       (q.choices || []).forEach(function (choice, i) {
         html +=
-          '<button class="option-pill-btn stagger-item stagger-' + ((i % 4) + 1) + '" type="button" data-choice-id="' + choice.id + '" data-is-correct="' + (choice.isCorrect ? 'true' : 'false') + '">' +
-          '<div class="radio-indicator"><div class="radio-inner-dot"></div></div>' +
-          '<span class="option-text-wrap">' + choice.text + '</span>' +
+          '<button class="quiz-opt-btn" type="button" data-choice-id="' + choice.id + '" data-is-correct="' + (choice.isCorrect ? 'true' : 'false') + '">' +
+          choice.text +
           '</button>';
       });
       html += '</div>';
@@ -548,43 +548,23 @@
       return html;
     },
 
-    /* 4. True or False: Statement card with ergonomic pills */
+    /* 4. True or False */
     renderTrueFalse: function (slide) {
       var tf = slide.trueFalse;
       if (!tf) return '';
-      var html = '<div class="challenge-header">';
-      if (slide.eyebrow) {
-        html += '<div class="badge-pill-purple">' + slide.eyebrow + '</div>';
-      }
-      html += '<div class="title-sunburst-wrap">';
-      html += '<span class="sunburst-dash" aria-hidden="true">˗ˋˏ</span>';
-      html += '<h2 class="challenge-title">' + (slide.title || 'تحدي صواب أم خطأ') + '</h2>';
-      html += '<span class="sunburst-dash" aria-hidden="true">ˎˊ˗</span>';
-      html += '</div>';
-      if (slide.subtitle) {
-        html += '<p class="challenge-subtitle">' + slide.subtitle + '</p>';
-      }
-      html += '</div>';
-
-      html += '<div class="white-question-card stagger-item stagger-1">';
-      html += '<div class="question-text-navy">' + tf.statement + '</div>';
-      html += '<div class="pill-options-grid" style="flex-direction: row; gap: 14px; justify-content: center;">';
-      html +=
-        '<button class="option-pill-btn tf-pill-btn stagger-item stagger-2" type="button" data-answer="true" style="flex:1; justify-content:center; gap:10px;">' +
-        '<div class="radio-indicator"><div class="radio-inner-dot"></div></div>' +
-        '<span class="option-text-wrap" style="flex:none;">صواب</span>' +
-        '</button>' +
-        '<button class="option-pill-btn tf-pill-btn stagger-item stagger-3" type="button" data-answer="false" style="flex:1; justify-content:center; gap:10px;">' +
-        '<div class="radio-indicator"><div class="radio-inner-dot"></div></div>' +
-        '<span class="option-text-wrap" style="flex:none;">خطأ</span>' +
-        '</button>';
-      html += '</div>';
-      html += '<div class="feedback-msg"></div>';
-      html += '</div>';
-      return html;
+      return (
+        '<div class="card game-card">' +
+        '<div class="game-q">' + tf.statement + '</div>' +
+        '<div class="game-options-grid" style="max-width:380px; margin:0 auto;">' +
+        '<button class="quiz-opt-btn tf-btn" type="button" data-answer="true" style="background:var(--leaf); font-size:1.15rem;">صح ✔</button>' +
+        '<button class="quiz-opt-btn tf-btn" type="button" data-answer="false" style="background:var(--clay); font-size:1.15rem;">خطأ ✖</button>' +
+        '</div>' +
+        '<div class="feedback-msg"></div>' +
+        '</div>'
+      );
     },
 
-    /* 5. Match Pairs: Two-column tactile connector */
+    /* 5. Match Pairs: Drag & Drop Enabled */
     renderMatchPairs: function (slide) {
       var mp = slide.matchPairs;
       if (!mp || !mp.pairs) return '';
@@ -594,25 +574,24 @@
         leftItems.push({ id: p.id, text: p.leftText, emoji: p.leftEmoji });
         rightItems.push({ id: p.id, text: p.rightText, emoji: p.rightEmoji });
       });
-
       rightItems.sort(function () { return 0.5 - Math.random(); });
 
-      var html = '<div class="match-grid">';
-      html += '<div class="match-col">';
-      leftItems.forEach(function (item, i) {
+      var html = '<div class="match-pairs-wrap">';
+      html += '<div class="match-col" style="display:flex; flex-direction:column; gap:10px;">';
+      leftItems.forEach(function (item) {
         html +=
-          '<div class="match-chip stagger-item stagger-' + (i + 1) + '" data-match-id="' + item.id + '" data-side="left">' +
-          (item.emoji ? '<span style="font-size:1.3rem;">' + item.emoji + '</span>' : '') +
+          '<div class="match-card drag-match-item" data-match-id="' + item.id + '">' +
+          (item.emoji ? '<span style="font-size:1.4rem;">' + item.emoji + '</span>' : '') +
           '<span>' + item.text + '</span>' +
           '</div>';
       });
       html += '</div>';
 
-      html += '<div class="match-col">';
-      rightItems.forEach(function (item, i) {
+      html += '<div class="match-col" style="display:flex; flex-direction:column; gap:10px;">';
+      rightItems.forEach(function (item) {
         html +=
-          '<div class="match-chip stagger-item stagger-' + (i + 1) + '" data-match-id="' + item.id + '" data-side="right">' +
-          (item.emoji ? '<span style="font-size:1.3rem;">' + item.emoji + '</span>' : '') +
+          '<div class="match-card drop-zone drop-match-target" data-match-id="' + item.id + '">' +
+          (item.emoji ? '<span style="font-size:1.4rem;">' + item.emoji + '</span>' : '') +
           '<span>' + item.text + '</span>' +
           '</div>';
       });
@@ -622,63 +601,81 @@
       return html;
     },
 
-    /* 6. Order Sequence: Step timeline cards */
+    /* 6. Order Sequence: Drag & Drop Slots */
     renderOrderSequence: function (slide) {
       var os = slide.orderSequence;
       if (!os || !os.steps) return '';
       var steps = os.steps.slice().sort(function () { return 0.5 - Math.random(); });
 
-      var html = '<div class="order-list">';
-      steps.forEach(function (st, idx) {
+      var html = '<div style="width:100%; max-width:760px; display:flex; flex-direction:column; align-items:center; gap:14px;">';
+      html += '<div class="order-tray" style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center;">';
+      steps.forEach(function (st) {
         html +=
-          '<div class="order-card stagger-item stagger-' + (idx + 1) + '" data-step-id="' + st.id + '" data-correct-order="' + st.order + '">' +
-          '<span>' + (st.emoji ? st.emoji + ' ' : '') + st.text + '</span>' +
-          '<div class="order-num">' + (idx + 1) + '</div>' +
+          '<div class="card drag-order-item" data-step-id="' + st.id + '" data-order="' + st.order + '" style="padding:10px 18px; cursor:grab; font-weight:800;">' +
+          (st.emoji ? st.emoji + ' ' : '') + st.text +
           '</div>';
       });
       html += '</div>';
+
+      html += '<div class="order-slots-row" style="display:grid; grid-template-columns:repeat(' + steps.length + ', 1fr); gap:10px; width:100%;">';
+      for (var i = 1; i <= steps.length; i++) {
+        html +=
+          '<div class="card stitch-border drop-zone drop-order-slot" data-slot-order="' + i + '" style="min-height:70px; text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center;">' +
+          '<span style="font-family:\'Baloo 2\'; font-weight:900; color:var(--clay); font-size:1.2rem;">' + i + '</span>' +
+          '<div class="slot-content"></div>' +
+          '</div>';
+      }
+      html += '</div>';
       html += '<div class="feedback-msg"></div>';
+      html += '</div>';
       return html;
     },
 
-    /* 7. Fill in the Blank: Storybook sentence card & word bank pills */
+    /* 7. Fill in the Blank: Drag Word Pill into Slot */
     renderFillBlank: function (slide) {
       var fb = slide.fillBlank;
       if (!fb) return '';
-      var html = '<div class="puzzle-sentence stagger-item stagger-1">';
+      var html = '<div style="width:100%; max-width:720px; display:flex; flex-direction:column; align-items:center;">';
+      html += '<div class="puzzle-sentence-box">';
       html += '<span>' + fb.sentenceBefore + '</span> ';
-      html += '<span class="puzzle-slot" data-target-answer="' + fb.blankAnswer + '">؟</span> ';
+      html += '<span class="drop-slot drop-zone" data-target-answer="' + fb.blankAnswer + '">اسحب الكلمة هنا</span> ';
       html += '<span>' + fb.sentenceAfter + '</span>';
       html += '</div>';
 
-      html += '<div class="word-bank stagger-item stagger-2">';
+      html += '<div class="words-bank-tray">';
       (fb.wordBank || []).forEach(function (w) {
-        html += '<button class="word-pill" type="button" data-word="' + w + '">' + w + '</button>';
+        html += '<div class="word-drag-pill" data-word="' + w + '">' + w + '</div>';
       });
       html += '</div>';
       html += '<div class="feedback-msg"></div>';
+      html += '</div>';
       return html;
     },
 
-    /* 8. Classify & Sorting: Target card + wooden chest 3D buckets */
+    /* 8. Classify & Sorting: Drag Items into Buckets */
     renderClassify: function (slide) {
       var cs = slide.classifySorting;
       if (!cs || !cs.items || cs.items.length === 0) return '';
-      var firstItem = cs.items[0];
 
-      var html = '<div class="classify-box" data-current-idx="0">';
-      html +=
-        '<div class="classify-target-card stagger-item stagger-1" id="curr-classify-card">' +
-        '<div class="target-emoji">' + (firstItem.emoji || '📦') + '</div>' +
-        '<div class="target-name">' + firstItem.name + '</div>' +
-        '</div>';
+      var html = '<div class="classify-drag-wrap">';
+      // Top Draggable Items Tray
+      html += '<div class="classify-tray" id="classify-tray">';
+      cs.items.forEach(function (item) {
+        html +=
+          '<div class="drag-item-chip" data-item-id="' + item.id + '" data-target-bucket="' + item.targetBucketId + '">' +
+          '<span>' + (item.emoji || '📦') + '</span> ' +
+          '<span>' + item.name + '</span>' +
+          '</div>';
+      });
+      html += '</div>';
 
-      html += '<div class="classify-buckets-row stagger-item stagger-2">';
+      // Drop Target Buckets Row
+      html += '<div class="drop-buckets-row">';
       (cs.buckets || []).forEach(function (b) {
         html +=
-          '<div class="bucket-chest" data-bucket-id="' + b.id + '">' +
-          '<span class="bucket-ico">' + (b.emoji || '📥') + '</span>' +
-          '<span class="bucket-label">' + b.name + '</span>' +
+          '<div class="card stitch-border drop-zone drop-bucket" data-bucket-id="' + b.id + '">' +
+          '<div class="drop-bucket-title">' + (b.emoji ? b.emoji + ' ' : '') + b.name + '</div>' +
+          '<div class="bucket-items-list"></div>' +
           '</div>';
       });
       html += '</div>';
@@ -687,85 +684,39 @@
       return html;
     },
 
-    /* 9. Hotspot Explore: Botanical Plant Vector SVG with Pulsing Beacons */
+    /* 9. Hotspot Explore */
     renderHotspot: function (slide) {
       var hs = slide.hotspot;
       if (!hs || !hs.points) return '';
-
-      var html = '<div class="hotspot-stage stagger-item stagger-1">';
-      html +=
-        '<svg class="hotspot-diagram" viewBox="0 0 500 360" preserveAspectRatio="xMidYMid meet">' +
-        '<defs>' +
-        '  <linearGradient id="soilGrad" x1="0" y1="0" x2="0" y2="1">' +
-        '    <stop offset="0%" stop-color="#8B5A2B"/>' +
-        '    <stop offset="100%" stop-color="#5C3A1E"/>' +
-        '  </linearGradient>' +
-        '  <linearGradient id="stemGrad" x1="0" y1="0" x2="1" y2="0">' +
-        '    <stop offset="0%" stop-color="#3D6A35"/>' +
-        '    <stop offset="100%" stop-color="#2D4F27"/>' +
-        '  </linearGradient>' +
-        '</defs>' +
-        '<!-- Soil Base -->' +
-        '<rect x="40" y="260" width="420" height="90" rx="16" fill="url(#soilGrad)" opacity="0.95"/>' +
-        '<!-- Roots -->' +
-        '<path d="M250 260 Q235 295 210 330 M250 260 Q265 295 290 335 M250 275 Q195 290 170 315 M250 285 Q305 305 330 325" stroke="#E8A93B" stroke-width="4.5" fill="none" stroke-linecap="round"/>' +
-        '<!-- Stem -->' +
-        '<path d="M250 260 C250 190 246 150 250 100" stroke="url(#stemGrad)" stroke-width="14" fill="none" stroke-linecap="round"/>' +
-        '<!-- Left Leaf -->' +
-        '<path d="M248 180 C180 165 140 185 125 215 C160 225 210 215 248 190" fill="#3D6A35" stroke="#2D4F27" stroke-width="2.5"/>' +
-        '<!-- Right Leaf -->' +
-        '<path d="M250 150 C320 135 360 155 375 185 C340 195 290 185 250 160" fill="#3D6A35" stroke="#2D4F27" stroke-width="2.5"/>' +
-        '<!-- Flower Petals -->' +
-        '<circle cx="250" cy="90" r="48" fill="#E8A93B" opacity="0.25"/>' +
-        '<circle cx="215" cy="72" r="24" fill="#C1502E"/>' +
-        '<circle cx="285" cy="72" r="24" fill="#C1502E"/>' +
-        '<circle cx="215" cy="108" r="24" fill="#C1502E"/>' +
-        '<circle cx="285" cy="108" r="24" fill="#C1502E"/>' +
-        '<circle cx="250" cy="52" r="24" fill="#C1502E"/>' +
-        '<circle cx="250" cy="128" r="24" fill="#C1502E"/>' +
-        '<circle cx="250" cy="90" r="24" fill="#E8A93B"/>' +
-        '</svg>';
-
-      hs.points.forEach(function (pt, i) {
+      var html = '<div style="position:relative; width:100%; max-width:720px; height:240px; background:rgba(255,255,255,0.7); border-radius:22px; border:2px dashed var(--ink); margin-top:8px;">';
+      hs.points.forEach(function (pt, idx) {
         html +=
-          '<button class="hotspot-beacon" type="button" style="top:' + pt.yPercent + '%; left:' + pt.xPercent + '%;" data-idx="' + i + '">' +
-          (i + 1) +
+          '<button class="hotspot-btn" type="button" data-idx="' + idx + '" style="position:absolute; top:' + pt.top + '; left:' + pt.left + '; transform:translate(-50%, -50%); background:var(--gold); border:2px solid var(--ink); border-radius:50%; width:42px; height:42px; font-size:1.3rem; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.2);">' +
+          (pt.emoji || '📍') +
           '</button>';
       });
-
-      html += '<div class="hotspot-info-popup"></div>';
+      html += '<div class="card hotspot-popup" style="position:absolute; bottom:14px; left:50%; transform:translateX(-50%); width:90%; max-width:540px; text-align:center; display:none; padding:12px;"></div>';
       html += '</div>';
       return html;
     },
 
-    /* 10. Memory Cards: 3D Flip Architecture */
+    /* 10. Memory Cards */
     renderMemoryCards: function (slide) {
       var mc = slide.memoryCards;
       if (!mc || !mc.pairs) return '';
-      var deck = [];
+      var cards = [];
       mc.pairs.forEach(function (p) {
-        deck.push({ matchId: p.id, text: p.itemA.text, emoji: p.itemA.emoji });
-        deck.push({ matchId: p.id, text: p.itemB.text, emoji: p.itemB.emoji });
+        cards.push({ matchId: p.id, emoji: p.emoji, name: p.name });
+        cards.push({ matchId: p.id, emoji: p.matchEmoji, name: p.matchName });
       });
-      deck.sort(function () { return 0.5 - Math.random(); });
+      cards.sort(function () { return 0.5 - Math.random(); });
 
-      var html = '<div class="memory-grid">';
-      deck.forEach(function (c, i) {
+      var html = '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(90px,1fr)); gap:10px; width:100%; max-width:680px; margin-top:10px;">';
+      cards.forEach(function (c, idx) {
         html +=
-          '<div class="mem-card stagger-item stagger-' + ((i % 4) + 1) + '" data-match-id="' + c.matchId + '">' +
-          '<div class="mem-inner">' +
-          '<!-- Front Face (Closed) -->' +
-          '<div class="mem-face mem-front">' +
-          '<svg class="card-crest-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">' +
-          '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>' +
-          '</svg>' +
-          '</div>' +
-          '<!-- Back Face (Revealed) -->' +
-          '<div class="mem-face mem-back">' +
-          '<span class="card-emoji-box">' + (c.emoji || '✨') + '</span>' +
-          '<span class="card-title-text">' + c.text + '</span>' +
-          '</div>' +
-          '</div>' +
+          '<div class="card mem-card" data-idx="' + idx + '" data-match-id="' + c.matchId + '" style="height:90px; cursor:pointer; display:flex; align-items:center; justify-content:center; text-align:center; font-weight:800; border:2.5px solid var(--ink);">' +
+          '<div class="mem-back" style="font-size:2rem;">❓</div>' +
+          '<div class="mem-front" style="display:none; font-size:1.8rem;">' + c.emoji + '<div style="font-size:0.75rem;">' + c.name + '</div></div>' +
           '</div>';
       });
       html += '</div>';
@@ -773,23 +724,17 @@
       return html;
     },
 
-    /* 11. Tap to Count: Musical bounce bubbles with count badge */
+    /* 11. Tap to Count */
     renderTapToCount: function (slide) {
       var tc = slide.tapToCount;
       if (!tc) return '';
-      var count = tc.targetCount || 5;
-
-      var html = '<div class="count-stage stagger-item stagger-1" data-target="' + count + '" data-current="0">';
-      html +=
-        '<div>' +
-        '<span class="count-badge-pill">العدد الحالي: <strong id="curr-count-num">0</strong> من ' + count + ' ' + (tc.itemName || '') + '</span>' +
-        '</div>';
-
-      html += '<div class="count-items-grid">';
-      for (var i = 0; i < count; i++) {
+      var html = '<div style="width:100%; max-width:640px; text-align:center;">';
+      html += '<div style="font-family:\'Baloo 2\'; font-size:2.2rem; font-weight:900; color:var(--clay); margin-bottom:12px;">العدد الحالي: <span id="tap-count-num">0</span> / ' + tc.targetCount + '</div>';
+      html += '<div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap;">';
+      for (var i = 0; i < tc.targetCount; i++) {
         html +=
-          '<button class="count-bubble stagger-item stagger-' + ((i % 4) + 1) + '" type="button" data-index="' + (i + 1) + '">' +
-          (tc.itemEmoji || '🍎') +
+          '<button class="count-item-btn" type="button" style="background:var(--white); border:3px solid var(--ink); border-radius:50%; width:64px; height:64px; font-size:2.2rem; cursor:pointer; box-shadow:var(--clay-shadow-sm); transition:transform .15s;">' +
+          tc.itemEmoji +
           '</button>';
       }
       html += '</div>';
@@ -798,288 +743,266 @@
       return html;
     },
 
-    /* 12. Summary: Award certificate with glowing SVG stars and confetti */
+    /* 12. Summary Slide */
     renderSummary: function (slide) {
       return (
-        '<div class="summary-box stagger-item stagger-1">' +
-        '<div class="stars-row">' +
-        '<svg class="star-svg" id="sum-star-1" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>' +
-        '<svg class="star-svg" id="sum-star-2" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>' +
-        '<svg class="star-svg" id="sum-star-3" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>' +
-        '</div>' +
-        '<h2 style="font-family:\'Baloo 2\',sans-serif; font-size:1.9rem; font-weight:800; color:var(--ink); margin-bottom:8px;" id="sum-title">أداء رائع ومميز!</h2>' +
-        '<p style="font-size:1.08rem; font-weight:700; color:var(--ink-light);" id="sum-desc">لقد أكملت جميع الأنشطة والتمارين بنجاح واستحققت وسام البطل الذكي!</p>' +
+        '<div class="card result-card" style="text-align:center; max-width:620px; padding:32px 24px;">' +
+        '<div class="stamp" style="color:var(--leaf); width:100px; height:100px; font-size:2.6rem;">🏆</div>' +
+        '<h1>مبروك يا بطل! أتممت الدرس بنجاح</h1>' +
+        '<div style="font-size:2.4rem; letter-spacing:8px; margin:10px 0;" id="sum-stars">⭐⭐⭐</div>' +
+        '<p class="subtitle" id="sum-desc" style="margin:0 auto 18px;">لقد أظهرت ذكاءً وتميزاً رائعاً في حل كافة الأنشطة والتحديات!</p>' +
+        '<button class="nav-btn" type="button" onclick="location.reload()" style="border-radius:999px; width:auto; padding:12px 34px; font-size:1.05rem; margin:0 auto; font-family:\'Baloo 2\';">🔁 إعادة الدرس من البداية</button>' +
         '</div>'
       );
     },
 
     /* ==========================================================================
-       4. INTERACTIVITY DISPATCHER & DYNAMIC FASEEH EXPLANATIONS
+       5. SLIDE INTERACTIVITY & DRAG-AND-DROP BINDINGS
        ========================================================================== */
-    bindSlideInteractivity: function (slideEl, slide, slideIndex) {
+    bindSlideInteractivity: function (slideEl, slide, idx) {
       var self = this;
+      var fb = slideEl.querySelector('.feedback-msg');
 
-      // 1. Explain Toggle
-      var expBtn = slideEl.querySelector('#exp-q-btn');
-      if (expBtn) {
-        expBtn.addEventListener('click', function () {
-          var ans = slideEl.querySelector('#exp-q-ans');
-          if (ans) {
-            ans.classList.toggle('show');
-            AudioEngine.sndClick();
-            self.setMascotPose('top-left', '<span class="faseeh-name-tag">💡 فصيح يوضح لك:</span><br>تذكر دائماً: الماء والهواء والغذاء أساس استمرار كل كائن حي!', true);
-          }
-        });
-      }
-
-      // 2. Reveal Groups & Challenge Question
+      // 1. Reveal Details
       slideEl.querySelectorAll('.group-chip').forEach(function (chip) {
         chip.addEventListener('click', function () {
-          chip.classList.toggle('open');
-          AudioEngine.sndCardOpen();
-          var name = chip.querySelector('.chip-name').textContent;
-          self.setMascotPose('top-left', '<span class="faseeh-name-tag">💡 فصيح يشاركك:</span><br>رائع! لقد كشفت سر (' + name + ') وكيف يفيد المخلوقات الحية.', false);
+          var detail = chip.querySelector('.chip-detail');
+          if (detail) {
+            var isHidden = detail.style.display === 'none';
+            detail.style.display = isHidden ? 'block' : 'none';
+            AudioEngine.sndCardOpen();
+          }
         });
       });
-      var revBtn = slideEl.querySelector('.reveal-q .q-btn');
-      if (revBtn) {
-        revBtn.addEventListener('click', function () {
-          var ans = slideEl.querySelector('.reveal-q .q-ans');
+      var revQ = slideEl.querySelector('.reveal-q');
+      if (revQ) {
+        revQ.addEventListener('click', function () {
+          var ans = revQ.querySelector('.atext');
           if (ans) {
-            ans.classList.toggle('show');
-            AudioEngine.sndClick();
-            self.setMascotPose('top-center', '<span class="faseeh-name-tag">💡 فصيح يؤكد لك:</span><br>أحسنت! الماء عصب الحياة، ولا يمكن لأي كائن حي البقاء بدونه إطلاقاً.', true);
+            var isHidden = ans.style.display === 'none';
+            ans.style.display = isHidden ? 'block' : 'none';
+            AudioEngine.sndCardOpen();
           }
         });
       }
 
-      // 3. Quiz with Dynamic Faseeh Explanation
-      var qBtns = slideEl.querySelectorAll('.option-pill-btn:not(.tf-pill-btn)');
-      var fb = slideEl.querySelector('.feedback-msg');
-      qBtns.forEach(function (btn) {
+      // 2. Quiz Click
+      slideEl.querySelectorAll('.quiz-opt-btn:not(.tf-btn)').forEach(function (btn) {
         btn.addEventListener('click', function () {
-          qBtns.forEach(function (b) { b.disabled = true; });
+          slideEl.querySelectorAll('.quiz-opt-btn').forEach(function (b) { b.disabled = true; });
           var isCorrect = btn.getAttribute('data-is-correct') === 'true';
           if (isCorrect) {
-            btn.classList.add('selected', 'correct');
-            if (fb) { fb.textContent = 'إجابة صحيحة وممتازة! أحسنت يا بطل! 🌟'; fb.style.color = 'var(--leaf-green, #22C55E)'; }
+            btn.classList.add('correct');
+            if (fb) { fb.textContent = 'إجابة صحيحة وممتازة! أحسنت يا بطل! 🌟'; fb.style.color = 'var(--leaf)'; }
             self.addScore();
             AudioEngine.sndCorrect();
             launchConfetti(slideEl);
-            self.setMascotPose('top-center', '<div class="bubble-greeting">💡 فصيح يشرح لك:</div><div class="bubble-text">إجابة ذكية وممتازة! النبات الأخضر يصنع غذاءه بنفسه من ضوء الشمس والماء والهواء!</div>', true);
+            self.setMascotBubble('إجابة ذكية ورائعة! النبات الأخضر يصنع غذاءه بنفسه من ضوء الشمس والماء والهواء 💡', true);
           } else {
             btn.classList.add('wrong');
-            qBtns.forEach(function (b) {
-              if (b.getAttribute('data-is-correct') === 'true') b.classList.add('selected', 'correct');
+            slideEl.querySelectorAll('.quiz-opt-btn').forEach(function (b) {
+              if (b.getAttribute('data-is-correct') === 'true') b.classList.add('correct');
             });
-            if (fb) { fb.textContent = 'محاولة طيبة، فكر في القاعدة العلمية!'; fb.style.color = 'var(--danger)'; }
+            if (fb) { fb.textContent = 'إجابة غير صحيحة، فكر في القاعدة العلمية!'; fb.style.color = 'var(--clay)'; }
             AudioEngine.sndWrong();
-            self.setMascotPose('top-center', '<div class="bubble-greeting">💡 فصيح ينصحك:</div><div class="bubble-text">فكر جيداً يا بطل: النبات يحتاج عناصر طبيعية تصنع الغذاء في أوراقه، وليس سكريات أو رمال!</div>', false);
+            self.setMascotBubble('تذكر يا بطل: النبات يحتاج عناصر طبيعية تصنع الغذاء في أوراقه الخضراء 💡', false);
           }
         });
       });
 
-      // 4. True or False with Dynamic Faseeh Explanation
-      var tfBtns = slideEl.querySelectorAll('.tf-pill-btn');
-      tfBtns.forEach(function (btn) {
+      // 3. True or False Click
+      slideEl.querySelectorAll('.tf-btn').forEach(function (btn) {
         btn.addEventListener('click', function () {
-          tfBtns.forEach(function (b) { b.disabled = true; });
+          slideEl.querySelectorAll('.tf-btn').forEach(function (b) { b.disabled = true; });
           var ans = btn.getAttribute('data-answer') === 'true';
           var isTrueTarget = slide.trueFalse ? slide.trueFalse.isTrue : true;
           if (ans === isTrueTarget) {
-            btn.classList.add('selected', 'correct');
-            if (fb) { fb.textContent = 'رائع جداً! إجابتك صحيحة 🎯'; fb.style.color = 'var(--leaf-green, #22C55E)'; }
+            btn.classList.add('correct');
+            if (fb) { fb.textContent = 'رائع جداً! إجابتك صحيحة 🎯'; fb.style.color = 'var(--leaf)'; }
             self.addScore();
             AudioEngine.sndCorrect();
             launchConfetti(slideEl);
-            self.setMascotPose('top-center', '<div class="bubble-greeting">💡 فصيح يشرح لك:</div><div class="bubble-text">رائع يا عبقري! الصخور من الجمادات غير الحية، فلا تنمو ولا تتنفس ولذلك لا تحتاج إلى غذاء أو ماء!</div>', true);
+            self.setMascotBubble('أحسنت يا عبقري! الصخور جمادات غير حية فلا تنمو ولا تتنفس ولا تحتاج للغذاء 💡', true);
           } else {
             btn.classList.add('wrong');
-            tfBtns.forEach(function (b) {
-              var bAns = b.getAttribute('data-answer') === 'true';
-              if (bAns === isTrueTarget) b.classList.add('selected', 'correct');
+            slideEl.querySelectorAll('.tf-btn').forEach(function (b) {
+              if ((b.getAttribute('data-answer') === 'true') === isTrueTarget) b.classList.add('correct');
             });
-            if (fb) { fb.textContent = 'إجابة غير صحيحة، راجع طبيعة الجمادات!'; fb.style.color = 'var(--danger)'; }
+            if (fb) { fb.textContent = 'إجابة غير صحيحة، راجع طبيعة الجمادات!'; fb.style.color = 'var(--clay)'; }
             AudioEngine.sndWrong();
-            self.setMascotPose('top-center', '<div class="bubble-greeting">💡 فصيح ينصحك:</div><div class="bubble-text">تأمل الصخور حولك: هل تكبر أو تجوع؟ إنها أشياء غير حية فلا تحتاج للغذاء!</div>', false);
+            self.setMascotBubble('تأمل الصخور حولك: هل تكبر أو تجوع؟ إنها غير حية فلا تحتاج إلى غذاء 💡', false);
           }
         });
       });
 
-      // 5. Match Pairs
-      var matchChips = slideEl.querySelectorAll('.match-chip');
-      var selectedLeft = null;
-      var selectedRight = null;
-      var matchedCount = 0;
-      var totalPairs = (slide.matchPairs && slide.matchPairs.pairs) ? slide.matchPairs.pairs.length : 0;
+      // 4. Activity: Classify Drag & Drop
+      var dragChips = slideEl.querySelectorAll('.drag-item-chip');
+      var totalToClassify = dragChips.length;
+      var classifiedCount = 0;
 
-      matchChips.forEach(function (chip) {
-        chip.addEventListener('click', function () {
-          if (chip.classList.contains('matched')) return;
-          var side = chip.getAttribute('data-side');
+      dragChips.forEach(function (chip) {
+        DragDropEngine.makeDraggable(chip, {
+          zoneSelector: '.drop-bucket',
+          onDrop: function (draggedEl, targetZone) {
+            var targetBucketId = draggedEl.getAttribute('data-target-bucket');
+            var bucketId = targetZone.getAttribute('data-bucket-id');
 
-          if (side === 'left') {
-            if (selectedLeft) selectedLeft.classList.remove('selected');
-            selectedLeft = chip;
-            chip.classList.add('selected');
-            AudioEngine.sndClick();
-          } else {
-            if (selectedRight) selectedRight.classList.remove('selected');
-            selectedRight = chip;
-            chip.classList.add('selected');
-            AudioEngine.sndClick();
-          }
-
-          if (selectedLeft && selectedRight) {
-            var idLeft = selectedLeft.getAttribute('data-match-id');
-            var idRight = selectedRight.getAttribute('data-match-id');
-
-            if (idLeft === idRight) {
-              selectedLeft.classList.remove('selected');
-              selectedRight.classList.remove('selected');
-              selectedLeft.classList.add('matched');
-              selectedRight.classList.add('matched');
-              matchedCount++;
+            if (targetBucketId === bucketId) {
+              // Success Drop
+              targetZone.classList.add('dropped-success');
               AudioEngine.sndCorrect();
-              selectedLeft = null;
-              selectedRight = null;
-              if (matchedCount >= totalPairs) {
+              var list = targetZone.querySelector('.bucket-items-list');
+              if (list) list.appendChild(draggedEl);
+              draggedEl.style.cursor = 'default';
+              draggedEl.style.pointerEvents = 'none';
+              draggedEl.style.fontSize = '0.9rem';
+              draggedEl.style.padding = '6px 12px';
+
+              classifiedCount++;
+              if (classifiedCount >= totalToClassify) {
                 self.addScore();
-                if (fb) { fb.textContent = 'أحسنت! أكملت كافة التوصيلات بنجاح 👏'; fb.style.color = 'var(--leaf)'; }
+                if (fb) { fb.textContent = 'تصنيف عبقري متكامل! أحسنت يا بطل! 🌟'; fb.style.color = 'var(--leaf)'; }
                 launchConfetti(slideEl);
-                self.setMascotPose('top-left', '<span class="faseeh-name-tag">💡 فصيح يحييك:</span><br>توصيل متقن! كل مخلوق يعيش في مأوى آمن يناسب طبيعته ويحميه.', true);
+                self.setMascotBubble('تصنيف عبقري ومتقن! لقد وزعت جميع الكائنات والأشياء بدقة واحتراف 💡', true);
               }
             } else {
-              var leftEl = selectedLeft;
-              var rightEl = selectedRight;
-              leftEl.classList.add('wrong');
-              rightEl.classList.add('wrong');
               AudioEngine.sndWrong();
-              setTimeout(function () {
-                leftEl.classList.remove('wrong', 'selected');
-                rightEl.classList.remove('wrong', 'selected');
-              }, 600);
-              selectedLeft = null;
-              selectedRight = null;
+              targetZone.style.borderColor = 'var(--clay)';
+              setTimeout(function () { targetZone.style.borderColor = ''; }, 450);
+              self.setMascotBubble('فكر جيداً في خصائص هذا العنصر قبل إفلاته في الصندوق 💡', false);
             }
           }
         });
       });
 
-      // 6. Order Sequence
-      var orderCards = slideEl.querySelectorAll('.order-card');
-      var currentOrderIdx = 1;
-      orderCards.forEach(function (card) {
-        card.addEventListener('click', function () {
-          if (card.classList.contains('correct')) return;
-          var correctNum = parseInt(card.getAttribute('data-correct-order'), 10);
-          if (correctNum === currentOrderIdx) {
-            card.classList.add('correct');
-            card.querySelector('.order-num').textContent = '✓';
-            currentOrderIdx++;
-            AudioEngine.sndCorrect();
-            if (currentOrderIdx > orderCards.length) {
-              self.addScore();
-              if (fb) { fb.textContent = 'ترتيب ممتاز وصحيح 100%! 🌟'; fb.style.color = 'var(--leaf)'; }
-              launchConfetti(slideEl);
-              self.setMascotPose('top-left', '<span class="faseeh-name-tag">💡 فصيح يشرح لك:</span><br>ترتيب علمي دقيق! تبدأ دورة نمو النبات بوضع البذرة، ثم تنمو البادرة وتتفتح الأزهار.', true);
-            }
-          } else {
-            card.classList.add('wrong');
-            AudioEngine.sndWrong();
-            setTimeout(function () { card.classList.remove('wrong'); }, 500);
-          }
-        });
-      });
-
-      // 7. Fill in the Blank
-      var wordPills = slideEl.querySelectorAll('.word-pill');
-      var puzzleSlot = slideEl.querySelector('.puzzle-slot');
-      if (puzzleSlot) {
-        var correctAns = puzzleSlot.getAttribute('data-target-answer');
+      // 5. Activity: Fill in the Blank Drag & Drop
+      var wordPills = slideEl.querySelectorAll('.word-drag-pill');
+      var dropSlot = slideEl.querySelector('.drop-slot');
+      if (dropSlot) {
+        var correctAns = dropSlot.getAttribute('data-target-answer');
         wordPills.forEach(function (pill) {
-          pill.addEventListener('click', function () {
-            var word = pill.getAttribute('data-word');
-            puzzleSlot.textContent = word;
-            if (word === correctAns) {
-              puzzleSlot.classList.add('filled');
-              wordPills.forEach(function (p) { p.disabled = true; });
-              if (fb) { fb.textContent = 'إجابة صحيحة! أحسنت التعبير 🌟'; fb.style.color = 'var(--leaf)'; }
-              self.addScore();
-              AudioEngine.sndCorrect();
-              launchConfetti(slideEl);
-              self.setMascotPose('top-center', '<span class="faseeh-name-tag">💡 فصيح يشرح لك:</span><br>أحسنت التعبير العلمي! خلق الله للأسماك خياشيم متخصصة لاستخلاص الأكسجين الذائب في الماء.', true);
-            } else {
-              puzzleSlot.style.borderColor = 'var(--danger)';
-              AudioEngine.sndWrong();
-              setTimeout(function () {
-                puzzleSlot.style.borderColor = '';
-                puzzleSlot.textContent = '؟';
-              }, 700);
+          DragDropEngine.makeDraggable(pill, {
+            zoneSelector: '.drop-slot',
+            onDrop: function (draggedEl, targetZone) {
+              var word = draggedEl.getAttribute('data-word');
+              targetZone.textContent = word;
+              if (word === correctAns) {
+                targetZone.classList.add('filled', 'dropped-success');
+                wordPills.forEach(function (p) { p.style.pointerEvents = 'none'; p.style.opacity = '0.5'; });
+                draggedEl.style.display = 'none';
+                if (fb) { fb.textContent = 'إجابة صحيحة! أحسنت التعبير 🌟'; fb.style.color = 'var(--leaf)'; }
+                self.addScore();
+                AudioEngine.sndCorrect();
+                launchConfetti(slideEl);
+                self.setMascotBubble('أحسنت التعبير العلمي! الخياشيم تساعد الأسماك على استخلاص الأكسجين من الماء 💡', true);
+              } else {
+                targetZone.style.borderColor = 'var(--clay)';
+                AudioEngine.sndWrong();
+                setTimeout(function () {
+                  targetZone.style.borderColor = '';
+                  targetZone.textContent = 'اسحب الكلمة هنا';
+                }, 650);
+              }
             }
           });
         });
       }
 
-      // 8. Classify & Sorting
-      var classifyBox = slideEl.querySelector('.classify-box');
-      if (classifyBox && slide.classifySorting) {
-        var cItems = slide.classifySorting.items || [];
-        var cIdx = 0;
-        var cardEl = slideEl.querySelector('#curr-classify-card');
-        slideEl.querySelectorAll('.bucket-chest').forEach(function (b) {
-          b.addEventListener('click', function () {
-            if (cIdx >= cItems.length) return;
-            var targetBucket = cItems[cIdx].targetBucketId;
-            var clickedBucket = b.getAttribute('data-bucket-id');
-            if (targetBucket === clickedBucket) {
+      // 6. Activity: Match Pairs Drag & Drop
+      var matchItems = slideEl.querySelectorAll('.drag-match-item');
+      var totalMatchPairs = matchItems.length;
+      var matchedPairsCount = 0;
+      matchItems.forEach(function (item) {
+        DragDropEngine.makeDraggable(item, {
+          zoneSelector: '.drop-match-target',
+          onDrop: function (draggedEl, targetZone) {
+            var id1 = draggedEl.getAttribute('data-match-id');
+            var id2 = targetZone.getAttribute('data-match-id');
+            if (id1 === id2) {
+              draggedEl.classList.add('matched');
+              targetZone.classList.add('matched', 'dropped-success');
+              draggedEl.style.pointerEvents = 'none';
+              targetZone.style.pointerEvents = 'none';
               AudioEngine.sndCorrect();
-              cIdx++;
-              if (cIdx < cItems.length) {
-                cardEl.querySelector('.target-emoji').textContent = cItems[cIdx].emoji || '📦';
-                cardEl.querySelector('.target-name').textContent = cItems[cIdx].name;
-              } else {
-                cardEl.innerHTML = '<div style="font-size:2.6rem;">🎉</div><div style="font-weight:900; color:var(--ink);">تم فرز جميع العناصر!</div>';
+              matchedPairsCount++;
+              if (matchedPairsCount >= totalMatchPairs) {
                 self.addScore();
-                if (fb) { fb.textContent = 'تصنيف دقيق وممتاز! أحسنت يا بطل! 🌟'; fb.style.color = 'var(--leaf)'; }
+                if (fb) { fb.textContent = 'توصيل متقن وصحيح 100%! 👏'; fb.style.color = 'var(--leaf)'; }
                 launchConfetti(slideEl);
-                self.setMascotPose('top-center', '<span class="faseeh-name-tag">💡 فصيح يشرح لك:</span><br>تصنيف عبقري! الكائنات الحية كالفراشة والقطة تنمو وتتغذى، بينما القلم والسيارة أشياء غير حية.', true);
+                self.setMascotBubble('توصيل رائع! كل مخلوق يعيش في بيئة تناسبه وتوفر له الغذاء والأمان 💡', true);
               }
             } else {
-              b.style.borderColor = 'var(--danger)';
               AudioEngine.sndWrong();
-              setTimeout(function () { b.style.borderColor = ''; }, 500);
+              draggedEl.classList.add('wrong');
+              targetZone.classList.add('wrong');
+              setTimeout(function () {
+                draggedEl.classList.remove('wrong');
+                targetZone.classList.remove('wrong');
+              }, 450);
             }
-          });
+          }
         });
-      }
+      });
 
-      // 9. Hotspot Explore
-      var beacons = slideEl.querySelectorAll('.hotspot-beacon');
-      var popup = slideEl.querySelector('.hotspot-info-popup');
-      if (beacons && popup && slide.hotspot) {
-        beacons.forEach(function (beacon) {
-          beacon.addEventListener('click', function () {
-            var i = parseInt(beacon.getAttribute('data-idx'), 10);
-            var pt = slide.hotspot.points[i];
-            popup.innerHTML = '<strong>' + (pt.emoji ? pt.emoji + ' ' : '') + pt.title + ':</strong> ' + pt.detail;
-            popup.classList.add('show');
+      // 7. Activity: Order Sequence Drag & Drop
+      var orderItems = slideEl.querySelectorAll('.drag-order-item');
+      var totalOrderSteps = orderItems.length;
+      var orderedCount = 0;
+      orderItems.forEach(function (item) {
+        DragDropEngine.makeDraggable(item, {
+          zoneSelector: '.drop-order-slot',
+          onDrop: function (draggedEl, targetZone) {
+            var correctOrder = parseInt(draggedEl.getAttribute('data-order'), 10);
+            var slotOrder = parseInt(targetZone.getAttribute('data-slot-order'), 10);
+
+            if (correctOrder === slotOrder) {
+              targetZone.classList.add('dropped-success');
+              targetZone.style.borderColor = 'var(--leaf)';
+              var content = targetZone.querySelector('.slot-content');
+              if (content) content.appendChild(draggedEl);
+              draggedEl.style.pointerEvents = 'none';
+              AudioEngine.sndCorrect();
+              orderedCount++;
+              if (orderedCount >= totalOrderSteps) {
+                self.addScore();
+                if (fb) { fb.textContent = 'ترتيب علمي دقيق وممتاز! 🌟'; fb.style.color = 'var(--leaf)'; }
+                launchConfetti(slideEl);
+                self.setMascotBubble('ترتيب علمي متقن! تبدأ دورة نمو النبات بالبذرة ثم النبتة الصغيرة فالأزهار 💡', true);
+              }
+            } else {
+              AudioEngine.sndWrong();
+              targetZone.style.borderColor = 'var(--clay)';
+              setTimeout(function () { targetZone.style.borderColor = ''; }, 450);
+            }
+          }
+        });
+      });
+
+      // 8. Hotspot Exploration
+      slideEl.querySelectorAll('.hotspot-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var i = parseInt(btn.getAttribute('data-idx'), 10);
+          var pt = slide.hotspot ? slide.hotspot.points[i] : null;
+          var popup = slideEl.querySelector('.hotspot-popup');
+          if (pt && popup) {
+            popup.innerHTML = '<strong>' + (pt.emoji || '') + ' ' + pt.title + ':</strong> ' + pt.detail;
+            popup.style.display = 'block';
             AudioEngine.sndCardOpen();
-            self.setMascotPose('top-left', '<span class="faseeh-name-tag">💡 فصيح يوضح:</span><br>أنت الآن تستكشف (' + pt.title + ') ووظيفتها الحيوية في حياة النبات.', false);
-          });
+          }
         });
-      }
+      });
 
-      // 10. Memory Cards (True 3D Flip System)
+      // 9. Memory Cards
       var memCards = slideEl.querySelectorAll('.mem-card');
       var flipped = [];
-      var matchedPairs = 0;
-      var totalMemoryPairs = (slide.memoryCards && slide.memoryCards.pairs) ? slide.memoryCards.pairs.length : 0;
-
+      var matchedMemPairs = 0;
+      var totalPairsTarget = (slide.memoryCards && slide.memoryCards.pairs) ? slide.memoryCards.pairs.length : 0;
       memCards.forEach(function (card) {
         card.addEventListener('click', function () {
           if (card.classList.contains('flipped') || card.classList.contains('matched') || flipped.length >= 2) return;
           card.classList.add('flipped');
+          card.querySelector('.mem-back').style.display = 'none';
+          card.querySelector('.mem-front').style.display = 'block';
           flipped.push(card);
           AudioEngine.sndClick();
 
@@ -1087,63 +1010,67 @@
             var id1 = flipped[0].getAttribute('data-match-id');
             var id2 = flipped[1].getAttribute('data-match-id');
             if (id1 === id2) {
-              matchedPairs++;
+              matchedMemPairs++;
               flipped[0].classList.add('matched');
               flipped[1].classList.add('matched');
+              flipped[0].style.background = '#EAF3E4';
+              flipped[1].style.background = '#EAF3E4';
               AudioEngine.sndCorrect();
               flipped = [];
-              if (matchedPairs >= totalMemoryPairs) {
+              if (matchedMemPairs >= totalPairsTarget) {
                 self.addScore();
-                if (fb) { fb.textContent = 'ذاكرة حديدية خارقة! طابقت كل الكروت 🏆'; fb.style.color = 'var(--leaf)'; }
+                if (fb) { fb.textContent = 'ذاكرة خارقة! طابقت كل البطاقات 🏆'; fb.style.color = 'var(--leaf)'; }
                 launchConfetti(slideEl);
-                self.setMascotPose('top-center', '<span class="faseeh-name-tag">💡 فصيح يحتفل معك:</span><br>ذاكرة خارقة يا بطل! طابقت بين كل حيوان وصغيره وتعرفت على أسمائها بدقة!', true);
+                self.setMascotBubble('ذاكرة قوية وممتازة يا بطل! طابقت بين كل الحيوانات وصغارها بدقة 💡', true);
               }
             } else {
+              AudioEngine.sndWrong();
               setTimeout(function () {
-                flipped.forEach(function (c) { c.classList.remove('flipped'); });
+                flipped.forEach(function (c) {
+                  c.classList.remove('flipped');
+                  c.querySelector('.mem-back').style.display = 'block';
+                  c.querySelector('.mem-front').style.display = 'none';
+                });
                 flipped = [];
-                AudioEngine.sndWrong();
-              }, 800);
+              }, 700);
             }
           }
         });
       });
 
-      // 11. Tap to Count
-      var countStage = slideEl.querySelector('.count-stage');
-      if (countStage) {
-        var countBubbles = slideEl.querySelectorAll('.count-bubble');
-        var curCount = 0;
-        var targetCount = parseInt(countStage.getAttribute('data-target'), 10);
-        var numDisplay = slideEl.querySelector('#curr-count-num');
+      // 10. Tap to Count
+      var countBtns = slideEl.querySelectorAll('.count-item-btn');
+      var curCount = 0;
+      var targetNum = slide.tapToCount ? slide.tapToCount.targetCount : 0;
+      var countDisplay = slideEl.querySelector('#tap-count-num');
+      countBtns.forEach(function (b) {
+        b.addEventListener('click', function () {
+          if (b.disabled) return;
+          b.disabled = true;
+          b.style.opacity = '0.4';
+          b.style.transform = 'scale(0.85)';
+          curCount++;
+          if (countDisplay) countDisplay.textContent = curCount;
+          AudioEngine.sndCountNote(curCount);
 
-        countBubbles.forEach(function (bubble) {
-          bubble.addEventListener('click', function () {
-            if (bubble.classList.contains('counted')) return;
-            bubble.classList.add('counted');
-            curCount++;
-            if (numDisplay) numDisplay.textContent = curCount;
-            AudioEngine.sndCountNote(curCount);
-
-            if (curCount >= targetCount) {
-              self.addScore();
-              if (fb) { fb.textContent = 'عد صحيح ومتقن! أحسنت يا عبقري الحساب 🌟'; fb.style.color = 'var(--leaf)'; }
-              launchConfetti(slideEl);
-              self.setMascotPose('top-center', '<span class="faseeh-name-tag">💡 فصيح يحييك:</span><br>عد ممتاز ومتقن! أحسنت متابعة النغمات والحساب الصحيح!', true);
-            }
-          });
+          if (curCount >= targetNum) {
+            self.addScore();
+            if (fb) { fb.textContent = 'عد متقن وصحيح 100%! 🌟'; fb.style.color = 'var(--leaf)'; }
+            launchConfetti(slideEl);
+            self.setMascotBubble('عد ممتاز ورائع! أحسنت متابعة النغمات والحساب الدقيق 💡', true);
+          }
         });
-      }
+      });
     },
 
     /* ==========================================================================
-       5. SLIDE NAVIGATION & FASEEH DYNAMIC CHOREOGRAPHY
+       6. SLIDE NAVIGATION & MASCOT FASEEH DYNAMICS
        ========================================================================== */
     goToSlide: function (index) {
       if (!this.data || index < 0 || index >= this.data.slides.length) return;
 
       var slides = this.dom.stage.querySelectorAll('.il-slide');
-      var dots = this.dom.dots ? this.dom.dots.querySelectorAll('.dock-dot') : [];
+      var dots = this.dom.dots ? this.dom.dots.querySelectorAll('.dot') : [];
       var currentSlideData = this.data.slides[index];
 
       slides.forEach(function (s, i) { s.classList.toggle('active', i === index); });
@@ -1151,59 +1078,21 @@
 
       this.currentIndex = index;
 
-      // Strict LTR Counter to avoid Arabic fraction flipping (renders e.g. "10 / 12")
+      // Strict LTR Counter to avoid Arabic fraction flipping
       if (this.dom.counter) {
         this.dom.counter.innerHTML = '<bdi dir="ltr">' + (index + 1) + ' / ' + this.data.slides.length + '</bdi>';
       }
       if (this.dom.prevBtn) this.dom.prevBtn.disabled = index === 0;
       if (this.dom.nextBtn) this.dom.nextBtn.disabled = index === this.data.slides.length - 1;
 
-      // Context-Aware Faseeh Positioning & Bubble Update
-      var defaultPose = 'top-left';
-      if (['quiz', 'true_false', 'classify_sorting'].indexOf(currentSlideData.type) !== -1) {
-        defaultPose = 'top-center';
-      } else if (currentSlideData.type === 'summary') {
-        defaultPose = 'top-center';
-      }
+      var tip = currentSlideData.mascotTip || 'أهلًا بكم! أنا فَصيح المُستَكشِف 🧭 هيا نكتشف أسرار هذا الدرس معًا!';
+      this.setMascotBubble(tip, currentSlideData.type === 'summary');
 
-      var tip = currentSlideData.mascotTip || 'أهلاً بك يا بطل! أنا صديقك فصيح 💡 استكشف معنا أسرار هذا الدرس الممتع!';
-      var tipFormatted = '<div class="bubble-greeting">💡 فصيح المرشد:</div><div class="bubble-text">' + tip + '</div>';
-      this.setMascotPose(defaultPose, tipFormatted, currentSlideData.type === 'summary');
-
-      // Summary Slide handling
       if (currentSlideData.type === 'summary') {
-        this.updateSummarySlide(slides[index]);
         AudioEngine.sndWin();
         launchConfetti(slides[index]);
       } else {
         AudioEngine.sndSlide();
-      }
-    },
-
-    updateSummarySlide: function (slideEl) {
-      var pct = Math.round((this.score / Math.max(1, this.totalActivities)) * 100);
-      var s1 = slideEl.querySelector('#sum-star-1');
-      var s2 = slideEl.querySelector('#sum-star-2');
-      var s3 = slideEl.querySelector('#sum-star-3');
-
-      if (s1) s1.classList.toggle('active', pct >= 30);
-      if (s2) s2.classList.toggle('active', pct >= 60);
-      if (s3) s3.classList.toggle('active', pct >= 90 || this.score >= this.totalActivities);
-
-      var titleEl = slideEl.querySelector('#sum-title');
-      var descEl = slideEl.querySelector('#sum-desc');
-
-      if (titleEl) {
-        titleEl.textContent = 'أنجزت ' + this.score + ' من ' + this.totalActivities + ' نشاطاً بنجاح!';
-      }
-      if (descEl) {
-        if (pct >= 85) {
-          descEl.textContent = 'أداء أسطوري استثنائي! استحققت وسام البطل الذكي و 3 نجوم بجدارة!';
-        } else if (pct >= 50) {
-          descEl.textContent = 'أداء رائع جداً! استمر في التميز والإبداع لتصل إلى القمة!';
-        } else {
-          descEl.textContent = 'محاولة طيبة، راجع الدرس لتكسب جميع النجوم والوسام!';
-        }
       }
     },
 
@@ -1212,7 +1101,7 @@
   };
 
   /* ==========================================================================
-     6. PUBLIC API & AUTO-BOOTSTRAP
+     7. PUBLIC API & AUTO-BOOTSTRAP
      ========================================================================== */
   window.InteractiveLesson = {
     load: function (lessonJson) { LessonEngine.init(lessonJson); },
