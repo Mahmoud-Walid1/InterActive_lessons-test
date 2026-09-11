@@ -1,7 +1,7 @@
 /**
  * Interactive Lesson Runtime Engine (Isolated IIFE)
- * UI/UX Pro Max Edition: Zero external dependencies, pure Web Standards.
- * Flawless 3D Flip System, Centered Capsule Dock, and True Vector SVGs.
+ * PowerPoint & Keynote Killer Edition: Cinematic, Gamified, and Dynamic.
+ * Featuring Dynamic Live Guide (Faseeh), Concept Cards, and Spring Motion.
  */
 (function () {
   'use strict';
@@ -220,16 +220,11 @@
         });
       }
 
-      // Robert Mascot Interactive Click
+      // Faseeh Mascot Interactive Click
       if (this.dom.robertCharacter) {
         this.dom.robertCharacter.addEventListener('click', function () {
           AudioEngine.sndRobotChirp();
-          if (self.dom.mascotBubble) {
-            self.dom.mascotBubble.style.transform = 'scale(1.08)';
-            setTimeout(function () {
-              self.dom.mascotBubble.style.transform = '';
-            }, 300);
-          }
+          self.setMascotPose(null, '<span class="faseeh-name-tag">💡 فصيح يحييك:</span><br>أنا معك خطوة بخطوة، اضغط وتفاعل لتكتشف الأسرار!', true);
         });
       }
 
@@ -238,6 +233,34 @@
         if (e.key === 'ArrowLeft' || e.key === 'PageDown') self.nextSlide();
         if (e.key === 'ArrowRight' || e.key === 'PageUp') self.prevSlide();
       });
+    },
+
+    /* Dynamic Faseeh Motion & Explanation Controller */
+    setMascotPose: function (pose, tipHtml, isCelebrating) {
+      var wrap = this.dom.mascotWrap;
+      var bubble = this.dom.mascotBubble;
+      var char = this.dom.robertCharacter;
+      if (!wrap) return;
+
+      if (pose) {
+        wrap.classList.remove('faseeh-pos-top-left', 'faseeh-pos-top-center', 'faseeh-pos-answer-toast');
+        wrap.classList.add('faseeh-pos-' + pose);
+      }
+
+      if (char) {
+        if (isCelebrating) {
+          char.classList.add('celebrating');
+          setTimeout(function () { char.classList.remove('celebrating'); }, 2200);
+        } else {
+          char.classList.remove('celebrating');
+        }
+      }
+
+      if (bubble && tipHtml) {
+        bubble.innerHTML = tipHtml;
+        bubble.style.transform = 'scale(1.06)';
+        setTimeout(function () { bubble.style.transform = ''; }, 250);
+      }
     },
 
     updateSoundBtnUI: function (isOn) {
@@ -292,7 +315,7 @@
       }
       html += '</div>';
 
-      // 12 Slide Type Renderers with UI/UX Pro Max Architecture
+      // 12 Slide Type Renderers with Staggered Motion and Visual Polish
       switch (slide.type) {
         case 'explain': html += this.renderExplain(slide); break;
         case 'interactive_reveal': html += this.renderReveal(slide); break;
@@ -312,45 +335,43 @@
       return html;
     },
 
-    /* 1. Explain: Animated Avatar + Traits with SVG checks + Examples chips */
+    /* 1. Explain: Color-Coded Concept Cards (Keynote & Canva Pro Style) */
     renderExplain: function (slide) {
-      var animClass = slide.sceneAnimation || 'bounce';
-      var mainEmoji = slide.sceneEmoji || (slide.examples && slide.examples[0] ? slide.examples[0].emoji : '🌱');
-
-      var html = '<div class="scene">';
-      html += '<div class="animal-avatar ' + animClass + '">' + mainEmoji + '</div>';
+      var html = '';
+      var themes = [
+        { key: 'theme-water', icon: '💧', label: 'الماء العذب' },
+        { key: 'theme-air', icon: '💨', label: 'الهواء النقي' },
+        { key: 'theme-food', icon: '🥗', label: 'الغذاء والمأوى' }
+      ];
 
       if (slide.traits && slide.traits.length > 0) {
-        html += '<div class="traits">';
-        slide.traits.forEach(function (trait) {
+        html += '<div class="concept-cards-grid">';
+        slide.traits.forEach(function (trait, i) {
+          var t = themes[i % themes.length];
+          var parts = trait.split(':');
+          var title = parts.length > 1 ? parts[0] : t.label;
+          var desc = parts.length > 1 ? parts.slice(1).join(':') : trait;
+
           html +=
-            '<div class="trait">' +
-            '<svg class="trait-check-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>' +
-            '<span>' + trait + '</span>' +
+            '<div class="concept-card ' + t.key + ' stagger-item stagger-' + (i + 1) + '">' +
+            '<div class="concept-badge ' + t.key + '">' + t.icon + '</div>' +
+            '<h3 class="concept-title">' + title + '</h3>' +
+            '<p class="concept-desc">' + desc + '</p>' +
             '</div>';
         });
         html += '</div>';
       }
-      html += '</div>';
 
       if (slide.examples && slide.examples.length > 0) {
-        html += '<div class="examples-row">';
+        html += '<div class="examples-row stagger-item stagger-4">';
         slide.examples.forEach(function (ex) {
           html +=
             '<div class="ex-chip">' +
-            (ex.emoji ? '<span style="font-size:1.3rem;">' + ex.emoji + '</span>' : '') +
+            (ex.emoji ? '<span style="font-size:1.4rem;">' + ex.emoji + '</span>' : '') +
             '<span>' + (ex.name || '') + '</span>' +
             '</div>';
         });
         html += '</div>';
-      }
-
-      if (slide.revealQuestion && slide.revealAnswer) {
-        html +=
-          '<div class="reveal-q">' +
-          '<div class="q-btn" id="exp-q-btn"><span>' + slide.revealQuestion + '</span></div>' +
-          '<div class="q-ans" id="exp-q-ans">' + slide.revealAnswer + '</div>' +
-          '</div>';
       }
 
       return html;
@@ -363,7 +384,7 @@
         html += '<div class="group-grid">';
         slide.groups.forEach(function (grp, i) {
           html +=
-            '<div class="group-chip" data-idx="' + i + '">' +
+            '<div class="group-chip stagger-item stagger-' + ((i % 3) + 1) + '" data-idx="' + i + '">' +
             '<span class="chip-ico">' + (grp.emoji || '✨') + '</span>' +
             '<span class="chip-name">' + grp.name + '</span>' +
             '<div class="chip-detail">' + grp.detail + '</div>' +
@@ -373,7 +394,7 @@
       }
       if (slide.reveal) {
         html +=
-          '<div class="reveal-q">' +
+          '<div class="reveal-q stagger-item stagger-4">' +
           '<div class="q-btn"><span>' + (slide.reveal.question || 'اضغط لكشف الإجابة') + '</span></div>' +
           '<div class="q-ans">' + slide.reveal.answer + '</div>' +
           '</div>';
@@ -381,16 +402,16 @@
       return html;
     },
 
-    /* 3. Quiz: Game card with tactile option buttons */
+    /* 3. Quiz: Game card with tactile options */
     renderQuiz: function (slide) {
       var q = slide.quiz;
       if (!q) return '';
-      var html = '<div class="game-card">';
+      var html = '<div class="game-card stagger-item stagger-1">';
       html += '<div class="game-q">' + (q.emoji ? q.emoji + ' ' : '') + q.question + '</div>';
       html += '<div class="game-options">';
-      (q.choices || []).forEach(function (choice) {
+      (q.choices || []).forEach(function (choice, i) {
         html +=
-          '<button class="opt-btn" type="button" data-choice-id="' + choice.id + '" data-is-correct="' + (choice.isCorrect ? 'true' : 'false') + '">' +
+          '<button class="opt-btn stagger-item stagger-' + (i + 1) + '" type="button" data-choice-id="' + choice.id + '" data-is-correct="' + (choice.isCorrect ? 'true' : 'false') + '">' +
           '<span>' + choice.text + '</span>' +
           '<svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"></circle></svg>' +
           '</button>';
@@ -406,14 +427,14 @@
       var tf = slide.trueFalse;
       if (!tf) return '';
       return (
-        '<div class="tf-card">' +
+        '<div class="tf-card stagger-item stagger-1">' +
         '<div class="tf-statement">' + tf.statement + '</div>' +
         '<div class="tf-actions">' +
-        '<button class="tf-btn tf-btn-true" type="button" data-answer="true">' +
+        '<button class="tf-btn tf-btn-true stagger-item stagger-2" type="button" data-answer="true">' +
         '<svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>' +
         '<span>صح</span>' +
         '</button>' +
-        '<button class="tf-btn tf-btn-false" type="button" data-answer="false">' +
+        '<button class="tf-btn tf-btn-false stagger-item stagger-3" type="button" data-answer="false">' +
         '<svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>' +
         '<span>خطأ</span>' +
         '</button>' +
@@ -434,14 +455,13 @@
         rightItems.push({ id: p.id, text: p.rightText, emoji: p.rightEmoji });
       });
 
-      // Shuffle right items
       rightItems.sort(function () { return 0.5 - Math.random(); });
 
       var html = '<div class="match-grid">';
       html += '<div class="match-col">';
-      leftItems.forEach(function (item) {
+      leftItems.forEach(function (item, i) {
         html +=
-          '<div class="match-chip" data-match-id="' + item.id + '" data-side="left">' +
+          '<div class="match-chip stagger-item stagger-' + (i + 1) + '" data-match-id="' + item.id + '" data-side="left">' +
           (item.emoji ? '<span style="font-size:1.3rem;">' + item.emoji + '</span>' : '') +
           '<span>' + item.text + '</span>' +
           '</div>';
@@ -449,9 +469,9 @@
       html += '</div>';
 
       html += '<div class="match-col">';
-      rightItems.forEach(function (item) {
+      rightItems.forEach(function (item, i) {
         html +=
-          '<div class="match-chip" data-match-id="' + item.id + '" data-side="right">' +
+          '<div class="match-chip stagger-item stagger-' + (i + 1) + '" data-match-id="' + item.id + '" data-side="right">' +
           (item.emoji ? '<span style="font-size:1.3rem;">' + item.emoji + '</span>' : '') +
           '<span>' + item.text + '</span>' +
           '</div>';
@@ -471,7 +491,7 @@
       var html = '<div class="order-list">';
       steps.forEach(function (st, idx) {
         html +=
-          '<div class="order-card" data-step-id="' + st.id + '" data-correct-order="' + st.order + '">' +
+          '<div class="order-card stagger-item stagger-' + (idx + 1) + '" data-step-id="' + st.id + '" data-correct-order="' + st.order + '">' +
           '<span>' + (st.emoji ? st.emoji + ' ' : '') + st.text + '</span>' +
           '<div class="order-num">' + (idx + 1) + '</div>' +
           '</div>';
@@ -485,13 +505,13 @@
     renderFillBlank: function (slide) {
       var fb = slide.fillBlank;
       if (!fb) return '';
-      var html = '<div class="puzzle-sentence">';
+      var html = '<div class="puzzle-sentence stagger-item stagger-1">';
       html += '<span>' + fb.sentenceBefore + '</span> ';
       html += '<span class="puzzle-slot" data-target-answer="' + fb.blankAnswer + '">؟</span> ';
       html += '<span>' + fb.sentenceAfter + '</span>';
       html += '</div>';
 
-      html += '<div class="word-bank">';
+      html += '<div class="word-bank stagger-item stagger-2">';
       (fb.wordBank || []).forEach(function (w) {
         html += '<button class="word-pill" type="button" data-word="' + w + '">' + w + '</button>';
       });
@@ -508,12 +528,12 @@
 
       var html = '<div class="classify-box" data-current-idx="0">';
       html +=
-        '<div class="classify-target-card" id="curr-classify-card">' +
+        '<div class="classify-target-card stagger-item stagger-1" id="curr-classify-card">' +
         '<div class="target-emoji">' + (firstItem.emoji || '📦') + '</div>' +
         '<div class="target-name">' + firstItem.name + '</div>' +
         '</div>';
 
-      html += '<div class="classify-buckets-row">';
+      html += '<div class="classify-buckets-row stagger-item stagger-2">';
       (cs.buckets || []).forEach(function (b) {
         html +=
           '<div class="bucket-chest" data-bucket-id="' + b.id + '">' +
@@ -532,8 +552,7 @@
       var hs = slide.hotspot;
       if (!hs || !hs.points) return '';
 
-      var html = '<div class="hotspot-stage">';
-      // Scientific Botanical Plant Vector SVG
+      var html = '<div class="hotspot-stage stagger-item stagger-1">';
       html +=
         '<svg class="hotspot-diagram" viewBox="0 0 500 360" preserveAspectRatio="xMidYMid meet">' +
         '<defs>' +
@@ -567,7 +586,6 @@
         '<circle cx="250" cy="90" r="24" fill="#E8A93B"/>' +
         '</svg>';
 
-      // Pulsing Interactive Beacons
       hs.points.forEach(function (pt, i) {
         html +=
           '<button class="hotspot-beacon" type="button" style="top:' + pt.yPercent + '%; left:' + pt.xPercent + '%;" data-idx="' + i + '">' +
@@ -580,7 +598,7 @@
       return html;
     },
 
-    /* 10. Memory Cards: 100% Bug-Free 3D Flip System */
+    /* 10. Memory Cards: 3D Flip Architecture */
     renderMemoryCards: function (slide) {
       var mc = slide.memoryCards;
       if (!mc || !mc.pairs) return '';
@@ -592,9 +610,9 @@
       deck.sort(function () { return 0.5 - Math.random(); });
 
       var html = '<div class="memory-grid">';
-      deck.forEach(function (c) {
+      deck.forEach(function (c, i) {
         html +=
-          '<div class="mem-card" data-match-id="' + c.matchId + '">' +
+          '<div class="mem-card stagger-item stagger-' + ((i % 4) + 1) + '" data-match-id="' + c.matchId + '">' +
           '<div class="mem-inner">' +
           '<!-- Front Face (Closed) -->' +
           '<div class="mem-face mem-front">' +
@@ -621,7 +639,7 @@
       if (!tc) return '';
       var count = tc.targetCount || 5;
 
-      var html = '<div class="count-stage" data-target="' + count + '" data-current="0">';
+      var html = '<div class="count-stage stagger-item stagger-1" data-target="' + count + '" data-current="0">';
       html +=
         '<div>' +
         '<span class="count-badge-pill">العدد الحالي: <strong id="curr-count-num">0</strong> من ' + count + ' ' + (tc.itemName || '') + '</span>' +
@@ -630,7 +648,7 @@
       html += '<div class="count-items-grid">';
       for (var i = 0; i < count; i++) {
         html +=
-          '<button class="count-bubble" type="button" data-index="' + (i + 1) + '">' +
+          '<button class="count-bubble stagger-item stagger-' + ((i % 4) + 1) + '" type="button" data-index="' + (i + 1) + '">' +
           (tc.itemEmoji || '🍎') +
           '</button>';
       }
@@ -643,20 +661,20 @@
     /* 12. Summary: Award certificate with glowing SVG stars and confetti */
     renderSummary: function (slide) {
       return (
-        '<div class="summary-box">' +
+        '<div class="summary-box stagger-item stagger-1">' +
         '<div class="stars-row">' +
         '<svg class="star-svg" id="sum-star-1" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>' +
         '<svg class="star-svg" id="sum-star-2" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>' +
         '<svg class="star-svg" id="sum-star-3" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>' +
         '</div>' +
-        '<h2 style="font-family:\'Baloo 2\',sans-serif; font-size:1.8rem; font-weight:800; color:var(--ink); margin-bottom:8px;" id="sum-title">أداء رائع ومميز!</h2>' +
-        '<p style="font-size:1.05rem; font-weight:700; color:var(--ink-light);" id="sum-desc">لقد أكملت جميع الأنشطة والتمارين بنجاح واستحققت وسام البطل الذكي!</p>' +
+        '<h2 style="font-family:\'Baloo 2\',sans-serif; font-size:1.9rem; font-weight:800; color:var(--ink); margin-bottom:8px;" id="sum-title">أداء رائع ومميز!</h2>' +
+        '<p style="font-size:1.08rem; font-weight:700; color:var(--ink-light);" id="sum-desc">لقد أكملت جميع الأنشطة والتمارين بنجاح واستحققت وسام البطل الذكي!</p>' +
         '</div>'
       );
     },
 
     /* ==========================================================================
-       4. INTERACTIVITY DISPATCHER & LOGIC HANDLERS
+       4. INTERACTIVITY DISPATCHER & DYNAMIC FASEEH EXPLANATIONS
        ========================================================================== */
     bindSlideInteractivity: function (slideEl, slide, slideIndex) {
       var self = this;
@@ -666,7 +684,11 @@
       if (expBtn) {
         expBtn.addEventListener('click', function () {
           var ans = slideEl.querySelector('#exp-q-ans');
-          if (ans) { ans.classList.toggle('show'); AudioEngine.sndClick(); }
+          if (ans) {
+            ans.classList.toggle('show');
+            AudioEngine.sndClick();
+            self.setMascotPose('top-left', '<span class="faseeh-name-tag">💡 فصيح يوضح لك:</span><br>تذكر دائماً: الماء والهواء والغذاء أساس استمرار كل كائن حي!', true);
+          }
         });
       }
 
@@ -675,17 +697,23 @@
         chip.addEventListener('click', function () {
           chip.classList.toggle('open');
           AudioEngine.sndCardOpen();
+          var name = chip.querySelector('.chip-name').textContent;
+          self.setMascotPose('top-left', '<span class="faseeh-name-tag">💡 فصيح يشاركك:</span><br>رائع! لقد كشفت سر (' + name + ') وكيف يفيد المخلوقات الحية.', false);
         });
       });
       var revBtn = slideEl.querySelector('.reveal-q .q-btn');
       if (revBtn) {
         revBtn.addEventListener('click', function () {
           var ans = slideEl.querySelector('.reveal-q .q-ans');
-          if (ans) { ans.classList.toggle('show'); AudioEngine.sndClick(); }
+          if (ans) {
+            ans.classList.toggle('show');
+            AudioEngine.sndClick();
+            self.setMascotPose('top-center', '<span class="faseeh-name-tag">💡 فصيح يؤكد لك:</span><br>أحسنت! الماء عصب الحياة، ولا يمكن لأي كائن حي البقاء بدونه إطلاقاً.', true);
+          }
         });
       }
 
-      // 3. Quiz
+      // 3. Quiz with Dynamic Faseeh Explanation
       var qBtns = slideEl.querySelectorAll('.opt-btn');
       var fb = slideEl.querySelector('.feedback-msg');
       qBtns.forEach(function (btn) {
@@ -698,18 +726,20 @@
             self.addScore();
             AudioEngine.sndCorrect();
             launchConfetti(slideEl);
+            self.setMascotPose('top-center', '<span class="faseeh-name-tag">💡 فصيح يشرح لك:</span><br>إجابة ذكية وممتازة! النبات الأخضر كائن منتج يصنع غذاءه بنفسه من ضوء الشمس والماء والهواء!', true);
           } else {
             btn.classList.add('wrong');
             qBtns.forEach(function (b) {
               if (b.getAttribute('data-is-correct') === 'true') b.classList.add('correct');
             });
-            if (fb) { fb.textContent = 'محاولة طيبة، لاحظ الإجابة الصحيحة المحددة بالأخضر!'; fb.style.color = 'var(--danger)'; }
+            if (fb) { fb.textContent = 'محاولة طيبة، فكر في القاعدة العلمية!'; fb.style.color = 'var(--danger)'; }
             AudioEngine.sndWrong();
+            self.setMascotPose('top-center', '<span class="faseeh-name-tag">💡 فصيح ينصحك:</span><br>فكر جيداً يا بطل: النبات يحتاج عناصر طبيعية تصنع الغذاء في أوراقه، وليس سكريات أو رمال!', false);
           }
         });
       });
 
-      // 4. True or False
+      // 4. True or False with Dynamic Faseeh Explanation
       var tfBtns = slideEl.querySelectorAll('.tf-btn');
       tfBtns.forEach(function (btn) {
         btn.addEventListener('click', function () {
@@ -722,10 +752,12 @@
             self.addScore();
             AudioEngine.sndCorrect();
             launchConfetti(slideEl);
+            self.setMascotPose('top-center', '<span class="faseeh-name-tag">💡 فصيح يشرح لك:</span><br>رائع يا عبقري! الصخور من الجمادات غير الحية، فلا تنمو ولا تتنفس ولذلك لا تحتاج إلى غذاء أو ماء!', true);
           } else {
             btn.style.boxShadow = '0 0 0 4px var(--danger)';
-            if (fb) { fb.textContent = 'إجابة غير صحيحة، فكر جيداً في السؤال!'; fb.style.color = 'var(--danger)'; }
+            if (fb) { fb.textContent = 'إجابة غير صحيحة، راجع طبيعة الجمادات!'; fb.style.color = 'var(--danger)'; }
             AudioEngine.sndWrong();
+            self.setMascotPose('top-center', '<span class="faseeh-name-tag">💡 فصيح ينصحك:</span><br>تأمل الصخور حولك: هل تكبر أو تجوع؟ إنها أشياء غير حية فلا تحتاج للغذاء!', false);
           }
         });
       });
@@ -771,6 +803,7 @@
                 self.addScore();
                 if (fb) { fb.textContent = 'أحسنت! أكملت كافة التوصيلات بنجاح 👏'; fb.style.color = 'var(--leaf)'; }
                 launchConfetti(slideEl);
+                self.setMascotPose('top-left', '<span class="faseeh-name-tag">💡 فصيح يحييك:</span><br>توصيل متقن! كل مخلوق يعيش في مأوى آمن يناسب طبيعته ويحميه.', true);
               }
             } else {
               var leftEl = selectedLeft;
@@ -805,6 +838,7 @@
               self.addScore();
               if (fb) { fb.textContent = 'ترتيب ممتاز وصحيح 100%! 🌟'; fb.style.color = 'var(--leaf)'; }
               launchConfetti(slideEl);
+              self.setMascotPose('top-left', '<span class="faseeh-name-tag">💡 فصيح يشرح لك:</span><br>ترتيب علمي دقيق! تبدأ دورة نمو النبات بوضع البذرة، ثم تنمو البادرة وتتفتح الأزهار.', true);
             }
           } else {
             card.classList.add('wrong');
@@ -830,6 +864,7 @@
               self.addScore();
               AudioEngine.sndCorrect();
               launchConfetti(slideEl);
+              self.setMascotPose('top-center', '<span class="faseeh-name-tag">💡 فصيح يشرح لك:</span><br>أحسنت التعبير العلمي! خلق الله للأسماك خياشيم متخصصة لاستخلاص الأكسجين الذائب في الماء.', true);
             } else {
               puzzleSlot.style.borderColor = 'var(--danger)';
               AudioEngine.sndWrong();
@@ -860,10 +895,11 @@
                 cardEl.querySelector('.target-emoji').textContent = cItems[cIdx].emoji || '📦';
                 cardEl.querySelector('.target-name').textContent = cItems[cIdx].name;
               } else {
-                cardEl.innerHTML = '<div style="font-size:2.4rem;">🎉</div><div style="font-weight:800; color:var(--ink);">تم فرز جميع العناصر!</div>';
+                cardEl.innerHTML = '<div style="font-size:2.6rem;">🎉</div><div style="font-weight:900; color:var(--ink);">تم فرز جميع العناصر!</div>';
                 self.addScore();
                 if (fb) { fb.textContent = 'تصنيف دقيق وممتاز! أحسنت يا بطل! 🌟'; fb.style.color = 'var(--leaf)'; }
                 launchConfetti(slideEl);
+                self.setMascotPose('top-center', '<span class="faseeh-name-tag">💡 فصيح يشرح لك:</span><br>تصنيف عبقري! الكائنات الحية كالفراشة والقطة تنمو وتتغذى، بينما القلم والسيارة أشياء غير حية.', true);
               }
             } else {
               b.style.borderColor = 'var(--danger)';
@@ -885,11 +921,12 @@
             popup.innerHTML = '<strong>' + (pt.emoji ? pt.emoji + ' ' : '') + pt.title + ':</strong> ' + pt.detail;
             popup.classList.add('show');
             AudioEngine.sndCardOpen();
+            self.setMascotPose('top-left', '<span class="faseeh-name-tag">💡 فصيح يوضح:</span><br>أنت الآن تستكشف (' + pt.title + ') ووظيفتها الحيوية في حياة النبات.', false);
           });
         });
       }
 
-      // 10. Memory Cards (True 3D Flip Execution)
+      // 10. Memory Cards (True 3D Flip System)
       var memCards = slideEl.querySelectorAll('.mem-card');
       var flipped = [];
       var matchedPairs = 0;
@@ -915,6 +952,7 @@
                 self.addScore();
                 if (fb) { fb.textContent = 'ذاكرة حديدية خارقة! طابقت كل الكروت 🏆'; fb.style.color = 'var(--leaf)'; }
                 launchConfetti(slideEl);
+                self.setMascotPose('top-center', '<span class="faseeh-name-tag">💡 فصيح يحتفل معك:</span><br>ذاكرة خارقة يا بطل! طابقت بين كل حيوان وصغيره وتعرفت على أسمائها بدقة!', true);
               }
             } else {
               setTimeout(function () {
@@ -947,6 +985,7 @@
               self.addScore();
               if (fb) { fb.textContent = 'عد صحيح ومتقن! أحسنت يا عبقري الحساب 🌟'; fb.style.color = 'var(--leaf)'; }
               launchConfetti(slideEl);
+              self.setMascotPose('top-center', '<span class="faseeh-name-tag">💡 فصيح يحييك:</span><br>عد ممتاز ومتقن! أحسنت متابعة النغمات والحساب الصحيح!', true);
             }
           });
         });
@@ -954,7 +993,7 @@
     },
 
     /* ==========================================================================
-       5. SLIDE NAVIGATION & MASCOT BUBBLE SYNC
+       5. SLIDE NAVIGATION & FASEEH DYNAMIC CHOREOGRAPHY
        ========================================================================== */
     goToSlide: function (index) {
       if (!this.data || index < 0 || index >= this.data.slides.length) return;
@@ -968,21 +1007,23 @@
 
       this.currentIndex = index;
 
-      // Strict LTR Counter to avoid Arabic fraction flipping (e.g. renders "10 / 12", never "12 / 10")
+      // Strict LTR Counter to avoid Arabic fraction flipping (renders e.g. "10 / 12")
       if (this.dom.counter) {
         this.dom.counter.innerHTML = '<bdi dir="ltr">' + (index + 1) + ' / ' + this.data.slides.length + '</bdi>';
       }
       if (this.dom.prevBtn) this.dom.prevBtn.disabled = index === 0;
       if (this.dom.nextBtn) this.dom.nextBtn.disabled = index === this.data.slides.length - 1;
 
-      // Update Faseeh Mascot Companion Speech Bubble
-      if (this.dom.mascotBubble) {
-        if (currentSlideData.mascotTip) {
-          this.dom.mascotBubble.textContent = currentSlideData.mascotTip;
-        } else {
-          this.dom.mascotBubble.textContent = 'أهلاً بك يا بطل! أنا صديقك فصيح 💡 استكشف معنا أسرار هذا الدرس الممتع!';
-        }
+      // Context-Aware Faseeh Positioning & Bubble Update
+      var defaultPose = 'top-left';
+      if (['quiz', 'true_false', 'classify_sorting'].indexOf(currentSlideData.type) !== -1) {
+        defaultPose = 'top-center';
+      } else if (currentSlideData.type === 'summary') {
+        defaultPose = 'top-center';
       }
+
+      var tip = currentSlideData.mascotTip || 'أهلاً بك يا بطل! أنا صديقك فصيح 💡 استكشف معنا أسرار هذا الدرس الممتع!';
+      this.setMascotPose(defaultPose, tip, currentSlideData.type === 'summary');
 
       // Summary Slide handling
       if (currentSlideData.type === 'summary') {
