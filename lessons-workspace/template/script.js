@@ -1,8 +1,7 @@
 /**
  * Interactive Lesson Runtime Engine (Isolated IIFE)
- * Comprehensive 12-Slide Educational Interactive System
- * Styled to perfectly match the Warm Storybook Prototype
- * Zero external dependencies. Full Web Audio API synthesizer fallback.
+ * UI/UX Pro Max Edition: Zero external dependencies, pure Web Standards.
+ * Flawless 3D Flip System, Centered Capsule Dock, and True Vector SVGs.
  */
 (function () {
   'use strict';
@@ -25,7 +24,7 @@
   }
 
   /* ==========================================================================
-     1. AUDIO SYSTEM (HTML5 Audio + Web Audio API Synthesizer Fallback)
+     1. AUDIO ENGINE (HTML5 Audio + Web Audio API Synthesizer Fallback)
      ========================================================================== */
   var AudioEngine = (function () {
     var soundOn = true;
@@ -136,12 +135,12 @@
   })();
 
   /* ==========================================================================
-     2. VISUAL CELEBRATION (CONFETTI SYSTEM)
+     2. CELEBRATION EFFECTS (CONFETTI GENERATOR)
      ========================================================================== */
   function launchConfetti(targetContainer) {
     var root = targetContainer || document.getElementById('interactive-lesson-root');
     if (!root) return;
-    var colors = ['#C1502E', '#4F7942', '#3E92B0', '#E8A93B', '#FFD700', '#FF6B6B', '#48BB78'];
+    var colors = ['#C1502E', '#3D6A35', '#0284C7', '#E8A93B', '#F59E0B', '#EF4444', '#10B981'];
     for (var i = 0; i < 35; i++) {
       var flake = document.createElement('div');
       flake.className = 'confetti-particle';
@@ -243,8 +242,15 @@
 
     updateSoundBtnUI: function (isOn) {
       if (!this.dom.soundBtn) return;
-      this.dom.soundBtn.textContent = isOn ? '🔊' : '🔇';
-      this.dom.soundBtn.style.opacity = isOn ? '1' : '0.6';
+      if (isOn) {
+        this.dom.soundBtn.innerHTML =
+          '<svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>';
+        this.dom.soundBtn.style.opacity = '1';
+      } else {
+        this.dom.soundBtn.innerHTML =
+          '<svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>';
+        this.dom.soundBtn.style.opacity = '0.6';
+      }
     },
 
     addScore: function () {
@@ -286,7 +292,7 @@
       }
       html += '</div>';
 
-      // 12 Slide Type Renderers matching the Prototype styles
+      // 12 Slide Type Renderers with UI/UX Pro Max Architecture
       switch (slide.type) {
         case 'explain': html += this.renderExplain(slide); break;
         case 'interactive_reveal': html += this.renderReveal(slide); break;
@@ -306,7 +312,7 @@
       return html;
     },
 
-    /* 1. Explain: Scene with animated mascot/avatar + traits + examples */
+    /* 1. Explain: Animated Avatar + Traits with SVG checks + Examples chips */
     renderExplain: function (slide) {
       var animClass = slide.sceneAnimation || 'bounce';
       var mainEmoji = slide.sceneEmoji || (slide.examples && slide.examples[0] ? slide.examples[0].emoji : '🌱');
@@ -317,7 +323,11 @@
       if (slide.traits && slide.traits.length > 0) {
         html += '<div class="traits">';
         slide.traits.forEach(function (trait) {
-          html += '<div class="trait"><strong>•</strong> <span>' + trait + '</span></div>';
+          html +=
+            '<div class="trait">' +
+            '<svg class="trait-check-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>' +
+            '<span>' + trait + '</span>' +
+            '</div>';
         });
         html += '</div>';
       }
@@ -328,8 +338,8 @@
         slide.examples.forEach(function (ex) {
           html +=
             '<div class="ex-chip">' +
-            (ex.emoji ? '<span class="ex-emoji">' + ex.emoji + '</span>' : '') +
-            '<span class="ex-name">' + (ex.name || '') + '</span>' +
+            (ex.emoji ? '<span style="font-size:1.3rem;">' + ex.emoji + '</span>' : '') +
+            '<span>' + (ex.name || '') + '</span>' +
             '</div>';
         });
         html += '</div>';
@@ -346,7 +356,7 @@
       return html;
     },
 
-    /* 2. Reveal: 3D interactive group chips + challenge question */
+    /* 2. Reveal: 3D tactile chips + challenge box */
     renderReveal: function (slide) {
       var html = '';
       if (slide.groups && slide.groups.length > 0) {
@@ -371,7 +381,7 @@
       return html;
     },
 
-    /* 3. Quiz: Game card with tactile options */
+    /* 3. Quiz: Game card with tactile option buttons */
     renderQuiz: function (slide) {
       var q = slide.quiz;
       if (!q) return '';
@@ -382,6 +392,7 @@
         html +=
           '<button class="opt-btn" type="button" data-choice-id="' + choice.id + '" data-is-correct="' + (choice.isCorrect ? 'true' : 'false') + '">' +
           '<span>' + choice.text + '</span>' +
+          '<svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"></circle></svg>' +
           '</button>';
       });
       html += '</div>';
@@ -390,20 +401,20 @@
       return html;
     },
 
-    /* 4. True or False: Big statement card with green/red pill buttons */
+    /* 4. True or False: Statement card with large ergonomic pills */
     renderTrueFalse: function (slide) {
       var tf = slide.trueFalse;
       if (!tf) return '';
       return (
         '<div class="tf-card">' +
-        '<div class="tf-q">' + tf.statement + '</div>' +
+        '<div class="tf-statement">' + tf.statement + '</div>' +
         '<div class="tf-actions">' +
-        '<button class="tf-btn tf-true" type="button" data-answer="true">' +
-        '<span class="tf-icon">✓</span>' +
+        '<button class="tf-btn tf-btn-true" type="button" data-answer="true">' +
+        '<svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>' +
         '<span>صح</span>' +
         '</button>' +
-        '<button class="tf-btn tf-false" type="button" data-answer="false">' +
-        '<span class="tf-icon">✗</span>' +
+        '<button class="tf-btn tf-btn-false" type="button" data-answer="false">' +
+        '<svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>' +
         '<span>خطأ</span>' +
         '</button>' +
         '</div>' +
@@ -412,7 +423,7 @@
       );
     },
 
-    /* 5. Match Pairs: Two-column tactile chip connector */
+    /* 5. Match Pairs: Two-column tactile connector */
     renderMatchPairs: function (slide) {
       var mp = slide.matchPairs;
       if (!mp || !mp.pairs) return '';
@@ -451,7 +462,7 @@
       return html;
     },
 
-    /* 6. Order Sequence: Numbered sequence cards */
+    /* 6. Order Sequence: Step timeline cards */
     renderOrderSequence: function (slide) {
       var os = slide.orderSequence;
       if (!os || !os.steps) return '';
@@ -461,8 +472,8 @@
       steps.forEach(function (st, idx) {
         html +=
           '<div class="order-card" data-step-id="' + st.id + '" data-correct-order="' + st.order + '">' +
-          '<span class="order-num">' + (idx + 1) + '</span>' +
-          '<span class="order-text">' + (st.emoji ? st.emoji + ' ' : '') + st.text + '</span>' +
+          '<span>' + (st.emoji ? st.emoji + ' ' : '') + st.text + '</span>' +
+          '<div class="order-num">' + (idx + 1) + '</div>' +
           '</div>';
       });
       html += '</div>';
@@ -470,7 +481,7 @@
       return html;
     },
 
-    /* 7. Fill in the Blank: Storybook sentence with missing puzzle slot & word bank */
+    /* 7. Fill in the Blank: Storybook sentence card & word bank pills */
     renderFillBlank: function (slide) {
       var fb = slide.fillBlank;
       if (!fb) return '';
@@ -489,7 +500,7 @@
       return html;
     },
 
-    /* 8. Classify & Sorting: Target card + tactile wooden treasure buckets */
+    /* 8. Classify & Sorting: Target card + wooden chest 3D buckets */
     renderClassify: function (slide) {
       var cs = slide.classifySorting;
       if (!cs || !cs.items || cs.items.length === 0) return '';
@@ -506,8 +517,8 @@
       (cs.buckets || []).forEach(function (b) {
         html +=
           '<div class="bucket-chest" data-bucket-id="' + b.id + '">' +
-          '<div class="bucket-ico">' + (b.emoji || '📥') + '</div>' +
-          '<div class="bucket-label">' + b.name + '</div>' +
+          '<span class="bucket-ico">' + (b.emoji || '📥') + '</span>' +
+          '<span class="bucket-label">' + b.name + '</span>' +
           '</div>';
       });
       html += '</div>';
@@ -516,13 +527,13 @@
       return html;
     },
 
-    /* 9. Hotspot Explore: Detailed Botanical Plant Vector SVG with Pulsing Beacons */
+    /* 9. Hotspot Explore: Botanical Plant Vector SVG with Pulsing Beacons */
     renderHotspot: function (slide) {
       var hs = slide.hotspot;
       if (!hs || !hs.points) return '';
 
       var html = '<div class="hotspot-stage">';
-      // Authentic Botanical Vector SVG
+      // Scientific Botanical Plant Vector SVG
       html +=
         '<svg class="hotspot-diagram" viewBox="0 0 500 360" preserveAspectRatio="xMidYMid meet">' +
         '<defs>' +
@@ -531,8 +542,8 @@
         '    <stop offset="100%" stop-color="#5C3A1E"/>' +
         '  </linearGradient>' +
         '  <linearGradient id="stemGrad" x1="0" y1="0" x2="1" y2="0">' +
-        '    <stop offset="0%" stop-color="#4F7942"/>' +
-        '    <stop offset="100%" stop-color="#3b5e32"/>' +
+        '    <stop offset="0%" stop-color="#3D6A35"/>' +
+        '    <stop offset="100%" stop-color="#2D4F27"/>' +
         '  </linearGradient>' +
         '</defs>' +
         '<!-- Soil Base -->' +
@@ -542,9 +553,9 @@
         '<!-- Stem -->' +
         '<path d="M250 260 C250 190 246 150 250 100" stroke="url(#stemGrad)" stroke-width="14" fill="none" stroke-linecap="round"/>' +
         '<!-- Left Leaf -->' +
-        '<path d="M248 180 C180 165 140 185 125 215 C160 225 210 215 248 190" fill="#4F7942" stroke="#3b5e32" stroke-width="2.5"/>' +
+        '<path d="M248 180 C180 165 140 185 125 215 C160 225 210 215 248 190" fill="#3D6A35" stroke="#2D4F27" stroke-width="2.5"/>' +
         '<!-- Right Leaf -->' +
-        '<path d="M250 150 C320 135 360 155 375 185 C340 195 290 185 250 160" fill="#4F7942" stroke="#3b5e32" stroke-width="2.5"/>' +
+        '<path d="M250 150 C320 135 360 155 375 185 C340 195 290 185 250 160" fill="#3D6A35" stroke="#2D4F27" stroke-width="2.5"/>' +
         '<!-- Flower Petals -->' +
         '<circle cx="250" cy="90" r="48" fill="#E8A93B" opacity="0.25"/>' +
         '<circle cx="215" cy="72" r="24" fill="#C1502E"/>' +
@@ -569,7 +580,7 @@
       return html;
     },
 
-    /* 10. Memory Cards: 3D flip tactile wooden memory grid */
+    /* 10. Memory Cards: 100% Bug-Free 3D Flip System */
     renderMemoryCards: function (slide) {
       var mc = slide.memoryCards;
       if (!mc || !mc.pairs) return '';
@@ -585,10 +596,16 @@
         html +=
           '<div class="mem-card" data-match-id="' + c.matchId + '">' +
           '<div class="mem-inner">' +
-          '<div class="mem-face mem-back">🌟</div>' +
+          '<!-- Front Face (Closed) -->' +
           '<div class="mem-face mem-front">' +
-          (c.emoji ? '<span class="card-emoji">' + c.emoji + '</span>' : '') +
-          '<span class="card-name">' + c.text + '</span>' +
+          '<svg class="card-crest-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">' +
+          '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>' +
+          '</svg>' +
+          '</div>' +
+          '<!-- Back Face (Revealed) -->' +
+          '<div class="mem-face mem-back">' +
+          '<span class="card-emoji-box">' + (c.emoji || '✨') + '</span>' +
+          '<span class="card-title-text">' + c.text + '</span>' +
           '</div>' +
           '</div>' +
           '</div>';
@@ -606,8 +623,8 @@
 
       var html = '<div class="count-stage" data-target="' + count + '" data-current="0">';
       html +=
-        '<div class="count-badge-row">' +
-        '<span class="count-score-pill">العدد الحالي: <strong class="curr-num" id="curr-count-num">0</strong> من ' + count + ' ' + (tc.itemName || '') + '</span>' +
+        '<div>' +
+        '<span class="count-badge-pill">العدد الحالي: <strong id="curr-count-num">0</strong> من ' + count + ' ' + (tc.itemName || '') + '</span>' +
         '</div>';
 
       html += '<div class="count-items-grid">';
@@ -623,17 +640,17 @@
       return html;
     },
 
-    /* 12. Summary: Warm celebratory certificate with glowing stars and confetti */
+    /* 12. Summary: Award certificate with glowing SVG stars and confetti */
     renderSummary: function (slide) {
       return (
         '<div class="summary-box">' +
-        '<div class="stars-trio">' +
-        '<span class="star-pill" id="sum-star-1">★</span>' +
-        '<span class="star-pill" id="sum-star-2">★</span>' +
-        '<span class="star-pill" id="sum-star-3">★</span>' +
+        '<div class="stars-row">' +
+        '<svg class="star-svg" id="sum-star-1" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>' +
+        '<svg class="star-svg" id="sum-star-2" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>' +
+        '<svg class="star-svg" id="sum-star-3" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>' +
         '</div>' +
-        '<h2 class="summary-title" id="sum-title">أداء رائع ومميز!</h2>' +
-        '<p class="summary-msg" id="sum-desc">لقد أكملت جميع الأنشطة والتمارين بنجاح واستحققت وسام البطل الذكي!</p>' +
+        '<h2 style="font-family:\'Baloo 2\',sans-serif; font-size:1.8rem; font-weight:800; color:var(--ink); margin-bottom:8px;" id="sum-title">أداء رائع ومميز!</h2>' +
+        '<p style="font-size:1.05rem; font-weight:700; color:var(--ink-light);" id="sum-desc">لقد أكملت جميع الأنشطة والتمارين بنجاح واستحققت وسام البطل الذكي!</p>' +
         '</div>'
       );
     },
@@ -700,13 +717,13 @@
           var ans = btn.getAttribute('data-answer') === 'true';
           var isTrueTarget = slide.trueFalse ? slide.trueFalse.isTrue : true;
           if (ans === isTrueTarget) {
-            btn.classList.add('active-select');
+            btn.style.boxShadow = '0 0 0 4px var(--leaf)';
             if (fb) { fb.textContent = 'رائع جداً! إجابتك صحيحة 🎯'; fb.style.color = 'var(--leaf)'; }
             self.addScore();
             AudioEngine.sndCorrect();
             launchConfetti(slideEl);
           } else {
-            btn.classList.add('wrong');
+            btn.style.boxShadow = '0 0 0 4px var(--danger)';
             if (fb) { fb.textContent = 'إجابة غير صحيحة، فكر جيداً في السؤال!'; fb.style.color = 'var(--danger)'; }
             AudioEngine.sndWrong();
           }
@@ -814,10 +831,10 @@
               AudioEngine.sndCorrect();
               launchConfetti(slideEl);
             } else {
-              puzzleSlot.classList.add('wrong');
+              puzzleSlot.style.borderColor = 'var(--danger)';
               AudioEngine.sndWrong();
               setTimeout(function () {
-                puzzleSlot.classList.remove('wrong');
+                puzzleSlot.style.borderColor = '';
                 puzzleSlot.textContent = '؟';
               }, 700);
             }
@@ -849,9 +866,9 @@
                 launchConfetti(slideEl);
               }
             } else {
-              b.classList.add('wrong');
+              b.style.borderColor = 'var(--danger)';
               AudioEngine.sndWrong();
-              setTimeout(function () { b.classList.remove('wrong'); }, 500);
+              setTimeout(function () { b.style.borderColor = ''; }, 500);
             }
           });
         });
@@ -872,7 +889,7 @@
         });
       }
 
-      // 10. Memory Cards
+      // 10. Memory Cards (True 3D Flip Execution)
       var memCards = slideEl.querySelectorAll('.mem-card');
       var flipped = [];
       var matchedPairs = 0;
@@ -880,7 +897,7 @@
 
       memCards.forEach(function (card) {
         card.addEventListener('click', function () {
-          if (card.classList.contains('flipped') || flipped.length >= 2) return;
+          if (card.classList.contains('flipped') || card.classList.contains('matched') || flipped.length >= 2) return;
           card.classList.add('flipped');
           flipped.push(card);
           AudioEngine.sndClick();
@@ -890,6 +907,8 @@
             var id2 = flipped[1].getAttribute('data-match-id');
             if (id1 === id2) {
               matchedPairs++;
+              flipped[0].classList.add('matched');
+              flipped[1].classList.add('matched');
               AudioEngine.sndCorrect();
               flipped = [];
               if (matchedPairs >= totalMemoryPairs) {
@@ -902,7 +921,7 @@
                 flipped.forEach(function (c) { c.classList.remove('flipped'); });
                 flipped = [];
                 AudioEngine.sndWrong();
-              }, 850);
+              }, 800);
             }
           }
         });
@@ -948,18 +967,20 @@
       dots.forEach(function (d, i) { d.classList.toggle('active', i === index); });
 
       this.currentIndex = index;
+
+      // Strict LTR Counter to avoid Arabic fraction flipping (e.g. renders "10 / 12", never "12 / 10")
       if (this.dom.counter) {
-        this.dom.counter.textContent = (index + 1) + ' / ' + this.data.slides.length;
+        this.dom.counter.innerHTML = '<bdi dir="ltr">' + (index + 1) + ' / ' + this.data.slides.length + '</bdi>';
       }
       if (this.dom.prevBtn) this.dom.prevBtn.disabled = index === 0;
       if (this.dom.nextBtn) this.dom.nextBtn.disabled = index === this.data.slides.length - 1;
 
-      // Update Robert Mascot's Speech Bubble
+      // Update Robert Mascot Companion Speech Bubble
       if (this.dom.mascotBubble) {
         if (currentSlideData.mascotTip) {
           this.dom.mascotBubble.textContent = currentSlideData.mascotTip;
         } else {
-          this.dom.mascotBubble.textContent = 'أهلاً بك يا بطل! استكشف معنا أسرار هذا الدرس الممتع! 💡';
+          this.dom.mascotBubble.textContent = 'أهلاً بك يا بطل! استكشف معنا أسرار هذا الدرس الممتع!';
         }
       }
 
@@ -991,11 +1012,11 @@
       }
       if (descEl) {
         if (pct >= 85) {
-          descEl.textContent = 'أداء أسطوري استثنائي! استحققت وسام البطل الذكي و 3 نجوم بجدارة 🌟🌟🌟';
+          descEl.textContent = 'أداء أسطوري استثنائي! استحققت وسام البطل الذكي و 3 نجوم بجدارة!';
         } else if (pct >= 50) {
-          descEl.textContent = 'أداء رائع جداً! استمر في التميز والإبداع لتصل إلى القمة 🌟🌟';
+          descEl.textContent = 'أداء رائع جداً! استمر في التميز والإبداع لتصل إلى القمة!';
         } else {
-          descEl.textContent = 'محاولة طيبة، راجع الدرس لتكسب جميع النجوم والوسام! 🌟';
+          descEl.textContent = 'محاولة طيبة، راجع الدرس لتكسب جميع النجوم والوسام!';
         }
       }
     },

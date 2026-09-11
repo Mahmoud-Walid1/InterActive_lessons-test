@@ -96,6 +96,10 @@ The `lessons-workspace/` directory is designed to be pushed or distributed as an
 - **Zero Platform Leakage**: Does not contain any crypto (`src/lib/crypto`), security guards (`src/components/security`), admin logic (`src/app/admin`), agent instructions (`AGENTS.md`, `CLAUDE.md`), or licensing logic.
 - **Zero-Dependency Runtime**: Built purely with HTML5, Scoped Vanilla CSS, Vanilla JS (IIFE), and Web Audio API. Content authors require no Node.js or build steps.
 - **Automated Ingestion Ready**: Every `lesson.json` strictly adheres to `src/types/lesson.ts` so `lessonPackager.ts` can ingest, encrypt, and bundle lessons directly into the platform offline cache.
+- **UI/UX Pro Max Design System**:
+  - Palette: Storybook parchment (`#FBF3DE`) + Deep forest ink (`#182E2B`) + Terracotta clay (`#C1502E`) + Leaf green (`#3D6A35`) + Ocean sky (`#0284C7`) + Amber gold (`#E8A93B`).
+  - Typography: Google Fonts `Baloo 2` (headings, badges, counters) + `Tajawal` (body).
+  - Component Standards: Zero structural emojis (pure SVG vector icons with 2.5px stroke), true 3D flip architecture (`preserve-3d` + `backface-visibility: hidden`), centered floating capsule dock with strict LTR counter (`<bdi dir="ltr">`), and top-left companion mascot.
 - **Dedicated Remote Repository**:
   - URL: `https://github.com/Mahmoud-Walid1/lessons-workspace.git`
   - Pull lessons updates: `npm run workspace:pull`

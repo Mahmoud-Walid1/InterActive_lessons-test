@@ -542,9 +542,9 @@
         <!-- Embedded Interactive Lesson Root Container -->
         <div id="interactive-lesson-root">
 
-          <!-- Mascot Robert (Floating on Left Side) -->
-          <div class="mascot-wrap" id="il-mascot-wrap">
-            <div class="robert" id="il-robert-character" title="روبرت المساعد الذكي">
+          <!-- Mascot Robert (Top-Left Companion Pill) -->
+          <div class="mascot-companion" id="il-mascot-wrap">
+            <div class="robert-avatar" id="il-robert-character" title="روبرت المساعد الذكي">
               <div class="hat"></div>
               <div class="head">
                 <div class="eye l"></div>
@@ -553,19 +553,27 @@
               </div>
               <div class="body"></div>
             </div>
-            <div class="bubble" id="il-mascot-bubble">أهلاً بك يا بطل! استكشف معنا أسرار هذا الدرس الممتع! 💡</div>
+            <div class="mascot-bubble" id="il-mascot-bubble">أهلاً بك يا بطل! استكشف معنا أسرار هذا الدرس الممتع!</div>
           </div>
 
           <!-- Main Presentation Stage -->
           <main class="il-stage" id="il-stage" role="region" aria-label="عرض شرائح الدرس"></main>
 
-          <!-- Bottom Floating Forest-Teal Navbar -->
-          <nav class="navbar">
-            <button class="nav-btn sound" id="il-sound-btn" type="button" title="الصوت">🔊</button>
-            <button class="nav-btn" id="il-prev-btn" type="button" title="السابق">►</button>
-            <span class="slide-counter" id="il-counter">1 / 1</span>
-            <div class="dots" id="il-dots"></div>
-            <button class="nav-btn" id="il-next-btn" type="button" title="التالي">◄</button>
+          <!-- Bottom Floating Capsule Dock (Navbar) -->
+          <nav class="navbar" id="il-navbar">
+            <button class="nav-btn sound-btn" id="il-sound-btn" type="button" title="الصوت" aria-label="كتم أو تشغيل الصوت">
+              <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+            </button>
+            <button class="nav-btn prev-btn" id="il-prev-btn" type="button" title="الشريحة السابقة" aria-label="السابق">
+              <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+            <div class="counter-pill" id="il-counter" title="عداد الشرائح">
+              <bdi dir="ltr">1 / 12</bdi>
+            </div>
+            <div class="dots-track" id="il-dots"></div>
+            <button class="nav-btn next-btn" id="il-next-btn" type="button" title="الشريحة التالية" aria-label="التالي">
+              <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
           </nav>
 
         </div>
