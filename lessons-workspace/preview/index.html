@@ -407,64 +407,80 @@
       var sampleBtn = document.getElementById('pw-load-sample-btn');
 
       var defaultSampleLesson = {
-        "id": "sample_preview",
-        "title": "معاينة درس استكشاف الحيوانات",
-        "gradeId": "grade_4",
+        "id": "sample_preview_12_types",
+        "title": "معاينة الأنماط التفاعلية الـ 12",
+        "gradeId": "grade_2",
         "subjectId": "science",
-        "description": "درس تجريبي يتم تشغيله فورياً داخل بيئة المعاينة.",
+        "description": "درس تجريبي يتم تشغيله فورياً داخل بيئة المعاينة لاختبار كافة الأنماط.",
         "slides": [
           {
             "id": "s1",
             "type": "explain",
-            "eyebrow": "المحطة الأولى",
-            "title": "مجموعات الحيوانات الفقارية",
-            "subtitle": "استكشف معنا تصنيف الحيوانات وخصائصها الفريدة بطريقة تفاعلية.",
-            "mascotTip": "أهلاً بك في بيئة المعاينة الفورية! اختبر التنقل بالأزرار أو الأسهم.",
+            "eyebrow": "المحطة الأولى: الشرح",
+            "title": "حاجات الكائنات الحية",
+            "subtitle": "استكشف معنا ما تحتاج إليه الكائنات الحية لتنمو وتعيش.",
+            "mascotTip": "أهلاً بك في بيئة المعاينة الموسعة! اختبر الـ 12 نمطاً تفاعلياً.",
             "traits": [
-              "تم تحميل الدرس بنجاح من الذاكرة دون الحاجة لخادم.",
+              "تحتاج الكائنات الحية إلى الماء والهواء والغذاء والمأوى.",
               "يدعم محرك الصوت المولد الترددي Synthesizer تلقائياً.",
-              "متوافق 100% مع معايير المنصة ومستعد للحزم والتشفير."
+              "نظام احتساب النجوم يجمع إجمالي نتائج الأنشطة التفاعلية."
             ],
             "examples": [
-              { "emoji": "🦁", "name": "الأسد" },
-              { "emoji": "🦅", "name": "النسر" },
-              { "emoji": "🐬", "name": "الدلفين" }
+              { "emoji": "🌱", "name": "النبات" },
+              { "emoji": "🦁", "name": "الحيوان" }
             ]
           },
           {
             "id": "s2",
-            "type": "interactive_reveal",
-            "eyebrow": "المحطة الثانية",
-            "title": "بطاقات الاستكشاف التفاعلية",
-            "subtitle": "انقر على البطاقات لتجربة صوت وتأثير الفتح:",
-            "groups": [
-              { "id": "g1", "emoji": "🐻", "name": "الثدييات", "detail": "تلد وترضع صغارها الحليب ويغطي جسمها الشعر أو الفراء." },
-              { "id": "g2", "emoji": "🦅", "name": "الطيور", "detail": "يغطي جسمها الريش ولها مناقير وتتكاثر بالبيض." }
-            ],
-            "reveal": {
-              "question": "اضغط هنا لكشف معلومة التحدي",
-              "answer": "هل تعلم أن الخفاش طائر من الثدييات؟ رائع!"
+            "type": "true_false",
+            "eyebrow": "المحطة الثانية: صح أم خطأ",
+            "title": "تحدي الصواب والخطأ",
+            "trueFalse": {
+              "id": "tf1",
+              "statement": "تحتاج الصخور للأكل والشرب حتى تنمو وتكبر!",
+              "isTrue": false
             }
           },
           {
             "id": "s3",
-            "type": "quiz",
-            "eyebrow": "المحطة الثالثة",
-            "title": "تحدي السؤال الذكي",
-            "quiz": {
-              "id": "q1",
-              "question": "أي الحيوانات التالية يعتبر من الثدييات البحرية؟",
-              "choices": [
-                { "id": "c1", "text": "سمك القرش", "isCorrect": false },
-                { "id": "c2", "text": "الحوت الأزرق", "isCorrect": true },
-                { "id": "c3", "text": "الأخطبوط", "isCorrect": false }
+            "type": "match_pairs",
+            "eyebrow": "المحطة الثالثة: التوصيل",
+            "title": "المطابقة والتوصيل",
+            "matchPairs": {
+              "pairs": [
+                { "id": "m1", "leftText": "العصفور", "leftEmoji": "🐦", "rightText": "العش", "rightEmoji": "🪺" },
+                { "id": "m2", "leftText": "النحلة", "leftEmoji": "🐝", "rightText": "الخلية", "rightEmoji": "🍯" }
               ]
             }
           },
           {
             "id": "s4",
+            "type": "fill_blank",
+            "eyebrow": "المحطة الرابعة: إكمال الفراغ",
+            "title": "بنك الكلمات",
+            "fillBlank": {
+              "id": "fb1",
+              "sentenceBefore": "تتنفس الأسماك بواسطة",
+              "blankAnswer": "الخياشيم",
+              "sentenceAfter": "تحت الماء.",
+              "wordBank": ["الخياشيم", "الرئتين", "الأجنحة"]
+            }
+          },
+          {
+            "id": "s5",
+            "type": "tap_to_count",
+            "eyebrow": "المحطة الخامسة: العد التفاعلي",
+            "title": "كم تفاحة لذيذة؟",
+            "tapToCount": {
+              "targetCount": 4,
+              "itemName": "تفاحات",
+              "itemEmoji": "🍎"
+            }
+          },
+          {
+            "id": "s6",
             "type": "summary",
-            "title": "أحسنت المعاينة يا مهندسنا البطل!",
+            "title": "أحسنت المعاينة يا بطل!",
             "subtitle": "الدرس جاهز ومكتمل للاعتماد والرفع في البرانش."
           }
         ]
@@ -482,11 +498,11 @@
         document.getElementById('txt-slides').textContent = 'عدد الشرائح: ' + slideCount + ' شرائح صالحة';
         chkSlides.className = 'pw-check-status ' + (slideCount > 0 ? 'valid' : 'invalid');
 
-        var hasQuiz = (data.slides || []).some(function (s) {
-          return s.type === 'quiz' && s.quiz && (s.quiz.choices || []).some(function (c) { return c.isCorrect; });
+        var hasInteractive = (data.slides || []).some(function (s) {
+          return ['quiz', 'true_false', 'match_pairs', 'order_sequence', 'fill_blank', 'classify_sorting', 'memory_cards', 'tap_to_count'].indexOf(s.type) !== -1;
         });
-        document.getElementById('txt-quiz').textContent = hasQuiz ? 'الاختبار: تم التحقق من وجود إجابة صحيحة' : 'تنبيه: لا يوجد اختبار أو إجابة صحيحة محددة';
-        chkQuiz.className = 'pw-check-status ' + (hasQuiz ? 'valid' : 'pending');
+        document.getElementById('txt-quiz').textContent = hasInteractive ? 'الأنشطة التفاعلية: تم التحقق من وجود أنشطة تفاعلية واحتساب النقاط' : 'تنبيه: لا يوجد أنشطة تفاعلية محددة';
+        chkQuiz.className = 'pw-check-status ' + (hasInteractive ? 'valid' : 'pending');
       }
 
       function loadLessonData(jsonObj) {
