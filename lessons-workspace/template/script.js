@@ -826,18 +826,80 @@
     renderTapToCount: function (slide) {
       var tc = slide.tapToCount;
       if (!tc) return '';
+      var total = tc.targetCount || 6;
       var html = '<div class="tap-count-container">';
-      html += '<div class="tap-count-badge">🍎 العدد الحالي: <span id="tap-count-num" style="color:var(--leaf); margin:0 4px;">0</span> / ' + tc.targetCount + ' ' + (tc.itemName || '') + '</div>';
-      html += '<div class="tap-count-shelf">';
-      for (var i = 0; i < tc.targetCount; i++) {
+
+      // Header score badge
+      html +=
+        '<div class="tap-count-badge">' +
+        '<span>🍎 التفاح المقطوف:</span> ' +
+        '<span id="tap-count-num" style="color:var(--leaf); margin:0 4px;">0</span> / ' + total +
+        '</div>';
+
+      // Apple Tree Branch Scene
+      html += '<div class="apple-branch-scene">';
+      html += '<svg class="apple-branch-svg" viewBox="0 0 600 270" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">';
+      html += '<defs>';
+      html += '  <linearGradient id="treeSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#E1F5FE"/><stop offset="100%" stop-color="#F1F8E9"/></linearGradient>';
+      html += '  <linearGradient id="woodBark" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#8D6E63"/><stop offset="50%" stop-color="#5D4037"/><stop offset="100%" stop-color="#3E2723"/></linearGradient>';
+      html += '  <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#FFF59D"/><stop offset="100%" stop-color="#FBC02D"/></radialGradient>';
+      html += '</defs>';
+
+      // Sun in top left corner
+      html += '<circle cx="65" cy="45" r="28" fill="url(#sunGlow)"/>';
+
+      // Main thick wooden branch stretching across
+      html += '<path d="M620,40 Q450,75 320,82 T-20,95 L-20,128 Q320,115 460,105 T620,85 Z" fill="url(#woodBark)" stroke="#3E2723" stroke-width="3"/>';
+      // Branch texture lines
+      html += '<path d="M540,68 Q440,88 320,95" stroke="#3E2723" stroke-width="2" fill="none"/>';
+      html += '<path d="M280,98 Q180,105 40,110" stroke="#3E2723" stroke-width="2" fill="none"/>';
+
+      // Twigs hanging down to hold each apple
+      html += '<path d="M85,108 Q83,122 85,135" stroke="#4E342E" stroke-width="3.5" fill="none" stroke-linecap="round"/>';
+      html += '<path d="M170,102 Q172,120 170,136" stroke="#4E342E" stroke-width="3.5" fill="none" stroke-linecap="round"/>';
+      html += '<path d="M255,95 Q252,116 255,130" stroke="#4E342E" stroke-width="3.5" fill="none" stroke-linecap="round"/>';
+      html += '<path d="M340,90 Q342,112 340,128" stroke="#4E342E" stroke-width="3.5" fill="none" stroke-linecap="round"/>';
+      html += '<path d="M425,82 Q422,106 425,124" stroke="#4E342E" stroke-width="3.5" fill="none" stroke-linecap="round"/>';
+      html += '<path d="M510,75 Q512,98 510,118" stroke="#4E342E" stroke-width="3.5" fill="none" stroke-linecap="round"/>';
+
+      // Leaves clusters
+      html += '<g transform="translate(60, 95)"><ellipse cx="0" cy="0" rx="22" ry="12" fill="#43A047" stroke="#1B5E20" stroke-width="1.8" transform="rotate(-30)"/><ellipse cx="14" cy="5" rx="18" ry="10" fill="#66BB6A" stroke="#2E7D32" stroke-width="1.8" transform="rotate(15)"/></g>';
+      html += '<g transform="translate(145, 90)"><ellipse cx="0" cy="0" rx="24" ry="13" fill="#66BB6A" stroke="#2E7D32" stroke-width="1.8" transform="rotate(25)"/><ellipse cx="-12" cy="6" rx="19" ry="10" fill="#43A047" stroke="#1B5E20" stroke-width="1.8" transform="rotate(-15)"/></g>';
+      html += '<g transform="translate(230, 85)"><ellipse cx="0" cy="0" rx="26" ry="14" fill="#43A047" stroke="#1B5E20" stroke-width="1.8" transform="rotate(-20)"/><ellipse cx="16" cy="4" rx="20" ry="11" fill="#81C784" stroke="#2E7D32" stroke-width="1.8" transform="rotate(20)"/></g>';
+      html += '<g transform="translate(320, 80)"><ellipse cx="0" cy="0" rx="25" ry="13" fill="#66BB6A" stroke="#2E7D32" stroke-width="1.8" transform="rotate(18)"/><ellipse cx="-14" cy="5" rx="20" ry="10" fill="#43A047" stroke="#1B5E20" stroke-width="1.8" transform="rotate(-25)"/></g>';
+      html += '<g transform="translate(405, 75)"><ellipse cx="0" cy="0" rx="26" ry="14" fill="#43A047" stroke="#1B5E20" stroke-width="1.8" transform="rotate(-22)"/><ellipse cx="16" cy="6" rx="21" ry="11" fill="#66BB6A" stroke="#2E7D32" stroke-width="1.8" transform="rotate(25)"/></g>';
+      html += '<g transform="translate(490, 70)"><ellipse cx="0" cy="0" rx="25" ry="13" fill="#66BB6A" stroke="#2E7D32" stroke-width="1.8" transform="rotate(20)"/><ellipse cx="-15" cy="5" rx="19" ry="10" fill="#43A047" stroke="#1B5E20" stroke-width="1.8" transform="rotate(-18)"/></g>';
+
+      html += '</svg>';
+
+      // Positions for the 6 apples
+      var applePositions = [
+        { left: '14.2%', top: '56%' },
+        { left: '28.3%', top: '57%' },
+        { left: '42.5%', top: '55%' },
+        { left: '56.7%', top: '54%' },
+        { left: '70.8%', top: '53%' },
+        { left: '85.0%', top: '51%' }
+      ];
+
+      for (var i = 0; i < total; i++) {
+        var pos = applePositions[i] || { left: ((i + 1) * 14) + '%', top: '52%' };
         html +=
-          '<button class="count-item-btn" type="button" title="اضغط للعد">' +
-          (tc.itemEmoji || '🍎') +
+          '<button class="apple-item-btn" type="button" data-count-idx="' + (i + 1) + '" style="left:' + pos.left + '; top:' + pos.top + ';" title="المس التفاحة لقطفها وعدّها">' +
+          '  <div class="apple-body">' +
+          '    <div class="apple-stem"></div>' +
+          '    <div class="apple-leaf"></div>' +
+          '    <div class="apple-shine"></div>' +
+          '    <span class="apple-number-badge">' + (i + 1) + '</span>' +
+          '  </div>' +
           '</button>';
       }
-      html += '</div>';
-      html += '<div class="feedback-msg"></div>';
-      html += '</div>';
+
+      html += '</div>'; // close .apple-branch-scene
+
+      html += '<div class="feedback-msg" id="tap-count-feedback"></div>';
+      html += '<button class="tap-count-reset-btn" id="tap-count-reset" type="button" style="display:none;">🔄 أعد قطف التفاح</button>';
+      html += '</div>'; // close .tap-count-container
       return html;
     },
 
@@ -1161,29 +1223,49 @@
         });
       });
 
-      // 10. Tap to Count
-      var countBtns = slideEl.querySelectorAll('.count-item-btn');
+      // 10. Tap to Count (Apple Tree Branch)
+      var countBtns = slideEl.querySelectorAll('.apple-item-btn');
       var curCount = 0;
-      var targetNum = slide.tapToCount ? slide.tapToCount.targetCount : 0;
+      var targetNum = slide.tapToCount ? (slide.tapToCount.targetCount || 6) : 6;
       var countDisplay = slideEl.querySelector('#tap-count-num');
+      var countFb = slideEl.querySelector('#tap-count-feedback') || slideEl.querySelector('.feedback-msg');
+      var resetBtn = slideEl.querySelector('#tap-count-reset');
+
       countBtns.forEach(function (b) {
         b.addEventListener('click', function () {
-          if (b.disabled) return;
-          b.disabled = true;
-          b.style.opacity = '0.4';
-          b.style.transform = 'scale(0.85)';
+          if (b.classList.contains('counted')) return;
+          b.classList.add('counted');
           curCount++;
           if (countDisplay) countDisplay.textContent = curCount;
           AudioEngine.sndCountNote(curCount);
 
           if (curCount >= targetNum) {
             self.addScore();
-            if (fb) { fb.textContent = 'عد متقن وصحيح 100%! 🌟'; fb.style.color = 'var(--leaf)'; }
+            if (countFb) {
+              countFb.textContent = '🎉 عد متقن وصحيح 100%! قطفت جميع التفاحات بنجاح 🌟';
+              countFb.style.color = 'var(--leaf)';
+            }
+            if (resetBtn) resetBtn.style.display = 'inline-flex';
             launchConfetti(slideEl);
-            self.setMascotBubble('عد ممتاز ورائع! أحسنت متابعة النغمات والحساب الدقيق 💡', true);
+            AudioEngine.sndWin();
+            self.setMascotBubble('عد ممتاز ورائع! قطفت 6 تفاحات لذيذة من الغصن بنجاح يا عبقري 🍎🌟', true);
           }
         });
       });
+
+      if (resetBtn) {
+        resetBtn.addEventListener('click', function () {
+          curCount = 0;
+          if (countDisplay) countDisplay.textContent = '0';
+          if (countFb) countFb.textContent = '';
+          resetBtn.style.display = 'none';
+          countBtns.forEach(function (b) {
+            b.classList.remove('counted');
+          });
+          AudioEngine.sndSlide();
+          self.setMascotBubble('هيا اقطف التفاحات الشهية مرة أخرى واستمتع بالنغمات! 🎵', false);
+        });
+      }
     },
 
     /* ==========================================================================

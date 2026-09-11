@@ -1018,70 +1018,177 @@ h1, h2, h3, .display {
 }
 
 /* ==========================================================================
-   Activity 7: Tap To Count
+   Activity 7: Tap To Count (Apple Branch Scene)
    ========================================================================== */
 .tap-count-container {
   width: 100%;
-  max-width: 640px;
+  max-width: 680px;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 12px;
 }
 
 .tap-count-badge {
   font-family: 'Baloo 2', sans-serif;
-  font-size: 2rem;
+  font-size: 1.8rem;
   font-weight: 900;
   color: var(--clay);
   background: var(--white);
-  border: 2px solid var(--ink);
+  border: 2.5px solid var(--ink);
   border-radius: 999px;
-  padding: 6px 24px;
-  margin-bottom: 18px;
+  padding: 6px 26px;
   box-shadow: var(--clay-shadow-sm);
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
-.tap-count-shelf {
-  display: flex;
-  gap: 14px;
-  justify-content: center;
-  flex-wrap: wrap;
-  padding: 16px;
-  background: rgba(255, 255, 255, 0.6);
-  border: 2px dashed rgba(27, 59, 54, 0.25);
-  border-radius: 22px;
+.apple-branch-scene {
+  position: relative;
   width: 100%;
+  height: 270px;
+  border-radius: 22px;
+  border: 2.5px solid var(--ink);
+  overflow: hidden;
+  background: linear-gradient(180deg, #EBF8FF 0%, #F4FDF6 65%, #E8DFD8 100%);
+  box-shadow: var(--shadow);
+  user-select: none;
 }
 
-.count-item-btn {
-  background: var(--white);
-  border: 3px solid var(--ink);
+.apple-branch-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.apple-item-btn {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 5;
+}
+
+.apple-item-btn:hover:not(.counted) {
+  transform: translate(-50%, -50%) scale(1.15) rotate(4deg);
+}
+
+.apple-body {
+  position: relative;
+  width: 66px;
+  height: 66px;
+  background: radial-gradient(circle at 35% 30%, #FF6B6B 0%, #E53935 55%, #B71C1C 100%);
+  border: 2.5px solid var(--ink);
+  border-radius: 50% 50% 46% 46% / 55% 55% 45% 45%;
+  box-shadow: 0 6px 14px rgba(183, 28, 28, 0.28), inset 0 -4px 6px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.apple-stem {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 12px;
+  background: #5D4037;
+  border-radius: 3px;
+  border: 1px solid var(--ink);
+}
+
+.apple-leaf {
+  position: absolute;
+  top: -8px;
+  left: 55%;
+  width: 14px;
+  height: 9px;
+  background: #4CAF50;
+  border: 1px solid var(--ink);
+  border-radius: 50% 0 50% 0;
+  transform: rotate(20deg);
+}
+
+.apple-shine {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  width: 12px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.65);
   border-radius: 50%;
-  width: 64px;
-  height: 64px;
-  font-size: 2.2rem;
+  transform: rotate(-30deg);
+}
+
+.apple-number-badge {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--white);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transform: scale(0.5);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.apple-item-btn.counted .apple-body {
+  background: radial-gradient(circle at 35% 30%, #81C784 0%, #4CAF50 60%, #2E7D32 100%);
+  box-shadow: 0 6px 14px rgba(46, 125, 50, 0.35), 0 0 0 4px rgba(76, 175, 80, 0.4);
+  transform: scale(1.06);
+}
+
+.apple-item-btn.counted .apple-number-badge {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.apple-item-btn.counted {
+  pointer-events: none;
+  animation: harvestPop 0.45s ease-out;
+}
+
+@keyframes harvestPop {
+  0% { transform: translate(-50%, -50%) scale(1); }
+  45% { transform: translate(-50%, -50%) scale(1.25) rotate(-6deg); }
+  80% { transform: translate(-50%, -50%) scale(0.96) rotate(3deg); }
+  100% { transform: translate(-50%, -50%) scale(1.06) rotate(0deg); }
+}
+
+.tap-count-reset-btn {
+  background: var(--white);
+  border: 2px solid var(--ink);
+  color: var(--clay);
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  padding: 6px 20px;
+  border-radius: 999px;
   cursor: pointer;
   box-shadow: var(--clay-shadow-sm);
-  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  gap: 6px;
+  margin-top: 6px;
+  transition: transform 0.15s, background 0.2s;
 }
 
-.count-item-btn:hover {
-  transform: scale(1.12);
-}
-
-.count-item-btn.counted {
-  background: #E8F5E9;
-  border-color: var(--leaf);
-  transform: scale(0.92);
-  opacity: 0.6;
-  pointer-events: none;
+.tap-count-reset-btn:hover {
+  transform: translateY(-2px);
+  background: #FFF8EB;
 }
 
 /* ==========================================================================
