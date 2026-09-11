@@ -99,9 +99,13 @@ The `lessons-workspace/` directory is designed to be pushed or distributed as an
 - **UI/UX Pro Max Design System (Warm Paper Theme & Drag & Drop Presentation Standards)**:
   - Palette: Authentic Warm Paper (`#FBF3DE`) + Deep Teal Ink (`#1B3B36`) + Terra Cotta Clay (`#C1502E`) + Sun Gold (`#E8A93B`) + Sky Blue (`#3E92B0`) + Leaf Green (`#4F7942`).
   - Typography: Google Fonts `Baloo 2` (headings, badges, counters, buttons) + `Tajawal` (body & questions).
-  - Mascot ("فصيح"): Left-positioned fixed interactive robot mascot (`top: 50%; transform: translateY(-50%)`) with antenna, grad cap, blinking eyes, chest badge "فصيح", and dynamic speech bubble guide.
+  - Mascot ("فصيح"): Interactive robot mascot with antenna, grad cap, blinking eyes, chest badge "فصيح", and dynamic speech bubble guide:
+    - Desktop / Tablet: Anchored on the left (`position: absolute; left: 14px; top: 50%; transform: translateY(-50%)`).
+    - Mobile Landscape: Floating interactive badge in the top-left corner (`position: absolute; top: 8px; left: 12px;`) with auto-dismissing toast bubble (4.5s timer) and tap-to-toggle replay.
   - Concept Cards (Slide 1): Clean cardboard stitch-border style (`.card.stitch-border`) with circular stamp badges (`.stamp`), clean typography, and integrated example tags with zero vertical overlap.
-  - Deep Teal Navigation Bar: Fixed bottom bar (`.navbar`) with circular gold action buttons (`52px × 52px`), SVG navigation chevrons, center dot stepper, counter (`X / Y`), and dedicated SFX toggle button (`#il-sound-btn` with SVG sound icons for pure sound effects mute/unmute).
+  - Navigation & Status Architecture:
+    - Desktop: Fixed deep teal bottom bar (`.navbar`) with circular gold action buttons (`48px × 48px`), center dots stepper, counter, and sound toggle.
+    - Mobile Landscape (Full-Screen Gaming Mode): Bottom solid bar completely hidden (`background: transparent; pointer-events: none;`). Floating glassmorphic thumb controls in the bottom corners (`#il-prev-btn` bottom-right, `#il-next-btn` bottom-left), and compact status capsule in the top-right (`#il-counter` and `#il-sound-btn`). Freeing 100% of vertical and horizontal space for lessons and interactive activities.
   - **Lordicon / Lottie Animated Vector Icon System**:
     - Strictly eliminated hardcoded emojis across functional buttons and UI controls.
     - Added animated Lordicon-style interactive SVGs:

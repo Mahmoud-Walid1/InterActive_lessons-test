@@ -359,9 +359,16 @@
 
       // Mascot Interactive Click
       if (this.dom.mascotChar) {
-        this.dom.mascotChar.addEventListener('click', function () {
+        this.dom.mascotChar.addEventListener('click', function (e) {
+          e.stopPropagation();
           AudioEngine.sndRobotChirp();
-          self.setMascotBubble('أنا معك خطوة بخطوة! اسحب وأسقط العناصر لتكتشف الأسرار 💡', true);
+          if (self.dom.mascotBubble && self.dom.mascotBubble.classList.contains('bubble-visible')) {
+            self.hideMascotBubble();
+          } else {
+            var curSlide = (self.data && self.data.slides && self.data.slides[self.currentSlide]) || {};
+            var tip = curSlide.mascotTip || self.getFallbackTipForSlide(curSlide);
+            self.setMascotBubble(tip || 'أنا معك خطوة بخطوة! استكشف واستمتع بالدرس 💡', true);
+          }
         });
       }
 
@@ -390,12 +397,39 @@
       }
     },
 
+    getFallbackTipForSlide: function (slide) {
+      if (!slide) return 'أهلًا بكم! أنا فَصيح المُستَكشِف 🧭 هيا نكتشف أسرار هذا الدرس معًا!';
+      switch (slide.type) {
+        case 'explain': return 'اقرأ الشرح بتركيز يا بطل لتفهم فكرة الدرس الأساسية! 💡';
+        case 'interactive_reveal': return 'اضغط على البطاقات لكشف الأسرار والمعلومات المخفية! 🔍';
+        case 'quiz': return 'تأمل السؤال جيداً واختر الإجابة الصحيحة! 🌟';
+        case 'true_false': return 'هل العبارة صحيحة أم خاطئة؟ فكر في معلوماتك العلمية! 🤔';
+        case 'match_pairs': return 'وصّل كل كائن مع مأواه وبيئته المناسبة! 🏡';
+        case 'order_sequence': return 'رتّب خطوات النمو بالترتيب العلمي الصحيح! 🌱';
+        case 'fill_blank': return 'اسحب الكلمة المناسبة من بنك الكلمات وضعها في الفراغ! ✏️';
+        case 'classify_sorting': return 'صنّف العناصر التالية في الصندوق المناسب بدقة! 📦';
+        case 'hotspot_explore': return 'اضغط على الأزرار النباضة لتستكشف أجزاء النبتة! 🪴';
+        case 'memory_cards': return 'اقلب البطاقات وطابق كل حيوان مع صغيره يا صاحب الذاكرة القوية! 🧠';
+        case 'tap_to_count': return 'المس حبات التفاح واحدة تلو الأخرى واستمع لنغمات العد! 🍎';
+        case 'summary': return 'مبروك يا بطل! لقد أتممت الدرس بنجاح وجمعت كل النجوم! 🏆';
+        default: return 'أهلًا بكم! أنا فَصيح المُستَكشِف 🧭 هيا نكتشف أسرار هذا الدرس معًا!';
+      }
+    },
+
     setMascotBubble: function (textHtml, isCelebrating) {
+      var self = this;
       if (this.dom.mascotBubble) {
         this.dom.mascotBubble.innerHTML = textHtml;
-        this.dom.mascotBubble.style.transform = 'scale(1.06)';
+        this.dom.mascotBubble.classList.add('bubble-visible');
+        if (this.dom.mascotWrap) this.dom.mascotWrap.classList.add('toast-active');
+        this.dom.mascotBubble.style.transform = 'scale(1.05)';
         var b = this.dom.mascotBubble;
         setTimeout(function () { b.style.transform = ''; }, 220);
+
+        if (this._bubbleTimer) clearTimeout(this._bubbleTimer);
+        this._bubbleTimer = setTimeout(function () {
+          self.hideMascotBubble();
+        }, 4500);
       }
       if (this.dom.mascotChar) {
         if (isCelebrating) {
@@ -405,6 +439,15 @@
         } else {
           this.dom.mascotChar.classList.remove('celebrating');
         }
+      }
+    },
+
+    hideMascotBubble: function () {
+      if (this.dom.mascotBubble) this.dom.mascotBubble.classList.remove('bubble-visible');
+      if (this.dom.mascotWrap) this.dom.mascotWrap.classList.remove('toast-active');
+      if (this._bubbleTimer) {
+        clearTimeout(this._bubbleTimer);
+        this._bubbleTimer = null;
       }
     },
 
