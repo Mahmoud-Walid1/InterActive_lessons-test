@@ -783,26 +783,42 @@
       var mc = slide.memoryCards;
       if (!mc || !mc.pairs) return '';
       var cards = [];
-      mc.pairs.forEach(function (p) {
-        var aEmoji = (p.itemA && p.itemA.emoji) || p.emoji || '🦁';
-        var aText = (p.itemA && p.itemA.text) || p.name || '';
-        var bEmoji = (p.itemB && p.itemB.emoji) || p.matchEmoji || aEmoji;
-        var bText = (p.itemB && p.itemB.text) || p.matchName || '';
-        cards.push({ matchId: p.id, emoji: aEmoji, name: aText });
-        cards.push({ matchId: p.id, emoji: bEmoji, name: bText });
+      mc.pairs.forEach(function (p, pIdx) {
+        var matchId = p.id || ('pair_' + pIdx);
+
+        // Safe extraction of Item A
+        var aObj = p.itemA || p.item1 || p.left || p;
+        var aEmoji = (p.itemA && p.itemA.emoji) || p.leftEmoji || p.emoji || (typeof aObj === 'object' ? aObj.emoji || aObj.icon : '') || '🦁';
+        var aText = (p.itemA && (p.itemA.text || p.itemA.name)) || p.leftText || p.name || p.text || (typeof aObj === 'object' ? aObj.text || aObj.name : '') || 'حيوان';
+
+        // Safe extraction of Item B
+        var bObj = p.itemB || p.item2 || p.right || p;
+        var bEmoji = (p.itemB && p.itemB.emoji) || p.rightEmoji || p.matchEmoji || (typeof bObj === 'object' ? bObj.emoji || bObj.icon : '') || aEmoji;
+        var bText = (p.itemB && (p.itemB.text || p.itemB.name)) || p.rightText || p.matchName || (typeof bObj === 'object' ? bObj.text || bObj.name : '') || 'صغيره';
+
+        cards.push({ matchId: matchId, emoji: aEmoji, name: aText });
+        cards.push({ matchId: matchId, emoji: bEmoji, name: bText });
       });
+
       cards.sort(function () { return 0.5 - Math.random(); });
 
       var html = '<div class="memory-cards-grid">';
       cards.forEach(function (c, idx) {
         html +=
-          '<div class="mem-card" data-idx="' + idx + '" data-match-id="' + c.matchId + '">' +
-          '<div class="mem-back" style="font-size:2.2rem;">❓</div>' +
-          '<div class="mem-front" style="display:none; font-size:1.8rem;">' + c.emoji + '<div style="font-size:0.85rem; font-weight:800; color:var(--ink);">' + c.name + '</div></div>' +
+          '<div class="mem-card" data-idx="' + idx + '" data-match-id="' + c.matchId + '" role="button" aria-label="بطاقة ذاكرة">' +
+          '<div class="mem-card-inner">' +
+          '  <div class="mem-card-face mem-back">' +
+          '    <div class="mem-back-icon">❓</div>' +
+          '  </div>' +
+          '  <div class="mem-card-face mem-front">' +
+          '    <div class="mem-emoji">' + c.emoji + '</div>' +
+          '    <div class="mem-label">' + c.name + '</div>' +
+          '  </div>' +
+          '</div>' +
           '</div>';
       });
       html += '</div>';
-      html += '<div class="feedback-msg"></div>';
+      html += '<div class="feedback-msg" id="mem-feedback-msg"></div>';
       return html;
     },
 
@@ -1100,42 +1116,46 @@
       var flipped = [];
       var matchedMemPairs = 0;
       var totalPairsTarget = (slide.memoryCards && slide.memoryCards.pairs) ? slide.memoryCards.pairs.length : 0;
+      var memFeedback = slideEl.querySelector('#mem-feedback-msg') || slideEl.querySelector('.feedback-msg');
+
       memCards.forEach(function (card) {
         card.addEventListener('click', function () {
           if (card.classList.contains('flipped') || card.classList.contains('matched') || flipped.length >= 2) return;
+
           card.classList.add('flipped');
-          card.querySelector('.mem-back').style.display = 'none';
-          card.querySelector('.mem-front').style.display = 'block';
           flipped.push(card);
           AudioEngine.sndClick();
 
           if (flipped.length === 2) {
             var id1 = flipped[0].getAttribute('data-match-id');
             var id2 = flipped[1].getAttribute('data-match-id');
-            if (id1 === id2) {
+
+            if (id1 && id2 && id1 === id2) {
               matchedMemPairs++;
               flipped[0].classList.add('matched');
               flipped[1].classList.add('matched');
-              flipped[0].style.background = '#EAF3E4';
-              flipped[1].style.background = '#EAF3E4';
               AudioEngine.sndCorrect();
               flipped = [];
+
               if (matchedMemPairs >= totalPairsTarget) {
                 self.addScore();
-                if (fb) { fb.textContent = 'ذاكرة خارقة! طابقت كل البطاقات 🏆'; fb.style.color = 'var(--leaf)'; }
+                if (memFeedback) {
+                  memFeedback.textContent = 'ذاكرة خارقة يا بطل! طابقت جميع البطاقات بنجاح 🏆';
+                  memFeedback.style.color = 'var(--leaf)';
+                }
                 launchConfetti(slideEl);
-                self.setMascotBubble('ذاكرة قوية وممتازة يا بطل! طابقت بين كل الحيوانات وصغارها بدقة 💡', true);
+                AudioEngine.sndWin();
+                self.setMascotBubble('ذاكرة قوية وممتازة يا عبقري! طابقت بين كل الحيوانات وصغارها بدقة 🌟', true);
               }
             } else {
               AudioEngine.sndWrong();
+              var toUnflip = [flipped[0], flipped[1]];
+              flipped = [];
               setTimeout(function () {
-                flipped.forEach(function (c) {
+                toUnflip.forEach(function (c) {
                   c.classList.remove('flipped');
-                  c.querySelector('.mem-back').style.display = 'block';
-                  c.querySelector('.mem-front').style.display = 'none';
                 });
-                flipped = [];
-              }, 700);
+              }, 750);
             }
           }
         });
@@ -1188,7 +1208,24 @@
       if (this.dom.prevBtn) this.dom.prevBtn.disabled = index === 0;
       if (this.dom.nextBtn) this.dom.nextBtn.disabled = index === this.data.slides.length - 1;
 
-      var tip = currentSlideData.mascotTip || 'أهلًا بكم! أنا فَصيح المُستَكشِف 🧭 هيا نكتشف أسرار هذا الدرس معًا!';
+      var tip = currentSlideData.mascotTip;
+      if (!tip) {
+        switch (currentSlideData.type) {
+          case 'explain': tip = 'اقرأ الشرح بتركيز يا بطل لتفهم فكرة الدرس الأساسية! 💡'; break;
+          case 'interactive_reveal': tip = 'اضغط على البطاقات لكشف الأسرار والمعلومات المخفية! 🔍'; break;
+          case 'quiz': tip = 'تأمل السؤال جيداً واختر الإجابة الصحيحة! 🌟'; break;
+          case 'true_false': tip = 'هل العبارة صحيحة أم خاطئة؟ فكر في معلوماتك العلمية! 🤔'; break;
+          case 'match_pairs': tip = 'وصّل كل كائن مع مأواه وبيئته المناسبة! 🏡'; break;
+          case 'order_sequence': tip = 'رتّب خطوات النمو بالترتيب العلمي الصحيح! 🌱'; break;
+          case 'fill_blank': tip = 'اسحب الكلمة المناسبة من بنك الكلمات وضعها في الفراغ! ✏️'; break;
+          case 'classify_sorting': tip = 'صنّف العناصر التالية في الصندوق المناسب بدقة! 📦'; break;
+          case 'hotspot_explore': tip = 'اضغط على الأزرار النباضة لتستكشف أجزاء النبتة! 🪴'; break;
+          case 'memory_cards': tip = 'اقلب البطاقات وطابق كل حيوان مع صغيره يا صاحب الذاكرة القوية! 🧠'; break;
+          case 'tap_to_count': tip = 'المس حبات التفاح واحدة تلو الأخرى واستمع لنغمات العد! 🍎'; break;
+          case 'summary': tip = 'مبروك يا بطل! لقد أتممت الدرس بنجاح وجمعت كل النجوم! 🏆'; break;
+          default: tip = 'أهلًا بكم! أنا فَصيح المُستَكشِف 🧭 هيا نكتشف أسرار هذا الدرس معًا!'; break;
+        }
+      }
       this.setMascotBubble(tip, currentSlideData.type === 'summary');
 
       if (currentSlideData.type === 'summary') {
