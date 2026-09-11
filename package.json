@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "workspace:pull": "git subtree pull --prefix=lessons-workspace workspace-origin main --squash",
+    "workspace:push": "git subtree push --prefix=lessons-workspace workspace-origin main"
   },
   "dependencies": {
     "canvas-confetti": "^1.9.4",
