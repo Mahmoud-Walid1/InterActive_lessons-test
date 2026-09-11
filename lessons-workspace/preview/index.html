@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>بيئة معاينة الدروس التفاعلية | Interactive Lessons Preview</title>
+  <link rel="stylesheet" href="../template/style.css">
+  <style>
+    :root {
+      --pw-bg: #0F172A;
+      --pw-card: #1E293B;
+      --pw-border: #334155;
+      --pw-text: #F8FAFC;
+      --pw-muted: #94A3B8;
+      --pw-accent: #3B82F6;
+      --pw-success: #10B981;
+      --pw-warning: #F59E0B;
+      --pw-danger: #EF4444;
+    }
+
+    body.pw-workbench-body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Tajawal', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--pw-bg);
+      color: var(--pw-text);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Workbench Header */
+    .pw-navbar {
+      height: 60px;
+      background: var(--pw-card);
+      border-bottom: 1px solid var(--pw-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      flex-shrink: 0;
+    }
+
+    .pw-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      font-size: 1.1rem;
+    }
+
+    .pw-brand-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--pw-accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+
+    .pw-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .pw-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      border: 1px solid var(--pw-border);
+      background: #273549;
+      color: var(--pw-text);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .pw-btn:hover {
+      background: #334155;
+      border-color: var(--pw-accent);
+    }
+
+    .pw-btn-primary {
+      background: var(--pw-accent);
+      border-color: var(--pw-accent);
+      color: white;
+    }
+
+    .pw-btn-primary:hover {
+      background: #2563EB;
+    }
+
+    /* Workbench Main Split Layout */
+    .pw-layout {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* Left Sidebar: Controls & Inspector */
+    .pw-sidebar {
+      width: 360px;
+      background: var(--pw-card);
+      border-left: 1px solid var(--pw-border);
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      gap: 20px;
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+
+    /* Right: Interactive Lesson Canvas */
+    .pw-canvas-area {
+      flex: 1;
+      background: #090D16;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      position: relative;
+    }
+
+    .pw-viewport-frame {
+      width: 100%;
+      max-width: 1024px;
+      height: 94%;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+      border: 1px solid var(--pw-border);
+      position: relative;
+      background: var(--il-paper, #FBF3DE);
+    }
+
+    /* Dropzone Box */
+    .pw-dropzone {
+      border: 2px dashed var(--pw-border);
+      border-radius: 12px;
+      padding: 24px 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: rgba(15, 23, 42, 0.5);
+    }
+
+    .pw-dropzone:hover, .pw-dropzone.dragover {
+      border-color: var(--pw-accent);
+      background: rgba(59, 130, 246, 0.1);
+    }
+
+    .pw-drop-icon {
+      width: 40px;
+      height: 40px;
+      margin: 0 auto 10px;
+      color: var(--pw-accent);
+    }
+
+    /* Checklist & Info Cards */
+    .pw-panel-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--pw-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pw-checklist {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .pw-check-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.88rem;
+      background: #131E2E;
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid #233144;
+    }
+
+    .pw-check-status {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    .pw-check-status.valid { color: var(--pw-success); }
+    .pw-check-status.invalid { color: var(--pw-danger); }
+    .pw-check-status.pending { color: var(--pw-muted); }
+
+    /* Audio Tester Row */
+    .pw-audio-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .pw-audio-btn {
+      font-size: 0.82rem;
+      padding: 8px 10px;
+      border-radius: 6px;
+      background: #1E293B;
+      border: 1px solid var(--pw-border);
+      color: var(--pw-text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background 0.15s ease;
+    }
+
+    .pw-audio-btn:hover {
+      background: #334155;
+    }
+
+    /* Hidden File Input */
+    #pw-file-input {
+      display: none;
+    }
+  </style>
+</head>
+<body class="pw-workbench-body">
+
+  <!-- Top Navigation -->
+  <header class="pw-navbar">
+    <div class="pw-brand">
+      <div class="pw-brand-icon">
+        <svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+          <polyline points="2 17 12 22 22 17"></polyline>
+          <polyline points="2 12 12 17 22 12"></polyline>
+        </svg>
+      </div>
+      <span>بيئة معاينة الدروس التفاعلية</span>
+      <span style="font-size: 0.78rem; background: #334155; color: #94A3B8; padding: 2px 8px; border-radius: 4px;">مستودع المحتوى</span>
+    </div>
+
+    <div class="pw-actions">
+      <button class="pw-btn" id="pw-load-sample-btn" type="button">
+        <svg style="width: 16px; height: 16px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+        </svg>
+        <span>تحميل القالب الافتراضي</span>
+      </button>
+      <button class="pw-btn pw-btn-primary" onclick="document.getElementById('pw-file-input').click()">
+        <svg style="width: 16px; height: 16px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="17 8 12 3 7 8"></polyline>
+          <line x1="12" y1="3" x2="12" y2="15"></line>
+        </svg>
+        <span>فتح ملف lesson.json</span>
+      </button>
+      <input type="file" id="pw-file-input" accept=".json">
+    </div>
+  </header>
+
+  <!-- Workbench Main Area -->
+  <div class="pw-layout">
+
+    <!-- Inspector / Sidebar -->
+    <aside class="pw-sidebar">
+
+      <!-- Dropzone -->
+      <div class="pw-dropzone" id="pw-dropzone">
+        <svg class="pw-drop-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="12" y1="18" x2="12" y2="12"></line>
+          <line x1="9" y1="15" x2="12" y2="12"></line>
+          <line x1="15" y1="15" x2="12" y2="12"></line>
+        </svg>
+        <p style="font-weight: 700; margin-bottom: 4px; font-size: 0.95rem;">اسحب وأفلت lesson.json هنا</p>
+        <p style="font-size: 0.8rem; color: var(--pw-muted);">أو اضغط لاختياره مباشرة من القرص</p>
+      </div>
+
+      <!-- Pre-flight Validation Checklist -->
+      <div>
+        <div class="pw-panel-title">
+          <svg style="width: 16px; height: 16px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 11l3 3L22 4"></path>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+          </svg>
+          <span>فحص جاهزية الدرس (Pre-flight)</span>
+        </div>
+        <ul class="pw-checklist">
+          <li class="pw-check-item">
+            <svg class="pw-check-status valid" id="chk-json" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span id="txt-json">بنية الـ JSON صالحة</span>
+          </li>
+          <li class="pw-check-item">
+            <svg class="pw-check-status valid" id="chk-meta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span id="txt-meta">معرف الدرس والصف والمادة مكتملة</span>
+          </li>
+          <li class="pw-check-item">
+            <svg class="pw-check-status valid" id="chk-slides" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span id="txt-slides">عدد الشرائح: 4 شرائح صالحة</span>
+          </li>
+          <li class="pw-check-item">
+            <svg class="pw-check-status valid" id="chk-quiz" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span id="txt-quiz">الاختبار: تم التحقق من الإجابة الصحيحة</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Quick Audio Soundboard Tester -->
+      <div>
+        <div class="pw-panel-title">
+          <svg style="width: 16px; height: 16px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          </svg>
+          <span>اختبار المؤثرات الصوتية (Synthesizer)</span>
+        </div>
+        <div class="pw-audio-grid">
+          <button class="pw-audio-btn" type="button" onclick="window.InteractiveLesson.audio.sndCorrect()">
+            <svg style="width: 14px; height: 14px; color: var(--pw-success);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>نغمة النجاح</span>
+          </button>
+          <button class="pw-audio-btn" type="button" onclick="window.InteractiveLesson.audio.sndWrong()">
+            <svg style="width: 14px; height: 14px; color: var(--pw-danger);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            <span>نغمة الخطأ</span>
+          </button>
+          <button class="pw-audio-btn" type="button" onclick="window.InteractiveLesson.audio.sndSlide()">
+            <svg style="width: 14px; height: 14px; color: var(--pw-accent);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            <span>نغمة التنقل</span>
+          </button>
+          <button class="pw-audio-btn" type="button" onclick="window.InteractiveLesson.audio.sndWin()">
+            <svg style="width: 14px; height: 14px; color: var(--pw-warning);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            <span>نغمة الفوز</span>
+          </button>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- Canvas Preview Stage -->
+    <main class="pw-canvas-area">
+      <div class="pw-viewport-frame">
+
+        <!-- Embedded Interactive Lesson Root Container -->
+        <div id="interactive-lesson-root" style="min-height: 100%; height: 100%;">
+          <header class="il-header">
+            <div class="il-title-wrap">
+              <span class="il-meta-pill">
+                <svg class="il-svg-icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                <span id="il-subject-badge">معاينة مباشرة</span>
+              </span>
+              <h1 class="il-lesson-title" id="il-lesson-title">اختر درساً للبدء</h1>
+            </div>
+            <div class="il-controls">
+              <button class="il-btn-icon" id="il-sound-btn" type="button" title="الصوت">
+                <svg class="il-svg-icon" viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+              </button>
+            </div>
+          </header>
+
+          <main class="il-stage" id="il-stage" style="height: calc(100% - 144px);"></main>
+
+          <footer class="il-footer">
+            <button class="il-nav-btn il-btn-secondary" id="il-prev-btn" type="button">
+              <svg class="il-svg-icon" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              <span>السابق</span>
+            </button>
+            <div class="il-dots-container" id="il-dots"></div>
+            <div style="display: flex; align-items: center; gap: 14px;">
+              <span class="il-counter-badge" id="il-counter">1 / 1</span>
+              <button class="il-nav-btn" id="il-next-btn" type="button">
+                <span>التالي</span>
+                <svg class="il-svg-icon" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+              </button>
+            </div>
+          </footer>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Runtime Engine -->
+  <script src="../template/script.js"></script>
+
+  <!-- Preview Workbench Logic -->
+  <script>
+    (function () {
+      var dropzone = document.getElementById('pw-dropzone');
+      var fileInput = document.getElementById('pw-file-input');
+      var sampleBtn = document.getElementById('pw-load-sample-btn');
+
+      var defaultSampleLesson = {
+        "id": "sample_preview",
+        "title": "معاينة درس استكشاف الحيوانات",
+        "gradeId": "grade_4",
+        "subjectId": "science",
+        "description": "درس تجريبي يتم تشغيله فورياً داخل بيئة المعاينة.",
+        "slides": [
+          {
+            "id": "s1",
+            "type": "explain",
+            "eyebrow": "المحطة الأولى",
+            "title": "مجموعات الحيوانات الفقارية",
+            "subtitle": "استكشف معنا تصنيف الحيوانات وخصائصها الفريدة بطريقة تفاعلية.",
+            "mascotTip": "أهلاً بك في بيئة المعاينة الفورية! اختبر التنقل بالأزرار أو الأسهم.",
+            "traits": [
+              "تم تحميل الدرس بنجاح من الذاكرة دون الحاجة لخادم.",
+              "يدعم محرك الصوت المولد الترددي Synthesizer تلقائياً.",
+              "متوافق 100% مع معايير المنصة ومستعد للحزم والتشفير."
+            ],
+            "examples": [
+              { "emoji": "🦁", "name": "الأسد" },
+              { "emoji": "🦅", "name": "النسر" },
+              { "emoji": "🐬", "name": "الدلفين" }
+            ]
+          },
+          {
+            "id": "s2",
+            "type": "interactive_reveal",
+            "eyebrow": "المحطة الثانية",
+            "title": "بطاقات الاستكشاف التفاعلية",
+            "subtitle": "انقر على البطاقات لتجربة صوت وتأثير الفتح:",
+            "groups": [
+              { "id": "g1", "emoji": "🐻", "name": "الثدييات", "detail": "تلد وترضع صغارها الحليب ويغطي جسمها الشعر أو الفراء." },
+              { "id": "g2", "emoji": "🦅", "name": "الطيور", "detail": "يغطي جسمها الريش ولها مناقير وتتكاثر بالبيض." }
+            ],
+            "reveal": {
+              "question": "اضغط هنا لكشف معلومة التحدي",
+              "answer": "هل تعلم أن الخفاش طائر من الثدييات؟ رائع!"
+            }
+          },
+          {
+            "id": "s3",
+            "type": "quiz",
+            "eyebrow": "المحطة الثالثة",
+            "title": "تحدي السؤال الذكي",
+            "quiz": {
+              "id": "q1",
+              "question": "أي الحيوانات التالية يعتبر من الثدييات البحرية؟",
+              "choices": [
+                { "id": "c1", "text": "سمك القرش", "isCorrect": false },
+                { "id": "c2", "text": "الحوت الأزرق", "isCorrect": true },
+                { "id": "c3", "text": "الأخطبوط", "isCorrect": false }
+              ]
+            }
+          },
+          {
+            "id": "s4",
+            "type": "summary",
+            "title": "أحسنت المعاينة يا مهندسنا البطل!",
+            "subtitle": "الدرس جاهز ومكتمل للاعتماد والرفع في البرانش."
+          }
+        ]
+      };
+
+      function updateValidation(data) {
+        var chkMeta = document.getElementById('chk-meta');
+        var chkSlides = document.getElementById('chk-slides');
+        var chkQuiz = document.getElementById('chk-quiz');
+
+        var hasMeta = !!(data.id && data.title && data.gradeId && data.subjectId);
+        chkMeta.className = 'pw-check-status ' + (hasMeta ? 'valid' : 'invalid');
+
+        var slideCount = (data.slides || []).length;
+        document.getElementById('txt-slides').textContent = 'عدد الشرائح: ' + slideCount + ' شرائح صالحة';
+        chkSlides.className = 'pw-check-status ' + (slideCount > 0 ? 'valid' : 'invalid');
+
+        var hasQuiz = (data.slides || []).some(function (s) {
+          return s.type === 'quiz' && s.quiz && (s.quiz.choices || []).some(function (c) { return c.isCorrect; });
+        });
+        document.getElementById('txt-quiz').textContent = hasQuiz ? 'الاختبار: تم التحقق من وجود إجابة صحيحة' : 'تنبيه: لا يوجد اختبار أو إجابة صحيحة محددة';
+        chkQuiz.className = 'pw-check-status ' + (hasQuiz ? 'valid' : 'pending');
+      }
+
+      function loadLessonData(jsonObj) {
+        try {
+          updateValidation(jsonObj);
+          window.InteractiveLesson.load(jsonObj);
+        } catch (e) {
+          alert('خطأ أثناء تشغيل الدرس: ' + e.message);
+        }
+      }
+
+      function handleFile(file) {
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          try {
+            var data = JSON.parse(e.target.result);
+            loadLessonData(data);
+          } catch (err) {
+            alert('ملف JSON غير صالح: ' + err.message);
+          }
+        };
+        reader.readAsText(file);
+      }
+
+      // Drag & Drop
+      dropzone.addEventListener('dragover', function (e) {
+        e.preventDefault();
+        dropzone.classList.add('dragover');
+      });
+      dropzone.addEventListener('dragleave', function () {
+        dropzone.classList.remove('dragover');
+      });
+      dropzone.addEventListener('drop', function (e) {
+        e.preventDefault();
+        dropzone.classList.remove('dragover');
+        if (e.dataTransfer.files.length > 0) {
+          handleFile(e.dataTransfer.files[0]);
+        }
+      });
+      dropzone.addEventListener('click', function () {
+        fileInput.click();
+      });
+
+      fileInput.addEventListener('change', function () {
+        if (fileInput.files.length > 0) {
+          handleFile(fileInput.files[0]);
+        }
+      });
+
+      sampleBtn.addEventListener('click', function () {
+        loadLessonData(defaultSampleLesson);
+      });
+
+      // Initial load of sample
+      loadLessonData(defaultSampleLesson);
+    })();
+  </script>
+</body>
+</html>

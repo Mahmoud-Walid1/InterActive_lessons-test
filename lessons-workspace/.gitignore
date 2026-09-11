@@ -1,0 +1,36 @@
+# ==========================================
+# Lessons Workspace - Git Ignore Rules
+# ==========================================
+
+# OS Generated Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# IDE & Editor Directories
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+
+# Build and Temporary Output
+node_modules/
+dist/
+build/
+.cache/
+*.tmp
+*.temp
+*.log
+
+# Sensitive or Local Environment
+.env
+.env.local
+.env.*.local

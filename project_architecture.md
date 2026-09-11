@@ -71,7 +71,28 @@ A secure, mobile-first Web Application / PWA for interactive primary school less
 │       ├── lesson.ts                 # TypeScript types for Slides, Quizzes, Lessons
 │       ├── auth.ts                   # TypeScript types for Licenses, Devices, Sessions
 │       └── offline.ts                # TypeScript types for IndexedDB records
+├── lessons-workspace/                # [Isolated] Content Engineers & Teachers Workspace
+│   ├── .gitignore                    # Content repo gitignore
+│   ├── INSTRUCTIONS.md               # Guide for content authors & teachers
+│   ├── template/                     # Pure Web Standards template
+│   │   ├── index.html                # Isolated scoped lesson container
+│   │   ├── style.css                 # Scoped CSS for lesson container
+│   │   ├── script.js                 # IIFE runtime engine with Web Audio Synthesizer fallback
+│   │   ├── lesson.json               # Canonical LessonData schema (100% matched to types/lesson.ts)
+│   │   └── assets/                   # Sample audio & image assets
+│   ├── lessons/                      # Content submission directory by grade
+│   │   ├── grade-1/ ... grade-6/     # Primary grades folders
+│   └── preview/                      # Zero-server offline preview & checklist workbench
+│       └── index.html                # Drag-and-drop lesson tester & audio diagnostics
 ├── next.config.ts                    # Next.js configuration
 ├── tailwind.config.ts                # Tailwind CSS styling configuration
 └── package.json                      # Project dependencies
 ```
+
+---
+
+## Content Workspace Isolation Boundary
+The `lessons-workspace/` directory is designed to be pushed or distributed as an isolated Git repository or separate branch for content creators.
+- **Zero Platform Leakage**: Does not contain any crypto (`src/lib/crypto`), security guards (`src/components/security`), admin logic (`src/app/admin`), agent instructions (`AGENTS.md`, `CLAUDE.md`), or licensing logic.
+- **Zero-Dependency Runtime**: Built purely with HTML5, Scoped Vanilla CSS, Vanilla JS (IIFE), and Web Audio API. Content authors require no Node.js or build steps.
+- **Automated Ingestion Ready**: Every `lesson.json` strictly adheres to `src/types/lesson.ts` so `lessonPackager.ts` can ingest, encrypt, and bundle lessons directly into the platform offline cache.
