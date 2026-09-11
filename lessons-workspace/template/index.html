@@ -11,61 +11,31 @@
   <!-- Isolated Container Root -->
   <div id="interactive-lesson-root">
 
-    <!-- Top Navigation & Control Bar -->
-    <header class="il-header">
-      <div class="il-title-wrap">
-        <span class="il-meta-pill">
-          <svg class="il-svg-icon" viewBox="0 0 24 24">
-            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-          </svg>
-          <span id="il-subject-badge">الدرس التفاعلي</span>
-        </span>
-        <h1 class="il-lesson-title" id="il-lesson-title">جاري تحميل الدرس...</h1>
+    <!-- Mascot Robert (Floating on Left Side) -->
+    <div class="mascot-wrap" id="il-mascot-wrap">
+      <div class="robert" id="il-robert-character" title="روبرت المساعد الذكي">
+        <div class="hat"></div>
+        <div class="head">
+          <div class="eye l"></div>
+          <div class="eye r"></div>
+          <div class="antenna"></div>
+        </div>
+        <div class="body"></div>
       </div>
+      <div class="bubble" id="il-mascot-bubble">أهلاً بك يا بطل! استكشف معنا أسرار هذا الدرس الممتع! 💡</div>
+    </div>
 
-      <div class="il-controls">
-        <button class="il-btn-icon" id="il-sound-btn" type="button" title="كتم / تشغيل الصوت" aria-label="الصوت">
-          <svg class="il-svg-icon" viewBox="0 0 24 24">
-            <path d="M11 5L6 9H2v6h4l5 4V5z"></path>
-            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-          </svg>
-        </button>
-      </div>
-    </header>
-
-    <!-- Main Dynamic Presentation Stage -->
+    <!-- Main Presentation Stage -->
     <main class="il-stage" id="il-stage" role="region" aria-label="عرض شرائح الدرس"></main>
 
-    <!-- Floating Side Navigation Arrows -->
-    <button class="il-side-nav-btn il-side-next" id="il-side-next-btn" type="button" title="الشريحة التالية (أو سهم يسار)" aria-label="التالي">
-      <svg class="il-svg-icon" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
-    </button>
-    <button class="il-side-nav-btn il-side-prev" id="il-side-prev-btn" type="button" title="الشريحة السابقة (أو سهم يمين)" aria-label="السابق">
-      <svg class="il-svg-icon" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
-    </button>
-
-    <!-- Bottom Navigation Bar -->
-    <footer class="il-footer">
-      <button class="il-nav-btn il-btn-secondary" id="il-prev-btn" type="button">
-        <svg class="il-svg-icon" viewBox="0 0 24 24">
-          <polyline points="9 18 15 12 9 6"></polyline>
-        </svg>
-        <span>السابق</span>
-      </button>
-
-      <div class="il-dots-container" id="il-dots"></div>
-
-      <div style="display: flex; align-items: center; gap: 14px;">
-        <span class="il-counter-badge" id="il-counter">1 / 1</span>
-        <button class="il-nav-btn il-btn-primary" id="il-next-btn" type="button">
-          <span>التالي</span>
-          <svg class="il-svg-icon" viewBox="0 0 24 24">
-            <polyline points="15 18 9 12 15 6"></polyline>
-          </svg>
-        </button>
-      </div>
-    </footer>
+    <!-- Bottom Floating Forest-Teal Navbar -->
+    <nav class="navbar">
+      <button class="nav-btn sound" id="il-sound-btn" type="button" title="الصوت">🔊</button>
+      <button class="nav-btn" id="il-prev-btn" type="button" title="السابق">►</button>
+      <span class="slide-counter" id="il-counter">1 / 1</span>
+      <div class="dots" id="il-dots"></div>
+      <button class="nav-btn" id="il-next-btn" type="button" title="التالي">◄</button>
+    </nav>
 
   </div>
 

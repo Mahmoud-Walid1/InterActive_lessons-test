@@ -1,70 +1,38 @@
 /* ==========================================================================
-   Interactive Lesson Pro Design System (Ultra-Premium, Tactile, Kid-Friendly)
-   Namespace: #interactive-lesson-root & .il-*
+   Interactive Lessons Design System (Storybook Canvas & Tactile Engine)
+   Mirrors the reference masterpiece: مجموعات_الحيوانات_عرض_تفاعلي-1.html
    ========================================================================== */
 
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800;900&family=Tajawal:wght@400;500;700;800;900&display=swap');
+
 #interactive-lesson-root {
-  /* Color Tokens - Modern HSL Harmonious Palette */
-  --il-bg-cream: #FAF6ED;
-  --il-bg-cream-dark: #EFE8D8;
-  --il-card-bg: #FFFFFF;
-  --il-ink-primary: #122824;
-  --il-ink-secondary: #35504A;
-  --il-ink-muted: #627E78;
-  
-  --il-clay: #E0533C;
-  --il-clay-dark: #BA3621;
-  --il-clay-light: #FDE8E5;
-
-  --il-gold: #F59E0B;
-  --il-gold-dark: #D97706;
-  --il-gold-light: #FEF3C7;
-
-  --il-emerald: #10B981;
-  --il-emerald-dark: #059669;
-  --il-emerald-light: #D1FAE5;
-
-  --il-sky: #0EA5E9;
-  --il-sky-dark: #0284C7;
-  --il-sky-light: #E0F2FE;
-
-  --il-indigo: #6366F1;
-  --il-indigo-light: #EEF2FF;
-
-  --il-danger: #EF4444;
-  --il-danger-dark: #DC2626;
-  --il-danger-light: #FEE2E2;
-
-  /* Sizing & Geometry */
-  --il-radius-sm: 12px;
-  --il-radius-md: 18px;
-  --il-radius-lg: 26px;
-  --il-radius-xl: 34px;
-  --il-radius-full: 9999px;
-
-  /* Shadows - Layered & Tactile */
-  --il-shadow-subtle: 0 4px 12px rgba(18, 40, 36, 0.05);
-  --il-shadow-card: 0 14px 36px -8px rgba(18, 40, 36, 0.12), 0 2px 6px rgba(18, 40, 36, 0.04);
-  --il-shadow-float: 0 20px 48px -12px rgba(18, 40, 36, 0.18);
-  --il-shadow-tactile: 0 5px 0;
+  /* Color Palette */
+  --paper: #FBF3DE;
+  --paper-dark: #F2E6C4;
+  --ink: #1B3B36;
+  --clay: #C1502E;
+  --leaf: #4F7942;
+  --sky: #3E92B0;
+  --gold: #E8A93B;
+  --white: #FFFDF7;
+  --danger: #DC2626;
+  --shadow: 0 10px 30px rgba(27, 59, 54, 0.18);
+  --shadow-card: 0 12px 28px rgba(27, 59, 54, 0.14);
 
   position: relative;
   width: 100%;
   height: 100%;
-  max-height: 100%;
   box-sizing: border-box;
-  font-family: 'Tajawal', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Cairo", sans-serif;
-  color: var(--il-ink-primary);
+  font-family: 'Tajawal', sans-serif;
   background:
-    radial-gradient(circle at 10% 15%, rgba(245, 158, 11, 0.15), transparent 45%),
-    radial-gradient(circle at 90% 85%, rgba(14, 165, 233, 0.14), transparent 50%),
-    radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.06), transparent 60%),
-    var(--il-bg-cream);
+    radial-gradient(circle at 15% 15%, rgba(232, 169, 59, 0.18), transparent 45%),
+    radial-gradient(circle at 90% 85%, rgba(62, 146, 176, 0.18), transparent 45%),
+    var(--paper);
+  color: var(--ink);
+  overflow: hidden;
   direction: rtl;
   text-align: right;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
+  user-select: none;
 }
 
 #interactive-lesson-root *,
@@ -76,106 +44,17 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-/* ---------- 1. HEADER (Glassmorphic & Polished) ---------- */
-.il-header {
-  height: 64px;
-  min-height: 64px;
-  flex-shrink: 0;
-  padding: 0 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-bottom: 2px solid var(--il-bg-cream-dark);
-  box-shadow: 0 2px 10px rgba(18, 40, 36, 0.04);
-  z-index: 30;
-  direction: rtl;
+h1, h2, h3, .display, .il-font-baloo {
+  font-family: 'Baloo 2', sans-serif;
 }
 
-.il-title-wrap {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
-  overflow: hidden;
-}
-
-.il-meta-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: linear-gradient(135deg, var(--il-gold-light), #FEF9C3);
-  border: 1.5px solid var(--il-gold);
-  color: var(--il-gold-dark);
-  padding: 5px 14px;
-  border-radius: 12px;
-  font-size: 0.84rem;
-  font-weight: 800;
-  box-shadow: 0 2px 6px rgba(245, 158, 11, 0.15);
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.il-lesson-title {
-  font-size: clamp(1rem, 2vw, 1.25rem);
-  font-weight: 900;
-  color: var(--il-ink-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  letter-spacing: -0.2px;
-}
-
-.il-controls {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
-  margin-inline-start: 12px;
-}
-
-.il-btn-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: var(--il-radius-md);
-  border: 2px solid var(--il-bg-cream-dark);
-  background: var(--il-card-bg);
-  color: var(--il-ink-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 3px 0 var(--il-bg-cream-dark);
-  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.il-btn-icon:hover {
-  background: var(--il-bg-cream-dark);
-  transform: translateY(-2px);
-  box-shadow: 0 5px 0 rgba(18, 40, 36, 0.15);
-}
-
-.il-btn-icon:active {
-  transform: translateY(2px);
-  box-shadow: 0 1px 0 rgba(18, 40, 36, 0.15);
-}
-
-.il-svg-icon {
-  width: 22px;
-  height: 22px;
-  stroke-width: 2.3;
-  stroke: currentColor;
-  fill: none;
-}
-
-/* ---------- 2. MAIN STAGE & SLIDE CONTAINER ---------- */
+/* ---------- 1. MAIN PRESENTATION STAGE ---------- */
 .il-stage {
-  position: relative;
-  flex: 1 1 0%;
-  min-height: 0;
-  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 84px; /* Space for the bottom floating navbar */
   overflow: hidden;
 }
 
@@ -185,1269 +64,1054 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  padding: 20px 24px;
+  justify-content: center;
+  padding: 24px 12% 20px;
   opacity: 0;
+  transform: translateY(22px) scale(0.98);
   pointer-events: none;
-  transform: translateY(16px) scale(0.98);
-  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.45s ease, transform 0.45s ease;
   overflow-y: auto;
   overflow-x: hidden;
 }
 
 .il-slide.active {
   opacity: 1;
-  pointer-events: auto;
   transform: translateY(0) scale(1);
+  pointer-events: auto;
 }
 
 .il-slide::-webkit-scrollbar { width: 6px; }
-.il-slide::-webkit-scrollbar-thumb { background: rgba(18, 40, 36, 0.2); border-radius: 10px; }
+.il-slide::-webkit-scrollbar-thumb { background: rgba(27, 59, 54, 0.25); border-radius: 10px; }
 
-/* Eyebrow Pill */
-.il-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: linear-gradient(135deg, #FFFFFF, var(--il-clay-light));
-  border: 1.5px solid var(--il-clay);
-  color: var(--il-clay);
-  font-weight: 800;
-  padding: 5px 16px;
-  border-radius: 12px;
-  font-size: 0.86rem;
-  margin-bottom: 10px;
-  box-shadow: 0 2px 8px rgba(224, 83, 60, 0.12);
-  flex-shrink: 0;
-}
-
-.il-slide-title {
-  font-size: clamp(1.4rem, 2.8vw, 2.1rem);
-  font-weight: 900;
-  color: var(--il-ink-primary);
-  text-align: center;
-  margin-bottom: 6px;
-  line-height: 1.35;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.03);
-  flex-shrink: 0;
-}
-
-.il-slide-subtitle {
-  font-size: clamp(0.92rem, 1.4vw, 1.12rem);
-  color: var(--il-ink-secondary);
-  max-width: 680px;
-  text-align: center;
-  margin-bottom: 18px;
-  line-height: 1.6;
-  flex-shrink: 0;
-}
-
-/* ==========================================================================
-   MASCOT CHARACTER: "فصيح" (Faseeh the Smart Animated Learning Robot)
-   ========================================================================== */
-.il-mascot-wrap {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  max-width: 680px;
-  width: 100%;
-  margin-bottom: 16px;
-  direction: rtl;
-  flex-shrink: 0;
-  position: relative;
-}
-
-/* The Animated Robot Body */
-.il-faseeh-robot {
-  width: 50px;
-  height: 60px;
-  position: relative;
-  flex-shrink: 0;
-  animation: il-faseeh-float 3.5s infinite ease-in-out;
-  cursor: pointer;
-  user-select: none;
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.il-faseeh-robot:hover {
-  transform: scale(1.1) rotate(-3deg);
-}
-
-/* Antenna & Pulsing Energy Light */
-.il-faseeh-antenna {
-  position: absolute;
-  top: -12px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 3px;
-  height: 12px;
-  background: var(--il-ink-primary);
-  border-radius: 2px;
-}
-
-.il-faseeh-antenna::after {
-  content: '';
-  position: absolute;
-  top: -6px;
-  left: -4px;
-  width: 10px;
-  height: 10px;
-  background: radial-gradient(circle, #FDE047, var(--il-gold));
-  border: 1.5px solid var(--il-ink-primary);
-  border-radius: 50%;
-  box-shadow: 0 0 10px rgba(245, 158, 11, 0.9);
-  animation: il-faseeh-glow 1.8s infinite alternate ease-in-out;
-}
-
-/* Graduation / Thinking Cap */
-.il-faseeh-hat {
-  position: absolute;
-  top: -4px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 34px;
-  height: 9px;
-  background: var(--il-clay);
-  border: 2px solid var(--il-ink-primary);
-  border-radius: 6px 6px 0 0;
-  z-index: 3;
-}
-
-/* Head Box */
-.il-faseeh-head {
-  position: absolute;
-  top: 5px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 42px;
-  height: 30px;
-  background: linear-gradient(180deg, #38BDF8, #0284C7);
-  border: 2px solid var(--il-ink-primary);
-  border-radius: 11px;
-  z-index: 2;
+/* Slide Header & Titles */
+.slide-header {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.4);
+  text-align: center;
+  margin-bottom: 12px;
+  flex-shrink: 0;
 }
 
-/* Eyes */
-.il-faseeh-eyes-row {
-  display: flex;
-  gap: 10px;
+.il-eyebrow, .eyebrow {
+  display: inline-flex;
   align-items: center;
+  gap: 8px;
+  background: var(--white);
+  border: 2px dashed var(--clay);
+  color: var(--clay);
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 700;
+  padding: 5px 18px;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+  box-shadow: 0 4px 10px rgba(193, 80, 46, 0.12);
+  flex-shrink: 0;
 }
 
-.il-faseeh-eye {
-  width: 6px;
-  height: 6px;
-  background: #0F172A;
+.il-slide-title, .title {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: clamp(1.8rem, 3.8vw, 2.5rem);
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 4px;
+  text-align: center;
+  line-height: 1.25;
+  flex-shrink: 0;
+}
+
+.il-slide-subtitle, .subtitle {
+  font-size: clamp(0.95rem, 1.4vw, 1.12rem);
+  color: #40564F;
+  max-width: 760px;
+  text-align: center;
+  margin-bottom: 14px;
+  line-height: 1.65;
+  flex-shrink: 0;
+}
+
+/* ---------- 2. MASCOT ROBERT (Floating on Left Side) ---------- */
+.mascot-wrap {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  max-width: 140px;
+  pointer-events: auto;
+  transition: opacity 0.3s ease;
+}
+
+.bubble {
+  background: var(--white);
+  border: 3px solid var(--ink);
+  border-radius: 16px;
+  padding: 10px 12px;
+  font-size: 0.78rem;
+  line-height: 1.55;
+  font-weight: 700;
+  box-shadow: var(--shadow);
+  text-align: center;
+  order: 2;
+  color: var(--ink);
+}
+
+.robert {
+  order: 1;
+  width: 54px;
+  height: 64px;
+  flex-shrink: 0;
+  position: relative;
+  animation: floatY 3.2s ease-in-out infinite;
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.robert:hover { transform: scale(1.12); }
+
+.robert .hat {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 56px;
+  height: 20px;
+  background: var(--clay);
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  border: 2.5px solid var(--ink);
+  animation: wiggleHat 3.2s ease-in-out infinite;
+  z-index: 3;
+}
+
+.robert .hat::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32px;
+  height: 8px;
+  background: var(--gold);
+  border-radius: 5px;
+  border: 2px solid var(--ink);
+}
+
+.robert .head {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 32px;
+  background: var(--sky);
+  border: 2.5px solid var(--ink);
+  border-radius: 11px;
+  z-index: 2;
+}
+
+.robert .eye {
+  position: absolute;
+  top: 12px;
+  width: 7px;
+  height: 7px;
+  background: var(--ink);
   border-radius: 50%;
-  animation: il-faseeh-blink 4s infinite;
+  animation: blink 4s infinite;
 }
 
-/* Smile */
-.il-faseeh-mouth {
-  width: 11px;
-  height: 4px;
-  border-bottom: 2px solid #0F172A;
-  border-radius: 0 0 8px 8px;
-  margin-top: 2px;
+.robert .eye.l { left: 8px; }
+.robert .eye.r { right: 8px; }
+
+.robert .antenna {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2.5px;
+  height: 12px;
+  background: var(--ink);
 }
 
-/* Torso / Body with Name Tag */
-.il-faseeh-body {
+.robert .antenna::after {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: -2.5px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--clay);
+  border: 1.5px solid var(--ink);
+}
+
+.robert .body {
   position: absolute;
   top: 34px;
   left: 50%;
   transform: translateX(-50%);
-  width: 38px;
-  height: 22px;
-  background: linear-gradient(180deg, #FCD34D, var(--il-gold));
-  border: 2px solid var(--il-ink-primary);
-  border-radius: 8px;
+  width: 46px;
+  height: 28px;
+  background: var(--gold);
+  border: 2.5px solid var(--ink);
+  border-radius: 9px;
+}
+
+.robert .body::after {
+  content: 'روبرت';
+  position: absolute;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: var(--ink);
 }
 
-.il-faseeh-name {
-  font-size: 0.62rem;
-  font-weight: 900;
-  color: #78350F;
-  letter-spacing: -0.3px;
-}
-
-/* Speech Bubble */
-.il-mascot-bubble {
-  flex: 1;
-  background: linear-gradient(135deg, #FFFDF5, #FEF9C3);
-  border: 1.5px solid var(--il-gold);
-  border-radius: 16px;
-  padding: 10px 16px;
-  position: relative;
-  text-align: right;
-  box-shadow: 0 3px 10px rgba(245, 158, 11, 0.1), 0 3px 0 rgba(217, 119, 6, 0.18);
-}
-
-.il-mascot-bubble::before {
-  content: '';
+/* ---------- 3. BOTTOM FLOATING NAVBAR (Deep Forest-Teal) ---------- */
+.navbar {
   position: absolute;
-  right: -8px;
-  top: 50%;
-  transform: translateY(-50%);
-  border-width: 7px 0 7px 8px;
-  border-style: solid;
-  border-color: transparent transparent transparent var(--il-gold);
-}
-
-.il-mascot-bubble::after {
-  content: '';
-  position: absolute;
-  right: -6px;
-  top: 50%;
-  transform: translateY(-50%);
-  border-width: 5px 0 5px 6px;
-  border-style: solid;
-  border-color: transparent transparent transparent #FEF9C3;
-}
-
-.il-bubble-author {
+  bottom: 0;
+  right: 0;
+  left: 0;
+  height: 84px;
+  background: linear-gradient(0deg, rgba(27, 59, 54, 0.98), rgba(27, 59, 54, 0.92));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 0.8rem;
-  font-weight: 900;
-  color: var(--il-gold-dark);
-  margin-bottom: 2px;
+  justify-content: center;
+  gap: 16px;
+  z-index: 50;
+  padding: 0 24px;
 }
 
-.il-bubble-text {
-  font-size: 0.96rem;
+.nav-btn {
+  background: var(--gold);
+  color: var(--ink);
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 1.35rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+  transition: transform .15s, background .2s;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.nav-btn:hover:not(:disabled) {
+  transform: scale(1.1);
+  background: #F59E0B;
+}
+
+.nav-btn:active:not(:disabled) {
+  transform: scale(0.94);
+}
+
+.nav-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.nav-btn.sound {
+  position: absolute;
+  left: 20px;
+  background: var(--sky);
+  color: var(--white);
+  width: 44px;
+  height: 44px;
+  font-size: 1.1rem;
+}
+
+.dots {
+  display: flex;
+  gap: 8px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  max-width: 40vw;
+  padding: 4px 2px;
+}
+
+.dots::-webkit-scrollbar { height: 4px; }
+.dots::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.3); border-radius: 4px; }
+
+.dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+  transition: .25s;
+  flex-shrink: 0;
+}
+
+.dot.active {
+  background: var(--gold);
+  transform: scale(1.35);
+  box-shadow: 0 0 10px var(--gold);
+}
+
+.slide-counter {
+  color: var(--white);
+  font-family: 'Baloo 2', sans-serif;
   font-weight: 700;
-  color: var(--il-ink-primary);
-  line-height: 1.55;
-  margin: 0;
-}
-
-@keyframes il-faseeh-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
-}
-
-@keyframes il-faseeh-blink {
-  0%, 90%, 100% { transform: scaleY(1); }
-  95% { transform: scaleY(0.1); }
-}
-
-@keyframes il-faseeh-glow {
-  from { box-shadow: 0 0 4px rgba(245, 158, 11, 0.5); }
-  to { box-shadow: 0 0 14px rgba(245, 158, 11, 1); }
-}
-
-/* Feedback Message Display */
-.il-feedback-msg {
-  margin-top: 14px;
-  font-size: 1.15rem;
-  font-weight: 900;
+  min-width: 56px;
   text-align: center;
-  min-height: 28px;
-  transition: all 0.3s ease;
+  font-size: 1.05rem;
+  flex-shrink: 0;
 }
 
-/* ==========================================================================
-   SLIDE 1: EXPLAIN (Notebook Paper Card)
-   ========================================================================== */
-.il-traits-list {
+/* ---------- 4. ACTIVITY & SLIDE LAYOUTS ---------- */
+
+/* Slide 1: Explain (Animated Scene & Traits) */
+.scene {
+  width: 100%;
+  max-width: 760px;
+  height: 130px;
+  margin: 6px 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 40px;
+}
+
+.emoji-anim {
+  font-size: 3.6rem;
+  display: inline-block;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.12));
+}
+
+.traits {
+  list-style: none;
+  margin-top: 10px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  max-width: 680px;
+  gap: 8px;
+  max-width: 580px;
   width: 100%;
-  margin-bottom: 14px;
 }
 
-.il-trait-card {
-  background: #FFFFFF;
-  border: 1.5px solid var(--il-bg-cream-dark);
+.traits li {
+  background: var(--white);
   border-radius: 14px;
   padding: 12px 18px;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  gap: 14px;
-  direction: rtl;
-  text-align: right;
-  box-shadow: var(--il-shadow-subtle), 0 3px 0 var(--il-bg-cream-dark);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  gap: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(27, 59, 54, 0.06);
+  border: 1.5px solid rgba(27, 59, 54, 0.08);
+  line-height: 1.6;
 }
 
-.il-trait-card:hover {
-  transform: translateX(-4px);
-  border-color: var(--il-sky);
-  box-shadow: var(--il-shadow-card), 0 3px 0 var(--il-sky);
-}
-
-.il-check-icon-wrap {
-  width: 30px;
-  height: 30px;
-  min-width: 30px;
-  border-radius: 9px;
-  background: linear-gradient(135deg, var(--il-emerald), var(--il-emerald-dark));
-  color: #FFFFFF;
+.traits li::before {
+  content: '✔';
+  color: var(--leaf);
+  font-weight: 900;
+  font-size: 1.05rem;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #EAF3E4;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25);
 }
 
-.il-trait-text {
-  flex: 1 1 auto;
-  text-align: right;
-  font-size: 1rem;
+.reveal-q {
+  margin-top: 14px;
+  width: 100%;
+  max-width: 620px;
+  background: #FFF;
+  border: 2.5px solid var(--clay);
+  border-radius: 18px;
+  padding: 14px 20px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: transform .15s;
+}
+
+.reveal-q:hover { transform: translateY(-2px); }
+.reveal-q .qtext { font-weight: 700; color: var(--clay); font-family: 'Baloo 2', sans-serif; font-size: 1.1rem; }
+.reveal-q .atext { margin-top: 10px; font-size: 0.98rem; line-height: 1.7; color: var(--ink); display: none; font-weight: 700; }
+.reveal-q.open .atext { display: block; animation: popIn .3s ease; }
+.reveal-q .hint { font-size: 0.8rem; color: #888; margin-top: 4px; }
+
+.tip-toggle {
+  margin-top: 12px;
+  background: var(--leaf);
+  color: var(--white);
+  border: none;
+  padding: 8px 22px;
+  border-radius: 999px;
+  font-family: 'Tajawal', sans-serif;
   font-weight: 700;
-  color: var(--il-ink-primary);
-  line-height: 1.6;
-  margin: 0;
+  cursor: pointer;
+  font-size: 0.9rem;
+  box-shadow: 0 5px 12px rgba(79, 121, 66, 0.35);
+  transition: transform .15s;
 }
 
-.il-examples-grid {
+.tip-toggle:hover { transform: translateY(-2px); }
+
+.tip-box {
+  max-width: 620px;
+  margin-top: 10px;
+  background: #EAF3E4;
+  border: 2px solid var(--leaf);
+  border-radius: 14px;
+  padding: 12px 18px;
+  font-size: 0.92rem;
+  line-height: 1.7;
+  display: none;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.tip-box.show { display: block; animation: popIn .3s ease; }
+
+/* Slide 2: Interactive Reveal (Group Chips Grid) */
+.group-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  width: 100%;
+  max-width: 760px;
+  margin-top: 14px;
+}
+
+.group-chip {
+  background: var(--white);
+  border: 2.5px solid var(--ink);
+  border-radius: 18px;
+  padding: 18px 12px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: transform .18s, box-shadow .18s;
+  user-select: none;
+}
+
+.group-chip:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 32px rgba(27, 59, 54, 0.2);
+}
+
+.group-chip.open {
+  border-color: var(--leaf);
+  background: linear-gradient(180deg, #FFFFFF, #EAF3E4);
+}
+
+.group-chip .g-emoji { font-size: 2.6rem; display: block; margin-bottom: 6px; }
+.group-chip .g-name { font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 1.15rem; }
+.group-chip .g-detail { font-size: 0.88rem; margin-top: 8px; line-height: 1.6; color: #40564F; display: none; font-weight: 500; }
+.group-chip.open .g-detail { display: block; animation: popIn .25s ease; }
+
+/* Slide 3: Quiz Game Card */
+.game-card {
+  background: var(--white);
+  border: 3px solid var(--ink);
+  border-radius: 24px;
+  padding: 24px;
+  text-align: center;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: var(--shadow);
+  animation: popIn .35s ease;
+}
+
+.game-emoji { font-size: 4.5rem; }
+.game-name { font-family: 'Baloo 2', sans-serif; font-size: 1.35rem; margin-top: 6px; color: var(--ink); }
+.game-question { margin-top: 8px; color: #40564F; font-size: 1rem; font-weight: 700; line-height: 1.5; }
+
+.game-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  width: 100%;
+  max-width: 580px;
+  margin-top: 16px;
+}
+
+.opt-btn {
+  background: var(--sky);
+  color: var(--white);
+  border: none;
+  border-radius: 14px;
+  padding: 14px 10px;
+  font-family: 'Tajawal', sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.98rem;
+  box-shadow: 0 4px 0 #0284C7;
+  transition: transform .15s, background .2s;
+}
+
+.opt-btn:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 6px 0 #0284C7; }
+.opt-btn.correct { background: var(--leaf) !important; box-shadow: 0 4px 0 #3b5b32 !important; }
+.opt-btn.wrong { background: var(--clay) !important; box-shadow: 0 4px 0 #92341b !important; }
+.feedback { margin-top: 12px; font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 1.1rem; min-height: 28px; text-align: center; }
+
+/* Slide 4: True or False */
+.tf-card {
+  background: var(--white);
+  border: 3px solid var(--ink);
+  border-radius: 24px;
+  padding: 28px 24px;
+  text-align: center;
+  max-width: 580px;
+  width: 100%;
+  box-shadow: var(--shadow);
+}
+
+.tf-statement {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--ink);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.tf-actions {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.tf-btn {
+  flex: 1;
+  max-width: 200px;
+  padding: 16px 20px;
+  border-radius: 18px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 800;
+  cursor: pointer;
+  border: 3px solid;
+  transition: transform .15s;
+}
+
+.tf-btn-true {
+  background: #EAF3E4;
+  border-color: var(--leaf);
+  color: var(--leaf);
+  box-shadow: 0 6px 0 var(--leaf);
+}
+
+.tf-btn-false {
+  background: #FDF2F0;
+  border-color: var(--clay);
+  color: var(--clay);
+  box-shadow: 0 6px 0 var(--clay);
+}
+
+.tf-btn:hover:not(:disabled) { transform: translateY(-4px); }
+.tf-btn:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 2px 0 currentColor; }
+
+/* Slide 5: Match Pairs */
+.match-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  max-width: 640px;
+  width: 100%;
+}
+
+.match-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.match-chip {
+  background: var(--white);
+  border: 2.5px solid var(--ink);
+  border-radius: 16px;
+  padding: 14px 18px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 4px 0 rgba(27, 59, 54, 0.2);
+  transition: all .15s ease;
+}
+
+.match-chip:hover:not(.matched) { transform: translateY(-2px); border-color: var(--sky); }
+.match-chip.selected { border-color: var(--sky); background: #E0F2FE; transform: scale(1.03); }
+.match-chip.matched { border-color: var(--leaf); background: #EAF3E4; color: var(--leaf); opacity: 0.9; pointer-events: none; }
+.match-chip.wrong { border-color: var(--danger); background: #FEE2E2; animation: shake .4s ease; }
+
+/* Slide 6: Order Sequence (Timeline Stepper) */
+.order-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 580px;
+  width: 100%;
+}
+
+.order-card {
+  background: var(--white);
+  border: 2.5px solid var(--ink);
+  border-radius: 16px;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 1.05rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 0 rgba(27, 59, 54, 0.15);
+  transition: all .15s ease;
+}
+
+.order-card:hover:not(.correct) { transform: translateY(-2px); border-color: var(--gold); }
+.order-badge {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--paper-dark);
+  color: var(--ink);
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+
+.order-card.correct { border-color: var(--leaf); background: #EAF3E4; }
+.order-card.correct .order-badge { background: var(--leaf); color: var(--white); }
+
+/* Slide 7: Fill in the Blank (Puzzle Piece Slot) */
+.puzzle-sentence {
+  background: var(--white);
+  border: 3px solid var(--ink);
+  border-radius: 20px;
+  padding: 22px 24px;
+  font-size: 1.25rem;
+  font-weight: 800;
+  text-align: center;
+  max-width: 620px;
+  width: 100%;
+  line-height: 1.8;
+  box-shadow: var(--shadow);
+}
+
+.puzzle-slot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 110px;
+  height: 42px;
+  border: 2.5px dashed var(--clay);
+  border-radius: 10px;
+  background: #FFFDF0;
+  color: var(--clay);
+  padding: 0 12px;
+  vertical-align: middle;
+  margin: 0 8px;
+  font-weight: 900;
+}
+
+.puzzle-slot.filled {
+  border-style: solid;
+  border-color: var(--leaf);
+  background: #EAF3E4;
+  color: var(--leaf);
+}
+
+.word-bank {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
   justify-content: center;
-  margin-top: 6px;
-  max-width: 680px;
-  width: 100%;
+  margin-top: 18px;
 }
 
-.il-example-chip {
-  background: #FFFFFF;
-  border: 1.5px solid var(--il-bg-cream-dark);
-  border-radius: 12px;
-  padding: 8px 16px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 800;
-  box-shadow: var(--il-shadow-subtle), 0 2px 0 var(--il-bg-cream-dark);
-  transition: all 0.2s ease;
-  direction: rtl;
-}
-
-.il-example-chip:hover {
-  transform: translateY(-2px);
-  border-color: var(--il-gold);
-  box-shadow: var(--il-shadow-card), 0 3px 0 var(--il-gold);
-}
-
-.il-chip-emoji {
-  font-size: 1.25rem;
-  line-height: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.il-chip-name {
-  font-size: 0.94rem;
-  font-weight: 800;
-  color: var(--il-ink-primary);
-}
-
-/* ==========================================================================
-   SLIDE 2: INTERACTIVE REVEAL (Tactile Expandable Cards)
-   ========================================================================== */
-.il-groups-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 18px;
-  max-width: 820px;
-  width: 100%;
-  margin-bottom: 22px;
-}
-
-.il-group-card {
-  background: var(--il-card-bg);
-  border: 2.5px solid var(--il-bg-cream-dark);
-  border-radius: var(--il-radius-lg);
-  padding: 22px 18px;
-  text-align: center;
-  cursor: pointer;
-  box-shadow: var(--il-shadow-subtle), 0 4px 0 var(--il-bg-cream-dark);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.il-group-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--il-gold);
-  box-shadow: var(--il-shadow-card), 0 6px 0 var(--il-gold);
-}
-
-.il-group-card.open {
-  border-color: var(--il-emerald);
-  background: linear-gradient(180deg, #FFFFFF, var(--il-emerald-light));
-  box-shadow: var(--il-shadow-card), 0 6px 0 var(--il-emerald);
-}
-
-.il-group-card .il-card-icon { font-size: 2.6rem; margin-bottom: 8px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
-.il-group-card .il-card-title { font-size: 1.18rem; font-weight: 900; }
-.il-group-card .il-card-detail {
-  font-size: 0.94rem;
-  color: var(--il-ink-secondary);
-  line-height: 1.6;
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-  transition: max-height 0.35s ease, opacity 0.35s ease;
-}
-.il-group-card.open .il-card-detail { max-height: 160px; opacity: 1; margin-top: 10px; }
-
-.il-reveal-box {
-  max-width: 720px;
-  width: 100%;
-  background: var(--il-card-bg);
-  border: 2px dashed var(--il-sky);
-  border-radius: var(--il-radius-lg);
-  padding: 18px 22px;
-  text-align: center;
-  box-shadow: var(--il-shadow-subtle);
-}
-
-.il-reveal-btn {
-  background: linear-gradient(135deg, var(--il-sky), var(--il-sky-dark));
-  color: #FFFFFF;
+.puzzle-chip {
+  background: var(--sky);
+  color: var(--white);
   border: none;
-  padding: 11px 24px;
-  border-radius: var(--il-radius-full);
+  border-radius: 12px;
+  padding: 10px 18px;
+  font-size: 1.05rem;
   font-weight: 800;
-  font-size: 0.98rem;
   cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.35), 0 3px 0 var(--il-sky-dark);
-  transition: all 0.15s ease;
+  box-shadow: 0 4px 0 #0284C7;
+  transition: transform .15s;
 }
 
-.il-reveal-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(14, 165, 233, 0.45), 0 4px 0 var(--il-sky-dark);
-}
+.puzzle-chip:hover:not(:disabled) { transform: translateY(-3px); }
 
-.il-reveal-answer {
-  margin-top: 14px;
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: var(--il-emerald-dark);
-  display: none;
-}
-.il-reveal-answer.show { display: block; animation: il-pop-in 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-
-/* ==========================================================================
-   SLIDE 3: QUIZ (3D Tactile Buttons)
-   ========================================================================== */
-.il-quiz-box {
-  background: var(--il-card-bg);
-  border: 2.5px solid var(--il-bg-cream-dark);
-  border-radius: var(--il-radius-xl);
-  padding: 30px 24px;
-  max-width: 680px;
+/* Slide 8: Classify & Sorting (3D Buckets) */
+.classify-box {
   width: 100%;
-  box-shadow: var(--il-shadow-card);
-}
-
-.il-quiz-question {
-  font-size: 1.38rem;
-  font-weight: 900;
-  text-align: center;
-  margin-bottom: 24px;
-  line-height: 1.5;
-  color: var(--il-ink-primary);
-}
-
-.il-quiz-options {
+  max-width: 660px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-}
-
-.il-quiz-btn {
-  background: var(--il-bg-cream);
-  border: 2px solid var(--il-bg-cream-dark);
-  border-radius: var(--il-radius-md);
-  padding: 15px 22px;
-  font-size: 1.08rem;
-  font-weight: 800;
-  color: var(--il-ink-primary);
-  cursor: pointer;
-  display: flex;
   align-items: center;
-  justify-content: space-between;
-  box-shadow: 0 4px 0 var(--il-bg-cream-dark);
-  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.il-quiz-btn:hover:not(:disabled) {
-  background: #FFFFFF;
-  border-color: var(--il-sky);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 0 var(--il-sky);
-}
-
-.il-quiz-btn:active:not(:disabled) {
-  transform: translateY(2px);
-  box-shadow: 0 1px 0 var(--il-sky);
-}
-
-.il-quiz-btn.correct {
-  background: var(--il-emerald-light) !important;
-  border-color: var(--il-emerald) !important;
-  color: var(--il-emerald-dark) !important;
-  box-shadow: 0 4px 0 var(--il-emerald) !important;
-}
-
-.il-quiz-btn.wrong {
-  background: var(--il-danger-light) !important;
-  border-color: var(--il-danger) !important;
-  color: var(--il-danger-dark) !important;
-  box-shadow: 0 4px 0 var(--il-danger) !important;
-}
-
-/* ==========================================================================
-   SLIDE 4: TRUE / FALSE (Giant Tactile Cards)
-   ========================================================================== */
-.il-tf-card {
-  background: var(--il-card-bg);
-  border: 2.5px solid var(--il-bg-cream-dark);
-  border-radius: var(--il-radius-xl);
-  padding: 34px 28px;
-  max-width: 660px;
-  width: 100%;
-  box-shadow: var(--il-shadow-card);
-  text-align: center;
-}
-
-.il-tf-statement {
-  font-size: 1.45rem;
-  font-weight: 900;
-  margin-bottom: 32px;
-  line-height: 1.6;
-  color: var(--il-ink-primary);
-}
-
-.il-tf-actions {
-  display: flex;
-  gap: 22px;
-  justify-content: center;
-}
-
-.il-tf-btn {
-  flex: 1;
-  max-width: 240px;
+.classify-target-card {
+  background: var(--white);
+  border: 3px solid var(--ink);
+  border-radius: 20px;
   padding: 18px 24px;
-  border-radius: var(--il-radius-lg);
-  border: 3px solid;
-  font-size: 1.35rem;
-  font-weight: 900;
+  text-align: center;
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+  min-width: 220px;
+  animation: popIn .3s ease;
+}
+
+.classify-target-card .c-emoji { font-size: 3.8rem; }
+.classify-target-card .c-name { font-family: 'Baloo 2', sans-serif; font-size: 1.25rem; font-weight: 800; margin-top: 4px; }
+
+.classify-buckets-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  width: 100%;
+}
+
+.bucket-chest {
+  background: var(--white);
+  border: 3px solid var(--ink);
+  border-radius: 18px;
+  padding: 16px 12px;
+  text-align: center;
   cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: transform .15s, border-color .2s;
+}
+
+.bucket-chest:hover { transform: translateY(-4px); border-color: var(--gold); }
+.bucket-chest .b-emoji { font-size: 2.8rem; display: block; margin-bottom: 4px; }
+.bucket-chest .b-title { font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 1.1rem; }
+
+/* Slide 9: Hotspot Explore (Botanical SVG Canvas) */
+.hotspot-stage {
+  position: relative;
+  width: 100%;
+  max-width: 680px;
+  height: 320px;
+  background: var(--white);
+  border: 3px solid var(--ink);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-top: 4px;
 }
 
-.il-tf-btn-true {
-  background: linear-gradient(180deg, #FFFFFF, var(--il-emerald-light));
-  border-color: var(--il-emerald);
-  color: var(--il-emerald-dark);
-  box-shadow: 0 6px 0 var(--il-emerald);
-}
-
-.il-tf-btn-false {
-  background: linear-gradient(180deg, #FFFFFF, var(--il-danger-light));
-  border-color: var(--il-danger);
-  color: var(--il-danger-dark);
-  box-shadow: 0 6px 0 var(--il-danger);
-}
-
-.il-tf-btn:hover:not(:disabled) {
-  transform: translateY(-4px);
-}
-
-.il-tf-btn:active:not(:disabled) {
-  transform: translateY(3px);
-  box-shadow: 0 1px 0 currentColor;
-}
-
-/* ==========================================================================
-   SLIDE 5: MATCH PAIRS (Tap-to-Match Interactive Grid)
-   ========================================================================== */
-.il-match-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  max-width: 720px;
+.hotspot-illustration {
   width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
-.il-match-col {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.il-match-card {
-  background: var(--il-card-bg);
-  border: 2.5px solid var(--il-bg-cream-dark);
-  border-radius: var(--il-radius-md);
-  padding: 16px 20px;
-  font-size: 1.1rem;
-  font-weight: 800;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  box-shadow: 0 4px 0 var(--il-bg-cream-dark);
-  transition: all 0.15s ease;
-  user-select: none;
-}
-
-.il-match-card:hover:not(.matched) {
-  transform: translateY(-2px);
-  border-color: var(--il-sky);
-  box-shadow: 0 5px 0 var(--il-sky);
-}
-
-.il-match-card.selected {
-  border-color: var(--il-sky);
-  background: var(--il-sky-light);
-  transform: scale(1.03);
-  box-shadow: 0 6px 0 var(--il-sky-dark);
-}
-
-.il-match-card.matched {
-  border-color: var(--il-emerald);
-  background: var(--il-emerald-light);
-  color: var(--il-emerald-dark);
-  box-shadow: 0 2px 0 var(--il-emerald);
-  pointer-events: none;
-  opacity: 0.92;
-}
-
-.il-match-card.wrong {
-  border-color: var(--il-danger);
-  background: var(--il-danger-light);
-  animation: il-shake 0.4s ease;
-}
-
-/* ==========================================================================
-   SLIDE 6: ORDER SEQUENCE (Numbered Step Pills)
-   ========================================================================== */
-.il-order-container {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  max-width: 660px;
-  width: 100%;
-}
-
-.il-order-item {
-  background: var(--il-card-bg);
-  border: 2.5px solid var(--il-bg-cream-dark);
-  border-radius: var(--il-radius-lg);
-  padding: 16px 22px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  box-shadow: 0 4px 0 var(--il-bg-cream-dark);
-  cursor: pointer;
-  font-size: 1.08rem;
-  font-weight: 800;
-  transition: all 0.15s ease;
-}
-
-.il-order-item:hover:not(.correct) {
-  border-color: var(--il-gold);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 0 var(--il-gold);
-}
-
-.il-order-badge {
+.hotspot-beacon {
+  position: absolute;
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: var(--il-bg-cream-dark);
+  background: var(--gold);
+  color: var(--ink);
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 900;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 900;
-  font-size: 1rem;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.08);
-}
-
-.il-order-item.correct {
-  border-color: var(--il-emerald);
-  background: var(--il-emerald-light);
-  box-shadow: 0 4px 0 var(--il-emerald);
-}
-
-.il-order-item.correct .il-order-badge {
-  background: linear-gradient(135deg, var(--il-emerald), var(--il-emerald-dark));
-  color: #FFFFFF;
-}
-
-/* ==========================================================================
-   SLIDE 7: FILL IN THE BLANK (Glowing Puzzle Slot)
-   ========================================================================== */
-.il-blank-box {
-  background: var(--il-card-bg);
-  border: 2.5px solid var(--il-bg-cream-dark);
-  border-radius: var(--il-radius-xl);
-  padding: 32px 26px;
-  max-width: 720px;
-  width: 100%;
-  text-align: center;
-  box-shadow: var(--il-shadow-card);
-}
-
-.il-blank-sentence {
-  font-size: 1.45rem;
-  font-weight: 900;
-  line-height: 2.2;
-  margin-bottom: 30px;
-  color: var(--il-ink-primary);
-}
-
-.il-blank-slot {
-  display: inline-block;
-  min-width: 140px;
-  height: 50px;
-  vertical-align: middle;
-  border: 3px dashed var(--il-sky);
-  border-radius: var(--il-radius-md);
-  background: var(--il-sky-light);
-  line-height: 44px;
-  font-size: 1.25rem;
-  font-weight: 900;
-  color: var(--il-sky-dark);
-  padding: 0 16px;
-  box-shadow: inset 0 2px 6px rgba(14, 165, 233, 0.15);
-  animation: il-pulse-border 2.5s infinite ease-in-out;
-}
-
-.il-blank-slot.filled {
-  border-style: solid;
-  border-color: var(--il-emerald);
-  background: var(--il-emerald-light);
-  color: var(--il-emerald-dark);
-  animation: none;
-}
-
-.il-word-bank {
-  display: flex;
-  gap: 14px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.il-word-chip {
-  background: var(--il-bg-cream);
-  border: 2px solid var(--il-bg-cream-dark);
-  border-radius: var(--il-radius-full);
-  padding: 12px 24px;
-  font-size: 1.12rem;
-  font-weight: 800;
-  cursor: pointer;
-  box-shadow: 0 4px 0 var(--il-bg-cream-dark);
-  transition: all 0.15s ease;
-}
-
-.il-word-chip:hover:not(:disabled) {
-  background: #FFFFFF;
-  border-color: var(--il-sky);
-  transform: translateY(-3px);
-  box-shadow: 0 6px 0 var(--il-sky);
-}
-
-.il-word-chip:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
-
-/* ==========================================================================
-   SLIDE 8: CLASSIFY & SORTING (Tactile Baskets)
-   ========================================================================== */
-.il-classify-stage {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 24px;
-  max-width: 740px;
-  width: 100%;
-}
-
-.il-current-item-card {
-  background: var(--il-card-bg);
-  border: 3.5px solid var(--il-gold);
-  border-radius: var(--il-radius-xl);
-  padding: 22px 40px;
-  text-align: center;
-  box-shadow: var(--il-shadow-card), 0 6px 0 var(--il-gold-dark);
-  animation: il-bounce-subtle 3s infinite ease-in-out;
-}
-
-.il-current-item-card .item-emoji { font-size: 3.4rem; margin-bottom: 8px; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.1)); }
-.il-current-item-card .item-name { font-size: 1.4rem; font-weight: 900; }
-
-.il-classify-buckets {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  width: 100%;
-}
-
-.il-bucket-card {
-  background: var(--il-card-bg);
-  border: 3px dashed var(--il-bg-cream-dark);
-  border-radius: var(--il-radius-xl);
-  padding: 26px 20px;
-  text-align: center;
-  cursor: pointer;
-  box-shadow: var(--il-shadow-subtle), 0 4px 0 var(--il-bg-cream-dark);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.il-bucket-card:hover {
-  border-color: var(--il-sky);
-  background: linear-gradient(180deg, #FFFFFF, var(--il-sky-light));
-  transform: translateY(-5px);
-  box-shadow: var(--il-shadow-card), 0 8px 0 var(--il-sky);
-}
-
-.il-bucket-emoji { font-size: 2.6rem; margin-bottom: 10px; }
-.il-bucket-title { font-size: 1.25rem; font-weight: 900; color: var(--il-ink-primary); }
-
-/* ==========================================================================
-   SLIDE 9: HOTSPOT EXPLORE (Storybook Radar Pins)
-   ========================================================================== */
-.il-hotspot-container {
-  position: relative;
-  max-width: 700px;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  background: var(--il-card-bg);
-  border: 3px solid var(--il-bg-cream-dark);
-  border-radius: var(--il-radius-xl);
-  box-shadow: var(--il-shadow-card);
-  overflow: hidden;
-}
-
-.il-hotspot-pin {
-  position: absolute;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--il-clay), var(--il-clay-dark));
-  color: #FFFFFF;
-  font-weight: 900;
-  font-size: 1.1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font-size: 1.15rem;
+  border: 2.5px solid var(--ink);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   cursor: pointer;
   transform: translate(-50%, -50%);
-  box-shadow: 0 4px 12px rgba(224, 83, 60, 0.45);
-  animation: il-radar-pulse 2s infinite ease-in-out;
-  transition: transform 0.2s ease;
+  transition: transform .2s, background .2s;
+  z-index: 10;
 }
 
-.il-hotspot-pin:hover {
-  transform: translate(-50%, -50%) scale(1.15);
-}
-
-.il-hotspot-modal {
+.hotspot-beacon::after {
+  content: '';
   position: absolute;
-  bottom: 16px;
+  inset: -8px;
+  border-radius: 50%;
+  border: 2.5px solid var(--gold);
+  animation: pulse 1.8s infinite;
+}
+
+.hotspot-beacon:hover {
+  transform: translate(-50%, -50%) scale(1.18);
+  background: #FCD34D;
+}
+
+.hotspot-info-popup {
+  position: absolute;
+  bottom: 12px;
   left: 16px;
   right: 16px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border: 2px solid var(--il-clay);
-  border-radius: var(--il-radius-md);
-  padding: 14px 20px;
-  font-size: 1.05rem;
+  background: var(--ink);
+  color: var(--white);
+  border-radius: 14px;
+  padding: 12px 18px;
+  font-size: 0.96rem;
   font-weight: 700;
-  box-shadow: var(--il-shadow-float);
   display: none;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  z-index: 20;
+  text-align: center;
+  line-height: 1.6;
 }
-.il-hotspot-modal.show { display: block; animation: il-pop-in 0.25s ease; }
 
-/* ==========================================================================
-   SLIDE 10: MEMORY CARDS (True 3D Flip)
-   ========================================================================== */
-.il-memory-grid {
+.hotspot-info-popup.show {
+  display: block;
+  animation: popIn .3s ease;
+}
+
+/* Slide 10: Memory Cards (3D Flip) */
+.memory-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
-  max-width: 620px;
+  gap: 12px;
+  max-width: 580px;
   width: 100%;
 }
 
-.il-memory-card {
-  aspect-ratio: 1;
-  perspective: 1000px;
-  cursor: pointer;
-}
-
-.il-memory-inner {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  text-align: center;
-  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-  transform-style: preserve-3d;
-  border-radius: var(--il-radius-md);
-  box-shadow: var(--il-shadow-subtle), 0 3px 0 var(--il-bg-cream-dark);
-}
-
-.il-memory-card.flipped .il-memory-inner {
-  transform: rotateY(180deg);
-  box-shadow: var(--il-shadow-card), 0 4px 0 var(--il-emerald);
-}
-
-.il-memory-front, .il-memory-back {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  backface-visibility: hidden;
-  border-radius: var(--il-radius-md);
+.mem-card {
+  height: 90px;
+  border-radius: 16px;
+  border: 2.5px solid var(--ink);
+  background: var(--sky);
+  color: var(--white);
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 8px;
+  font-size: 2.2rem;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: transform .3s cubic-bezier(0.16, 1, 0.3, 1), background .2s;
+  transform-style: preserve-3d;
 }
 
-.il-memory-front {
-  background: linear-gradient(135deg, var(--il-bg-cream-dark), #E5DCB8);
-  border: 2.5px solid var(--il-clay);
-  color: var(--il-clay);
-}
-
-.il-memory-back {
-  background: #FFFFFF;
-  border: 2.5px solid var(--il-emerald);
+.mem-card:hover:not(.flipped) { transform: scale(1.05); }
+.mem-card.flipped {
+  background: var(--white);
+  color: var(--ink);
   transform: rotateY(180deg);
+  cursor: default;
 }
 
-/* ==========================================================================
-   SLIDE 11: TAP TO COUNT (Playful Bubble Counters)
-   ========================================================================== */
-.il-count-stage {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 22px;
-  max-width: 660px;
+/* Slide 11: Tap to Count */
+.count-stage {
+  background: var(--white);
+  border: 3px solid var(--ink);
+  border-radius: 22px;
+  padding: 22px;
+  max-width: 620px;
   width: 100%;
+  box-shadow: var(--shadow);
+  text-align: center;
 }
 
-.il-count-banner {
+.count-items-grid {
   display: flex;
-  align-items: center;
-  gap: 18px;
-  background: var(--il-card-bg);
-  border: 2.5px solid var(--il-gold);
-  border-radius: var(--il-radius-full);
-  padding: 12px 30px;
-  box-shadow: var(--il-shadow-subtle), 0 4px 0 var(--il-gold);
-  font-size: 1.15rem;
-  font-weight: 800;
-}
-
-.il-count-number {
-  font-size: 2.6rem;
-  font-weight: 900;
-  color: var(--il-clay);
-}
-
-.il-count-grid {
-  display: flex;
+  gap: 14px;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 18px;
-  max-width: 580px;
+  margin: 16px 0;
 }
 
-.il-count-item {
-  width: 78px;
-  height: 78px;
+.count-bubble {
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  background: var(--il-card-bg);
-  border: 3px solid var(--il-bg-cream-dark);
+  background: var(--paper-dark);
+  border: 2.5px solid var(--ink);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2.3rem;
+  font-size: 2.2rem;
   cursor: pointer;
-  box-shadow: 0 4px 0 var(--il-bg-cream-dark);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  user-select: none;
+  box-shadow: 0 4px 0 rgba(27, 59, 54, 0.2);
+  transition: transform .15s, background .2s;
 }
 
-.il-count-item:hover:not(.counted) {
-  transform: translateY(-4px) scale(1.08);
-  border-color: var(--il-gold);
-  box-shadow: 0 6px 0 var(--il-gold);
-}
-
-.il-count-item.counted {
-  border-color: var(--il-emerald);
-  background: var(--il-emerald-light);
+.count-bubble:hover { transform: scale(1.1); }
+.count-bubble.counted {
+  background: #EAF3E4;
+  border-color: var(--leaf);
   transform: scale(0.92);
-  box-shadow: 0 1px 0 var(--il-emerald);
-  opacity: 0.88;
+  opacity: 0.85;
 }
 
-/* ==========================================================================
-   SLIDE 12: SUMMARY (Trophy & 3D Shimmer Stars)
-   ========================================================================== */
-.il-summary-card {
-  background: var(--il-card-bg);
-  border: 3.5px dashed var(--il-gold);
-  border-radius: var(--il-radius-xl);
-  padding: 40px 32px;
+/* Slide 12: Summary & Celebration */
+.summary-box {
+  background: var(--white);
+  border: 3.5px dashed var(--gold);
+  border-radius: 26px;
+  padding: 34px 28px;
   text-align: center;
-  max-width: 620px;
+  max-width: 580px;
   width: 100%;
-  box-shadow: var(--il-shadow-float);
+  box-shadow: var(--shadow);
+  animation: popIn .4s ease;
 }
 
-.il-stars-row {
+.stars-row {
   display: flex;
   justify-content: center;
-  gap: 18px;
-  margin: 22px 0;
+  gap: 16px;
+  margin: 18px 0;
 }
 
-.il-star-icon {
-  width: 56px;
-  height: 56px;
-  color: #CFD8DC;
-  fill: #CFD8DC;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+.star-svg {
+  width: 54px;
+  height: 54px;
+  color: #D1D5DB;
+  fill: #D1D5DB;
+  transition: all .4s ease;
 }
 
-.il-star-icon.active {
-  color: var(--il-gold);
-  fill: var(--il-gold);
-  filter: drop-shadow(0 4px 12px rgba(245, 158, 11, 0.5));
-  animation: il-star-pop 2s infinite ease-in-out;
+.star-svg.active {
+  color: var(--gold);
+  fill: var(--gold);
+  filter: drop-shadow(0 4px 12px rgba(232, 169, 59, 0.6));
+  animation: pulse 2s infinite;
 }
 
-/* ---------- 3. BOTTOM NAVIGATION BAR ---------- */
-.il-footer {
-  height: 68px;
-  min-height: 68px;
-  flex-shrink: 0;
-  padding: 0 24px;
+/* ---------- 5. KEYFRAME ANIMATIONS ---------- */
+@keyframes floatY {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-24px); }
+}
+
+@keyframes flap {
+  0%, 100% { transform: rotate(0deg) translateY(0); }
+  25% { transform: rotate(-10deg) translateY(-10px); }
+  75% { transform: rotate(10deg) translateY(-10px); }
+}
+
+@keyframes swim {
+  0% { transform: translateX(-35px) rotate(-4deg); }
+  50% { transform: translateX(35px) rotate(4deg); }
+  100% { transform: translateX(-35px) rotate(-4deg); }
+}
+
+@keyframes slither {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  25% { transform: translateX(16px) rotate(6deg); }
+  75% { transform: translateX(-16px) rotate(-6deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+@keyframes wiggleHat {
+  0%, 100% { transform: translateX(-50%) rotate(-4deg); }
+  50% { transform: translateX(-50%) rotate(4deg); }
+}
+
+@keyframes blink {
+  0%, 90%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.1); }
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.6); opacity: 0; }
+  80% { transform: scale(1.05); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-8px); }
+  75% { transform: translateX(8px); }
+}
+
+.confetti-particle {
+  position: absolute;
+  top: -20px;
+  width: 10px;
+  height: 14px;
+  border-radius: 4px;
+  pointer-events: none;
+  z-index: 999;
+  animation: confettiFall linear forwards;
+}
+
+.examples-row {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-top: 2px solid var(--il-bg-cream-dark);
-  box-shadow: 0 -2px 10px rgba(18, 40, 36, 0.03);
-  z-index: 30;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 14px;
 }
 
-.il-nav-btn {
+.ex-chip {
+  background: var(--white);
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  padding: 8px 18px;
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  background: linear-gradient(135deg, var(--il-ink-primary), #1E3A34);
-  color: #FFFFFF;
-  border: none;
-  padding: 13px 26px;
-  border-radius: var(--il-radius-full);
-  font-size: 1.02rem;
-  font-weight: 800;
-  cursor: pointer;
-  box-shadow: 0 4px 14px rgba(18, 40, 36, 0.25), 0 3px 0 #0A1816;
-  transition: all 0.15s ease;
-}
-
-.il-nav-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(18, 40, 36, 0.35), 0 4px 0 #0A1816;
-}
-
-.il-nav-btn:active:not(:disabled) {
-  transform: translateY(2px);
-  box-shadow: 0 1px 0 #0A1816;
-}
-
-.il-nav-btn:disabled {
-  background: #CBD5E1;
-  color: #64748B;
-  cursor: not-allowed;
-  box-shadow: none;
-  transform: none;
-}
-
-.il-nav-btn.il-btn-primary {
-  background: linear-gradient(135deg, var(--il-emerald), var(--il-emerald-dark));
-  color: #FFFFFF;
-  border: none;
-  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35), 0 3px 0 #047857;
-}
-
-.il-nav-btn.il-btn-primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, #059669, #047857);
-  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.45), 0 4px 0 #065F46;
-}
-
-.il-nav-btn.il-btn-secondary {
-  background: #FFFFFF;
-  color: var(--il-ink-primary);
-  border: 2px solid var(--il-bg-cream-dark);
-  box-shadow: 0 3px 0 var(--il-bg-cream-dark);
-}
-
-.il-nav-btn.il-btn-secondary:hover:not(:disabled) {
-  background: var(--il-bg-cream);
-  border-color: var(--il-ink-muted);
-}
-
-/* Floating Side Navigation Buttons */
-.il-side-nav-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 2px solid var(--il-bg-cream-dark);
-  color: var(--il-ink-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 45;
-  box-shadow: 0 6px 18px rgba(18, 40, 36, 0.12), 0 3px 0 var(--il-bg-cream-dark);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  user-select: none;
-}
-
-.il-side-nav-btn:hover:not(:disabled) {
-  background: #FFFFFF;
-  border-color: var(--il-sky);
-  color: var(--il-sky-dark);
-  transform: translateY(-50%) scale(1.12);
-  box-shadow: 0 10px 24px rgba(14, 165, 233, 0.3);
-}
-
-.il-side-nav-btn:active:not(:disabled) {
-  transform: translateY(-50%) scale(0.94);
-}
-
-.il-side-nav-btn:disabled {
-  opacity: 0;
-  pointer-events: none;
-}
-
-/* In RTL: Next is on Left (pointing left), Prev is on Right (pointing right) */
-.il-side-next {
-  left: 16px;
-}
-
-.il-side-prev {
-  right: 16px;
-}
-
-.il-dots-container {
-  display: flex;
-  align-items: center;
   gap: 8px;
-  overflow-x: auto;
-  max-width: 45%;
-  padding: 6px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 0 rgba(27, 59, 54, 0.12);
 }
 
-.il-dot {
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  background: var(--il-bg-cream-dark);
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.il-dot.active {
-  width: 28px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, var(--il-clay), var(--il-clay-dark));
-  box-shadow: 0 2px 8px rgba(224, 83, 60, 0.4);
-}
-
-.il-counter-badge {
-  font-size: 0.96rem;
+.count-badge-pill {
+  display: inline-block;
+  background: var(--paper-dark);
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  padding: 6px 18px;
   font-weight: 800;
-  color: var(--il-ink-secondary);
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.12rem;
+  color: var(--ink);
+  margin-bottom: 12px;
 }
 
-/* Animations */
-@keyframes il-float-subtle {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
-}
-
-@keyframes il-bounce-subtle {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
-}
-
-@keyframes il-star-pop {
-  0%, 100% { transform: scale(1) rotate(0deg); }
-  50% { transform: scale(1.15) rotate(5deg); }
-}
-
-@keyframes il-radar-pulse {
-  0% { box-shadow: 0 0 0 0 rgba(224, 83, 60, 0.6); }
-  70% { box-shadow: 0 0 0 14px rgba(224, 83, 60, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(224, 83, 60, 0); }
-}
-
-@keyframes il-pulse-border {
-  0%, 100% { border-color: var(--il-sky); }
-  50% { border-color: var(--il-gold); }
-}
-
-@keyframes il-pop-in {
-  from { opacity: 0; transform: scale(0.92); }
-  to { opacity: 1; transform: scale(1); }
-}
-
-@keyframes il-shake {
-  0%, 100% { transform: translateX(0); }
-  20% { transform: translateX(-6px); }
-  40% { transform: translateX(6px); }
-  60% { transform: translateX(-4px); }
-  80% { transform: translateX(4px); }
+/* ---------- 6. RESPONSIVE QUERIES ---------- */
+@media (max-width: 820px) {
+  .mascot-wrap {
+    max-width: 100px;
+    left: 8px;
+    top: auto;
+    bottom: 96px;
+    transform: none;
+  }
+  .robert { width: 44px; height: 52px; }
+  .bubble { font-size: 0.68rem; padding: 6px 8px; }
+  .il-slide { padding: 20px 8% 96px; }
+  .scene { height: 110px; gap: 24px; }
+  .emoji-anim { font-size: 2.8rem; }
+  .hotspot-stage { height: 260px; }
 }
