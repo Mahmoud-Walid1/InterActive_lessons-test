@@ -266,9 +266,9 @@
         html +=
           '<div class="il-mascot-tip">' +
           '<div class="il-mascot-badge">' +
-          '<svg class="il-svg-icon" viewBox="0 0 24 24"><path d="M12 2a8 8 0 0 0-8 8c0 5 8 12 8 12s8-7 8-12a8 8 0 0 0-8-8z"></path><circle cx="12" cy="10" r="3"></circle></svg>' +
+          '<svg class="il-svg-icon" viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-7 7c0 2.5 1.5 4.5 3 6h8c1.5-1.5 3-3.5 3-6a7 7 0 0 0-7-7z"></path></svg>' +
           '</div>' +
-          '<span>' + slide.mascotTip + '</span>' +
+          '<p class="il-mascot-text">' + slide.mascotTip + '</p>' +
           '</div>';
       }
 
@@ -303,7 +303,7 @@
             '<div class="il-check-icon-wrap">' +
             '<svg class="il-svg-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>' +
             '</div>' +
-            '<span>' + trait + '</span>' +
+            '<p class="il-trait-text">' + trait + '</p>' +
             '</div>';
         });
         html += '</div>';
@@ -313,8 +313,8 @@
         slide.examples.forEach(function (ex) {
           html +=
             '<div class="il-example-chip">' +
-            '<span>' + (ex.emoji || '') + '</span>' +
-            '<span>' + (ex.name || '') + '</span>' +
+            (ex.emoji ? '<span class="il-chip-emoji">' + ex.emoji + '</span>' : '') +
+            '<span class="il-chip-name">' + (ex.name || '') + '</span>' +
             '</div>';
         });
         html += '</div>';

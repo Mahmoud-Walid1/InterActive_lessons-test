@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>استوديو معاينة الدروس التفاعلية | Lesson Preview Studio</title>
-  <link rel="stylesheet" href="../template/style.css">
+  <link rel="stylesheet" href="../template/style.css?v=2.3">
   <style>
     :root {
       --st-bg: #070B14;
@@ -333,28 +333,34 @@
       width: 100%;
       max-width: 1060px;
       height: 94%;
-      border-radius: 24px;
+      max-height: 740px;
+      border-radius: 20px;
       overflow: hidden;
       box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.8), 0 0 0 1px var(--st-border);
       position: relative;
       background: var(--il-bg-cream, #FAF6ED);
       transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
     }
 
     /* Viewport Sizing Modes */
     .st-device-frame.view-desktop {
       max-width: 1060px;
       height: 94%;
+      max-height: 740px;
     }
 
     .st-device-frame.view-tablet {
-      max-width: 820px;
+      max-width: 840px;
       height: 90%;
+      max-height: 640px;
     }
 
     .st-device-frame.view-mobile {
-      max-width: 680px;
-      height: 82%;
+      max-width: 760px;
+      height: 88%;
+      max-height: 540px;
     }
 
     #pw-file-input { display: none; }
@@ -549,7 +555,7 @@
   </div>
 
   <!-- Runtime Engine -->
-  <script src="../template/script.js"></script>
+  <script src="../template/script.js?v=2.3"></script>
 
   <!-- Studio Controller Logic -->
   <script>
