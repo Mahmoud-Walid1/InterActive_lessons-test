@@ -174,6 +174,7 @@
       this.dom.prevBtn = document.getElementById('il-prev-btn');
       this.dom.nextBtn = document.getElementById('il-next-btn');
       this.dom.soundBtn = document.getElementById('il-sound-btn');
+      this.dom.subjectBadge = document.getElementById('il-subject-badge');
     },
 
     bindEvents: function () {
@@ -213,6 +214,19 @@
     },
 
     renderLessonShell: function () {
+      var subjectLabels = {
+        science: 'مادة العلوم 🔬',
+        math: 'مادة الرياضيات 📐',
+        arabic: 'لغتي الجميلة 📖',
+        studies: 'الدراسات الاجتماعية 🌍',
+        english: 'اللغة الإنجليزية 🔤',
+        islamic: 'الدراسات الإسلامية 🕌'
+      };
+
+      if (this.dom.subjectBadge) {
+        this.dom.subjectBadge.textContent = subjectLabels[this.data.subjectId] || 'درس تفاعلي';
+      }
+
       if (this.dom.lessonTitle) {
         this.dom.lessonTitle.textContent = this.data.title || 'درس تفاعلي';
       }

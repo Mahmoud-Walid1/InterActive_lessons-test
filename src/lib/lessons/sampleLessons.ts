@@ -14,7 +14,8 @@ export const SUBJECTS_LIST = [
   { id: 'math', name: 'الرياضيات', icon: 'Calculator', color: 'from-amber-500 to-orange-600' },
   { id: 'arabic', name: 'اللغة العربية', icon: 'BookMarked', color: 'from-sky-600 to-blue-700' },
   { id: 'studies', name: 'الدراسات الاجتماعية', icon: 'MapPin', color: 'from-purple-600 to-indigo-700' },
-  { id: 'english', name: 'اللغة الإنجليزية', icon: 'Languages', color: 'from-rose-500 to-pink-600' }
+  { id: 'english', name: 'اللغة الإنجليزية', icon: 'Languages', color: 'from-rose-500 to-pink-600' },
+  { id: 'islamic', name: 'الدراسات الإسلامية', icon: 'BookOpen', color: 'from-teal-600 to-emerald-700' }
 ];
 
 export const SAMPLE_LESSONS: Record<string, LessonData> = {
