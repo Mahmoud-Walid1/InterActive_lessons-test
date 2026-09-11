@@ -96,14 +96,17 @@ The `lessons-workspace/` directory is designed to be pushed or distributed as an
 - **Zero Platform Leakage**: Does not contain any crypto (`src/lib/crypto`), security guards (`src/components/security`), admin logic (`src/app/admin`), agent instructions (`AGENTS.md`, `CLAUDE.md`), or licensing logic.
 - **Zero-Dependency Runtime**: Built purely with HTML5, Scoped Vanilla CSS, Vanilla JS (IIFE), and Web Audio API. Content authors require no Node.js or build steps.
 - **Automated Ingestion Ready**: Every `lesson.json` strictly adheres to `src/types/lesson.ts` so `lessonPackager.ts` can ingest, encrypt, and bundle lessons directly into the platform offline cache.
-- **UI/UX Pro Max Design System (Keynote & PowerPoint Killer)**:
-  - Palette: Storybook parchment (`#FBF3DE`) + Deep forest ink (`#182E2B`) + Terracotta clay (`#C1502E`) + Leaf green (`#3D6A35`) + Ocean sky (`#0284C7`) + Amber gold (`#E8A93B`).
-  - Typography: Google Fonts `Baloo 2` (headings, badges, counters) + `Tajawal` (body).
-  - Component Standards: Zero structural emojis (pure SVG vector icons with 2.5px stroke), true 3D flip architecture (`preserve-3d` + `backface-visibility: hidden`), centered floating capsule dock with strict LTR counter (`<bdi dir="ltr">`).
-  - **Dynamic Mascot Guide "فصيح" (Faseeh)**: Contextual positioning controller (`setMascotPose`) moving Faseeh between top-left, top-center, and answer toast. Faseeh actively delivers rich pedagogical explanations for every quiz, match, true/false, sequence, classify, memory, and count step with victory celebration animations (`@keyframes victoryJump`).
+- **UI/UX Pro Max Design System (Pastel Sky Blue EdTech Theme & Presentation Standards)**:
+  - Palette: Sky Blue Gradient (`#EBF5FF` to `#EBF3FD`) + Deep Navy (`#0F3D6E` / `#1E3A8A`) + Electric Blue (`#007BFF` / `#0284C7`) + Pastel Purple Badge (`#EDE9FE` / `#7C3AED`) + Sunburst Amber (`#F59E0B`) + Leaf Green (`#22C55E`).
+  - Typography: Google Fonts `Baloo 2` (headings, badges, counters) + `Tajawal` (body & questions).
+  - Component Standards: Zero hardcoded icon emojis (all functional icons are crisp vector SVGs), pure SVG floating decorative elements (3D illustrated books stack with foliage + glowing doodle lightbulb), smooth pill-shaped answer options with radio dot indicators.
+  - **Graduate Faseeh Mascot ("فصيح")**: Top-header mascot wearing a graduate cap (mortarboard) with golden tassel, dynamic speech bubble, contextual voice reading button (Web Speech API + Web Audio API synthesizer fallback), and celebration choreography (`victoryJump`).
+  - **Floating Glassmorphism RTL Navigation Dock**:
+    - Visual order in RTL: `[ السابق ➔ ]` on the right, Stepper dots (`.dock-dot`) with LTR counter (`<bdi dir="ltr">3 / 12</bdi>`) in the center, and high-contrast electric blue `[ ⬅ التالي ]` on the left.
+    - Soft white glass capsule (`rgba(255, 255, 255, 0.94); backdrop-filter: blur(14px); border: 1.5px solid #DBEAFE;`).
   - **Visual & Motion Upgrades**:
-    - Ambient floating background layer (`.ambient-bg`) with slow-floating decorative orbs, organic leaves, and shimmering stars.
-    - Color-coded concept cards (`.concept-card.theme-water`, `.theme-air`, `.theme-food`) with distinct SVG badges and contrast hierarchy.
+    - Corner organic waves (`.pastel-corner-wave.top-right`, `.bottom-right`) and ambient floating glowing orbs.
+    - White floating question card (`.white-question-card`) with soft blue ambient shadow.
     - Staggered spring entrance animations (`.stagger-item`, `@keyframes springPop`).
     - Expanded responsive content canvas (860px–960px) eliminating cramped elements and utilizing full widescreen presentation area.
 - **Dedicated Remote Repository**:

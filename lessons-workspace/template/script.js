@@ -158,6 +158,68 @@
   }
 
   /* ==========================================================================
+     2.5. ARABIC SPEECH SYNTHESIS ENGINE (FASEEH VOICE ENGINE)
+     ========================================================================== */
+  var VoiceEngine = {
+    synth: typeof window !== 'undefined' && window.speechSynthesis ? window.speechSynthesis : null,
+    isSpeaking: false,
+    currentUtterance: null,
+
+    getArabicVoice: function () {
+      if (!this.synth) return null;
+      var voices = this.synth.getVoices();
+      for (var i = 0; i < voices.length; i++) {
+        var v = voices[i];
+        if (v.lang && (v.lang.toLowerCase().indexOf('ar') === 0 || v.lang.toLowerCase().indexOf('arabic') !== -1)) {
+          return v;
+        }
+      }
+      return null;
+    },
+
+    speak: function (text, onStart, onEnd) {
+      if (!this.synth) {
+        AudioEngine.sndRobotChirp();
+        return;
+      }
+      this.stop();
+      if (!text || !text.trim()) return;
+
+      var cleanText = text.replace(/<[^>]*>?/gm, '').replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
+      var utter = new SpeechSynthesisUtterance(cleanText);
+      utter.lang = 'ar-SA';
+      var arVoice = this.getArabicVoice();
+      if (arVoice) utter.voice = arVoice;
+      utter.rate = 0.92;
+      utter.pitch = 1.05;
+
+      var self = this;
+      utter.onstart = function () {
+        self.isSpeaking = true;
+        if (typeof onStart === 'function') onStart();
+      };
+      utter.onend = function () {
+        self.isSpeaking = false;
+        if (typeof onEnd === 'function') onEnd();
+      };
+      utter.onerror = function () {
+        self.isSpeaking = false;
+        if (typeof onEnd === 'function') onEnd();
+      };
+
+      this.currentUtterance = utter;
+      this.synth.speak(utter);
+    },
+
+    stop: function () {
+      if (this.synth) {
+        this.synth.cancel();
+      }
+      this.isSpeaking = false;
+    }
+  };
+
+  /* ==========================================================================
      3. LESSON RUNTIME STATE & CONTROLLER
      ========================================================================== */
   var LessonEngine = {
@@ -200,6 +262,7 @@
       this.dom.prevBtn = document.getElementById('il-prev-btn');
       this.dom.nextBtn = document.getElementById('il-next-btn');
       this.dom.soundBtn = document.getElementById('il-sound-btn');
+      this.dom.voiceBtn = document.getElementById('il-voice-btn');
       this.dom.mascotWrap = document.getElementById('il-mascot-wrap');
       this.dom.robertCharacter = document.getElementById('il-faseeh-character') || document.getElementById('il-robert-character');
       this.dom.mascotBubble = document.getElementById('il-mascot-bubble');
@@ -213,6 +276,9 @@
       if (this.dom.nextBtn) {
         this.dom.nextBtn.addEventListener('click', function () { self.nextSlide(); });
       }
+      if (this.dom.voiceBtn) {
+        this.dom.voiceBtn.addEventListener('click', function () { self.toggleVoice(); });
+      }
       if (this.dom.soundBtn) {
         this.dom.soundBtn.addEventListener('click', function () {
           var state = AudioEngine.toggleSound();
@@ -225,6 +291,7 @@
         this.dom.robertCharacter.addEventListener('click', function () {
           AudioEngine.sndRobotChirp();
           self.setMascotPose(null, '<span class="faseeh-name-tag">💡 فصيح يحييك:</span><br>أنا معك خطوة بخطوة، اضغط وتفاعل لتكتشف الأسرار!', true);
+          self.toggleVoice();
         });
       }
 
@@ -233,6 +300,46 @@
         if (e.key === 'ArrowLeft' || e.key === 'PageDown') self.nextSlide();
         if (e.key === 'ArrowRight' || e.key === 'PageUp') self.prevSlide();
       });
+    },
+
+    toggleVoice: function () {
+      var self = this;
+      if (VoiceEngine.isSpeaking) {
+        VoiceEngine.stop();
+        if (this.dom.voiceBtn) this.dom.voiceBtn.classList.remove('speaking');
+        return;
+      }
+
+      var currentSlide = this.data.slides[this.currentIndex];
+      if (!currentSlide) return;
+
+      var textToSpeak = '';
+      if (currentSlide.type === 'quiz' && currentSlide.quiz) {
+        var arabicLetters = ['أ', 'ب', 'ج', 'د', 'هـ'];
+        textToSpeak = currentSlide.quiz.question + '. ';
+        if (currentSlide.quiz.choices) {
+          currentSlide.quiz.choices.forEach(function (c, i) {
+            textToSpeak += (arabicLetters[i] || (i + 1)) + ': ' + c.text + '. ';
+          });
+        }
+      } else if (currentSlide.type === 'true_false' && currentSlide.trueFalse) {
+        textToSpeak = currentSlide.trueFalse.statement + '. هل هذه العبارة صائبة أم خاطئة؟';
+      } else {
+        textToSpeak = (currentSlide.title || '') + '. ' + (currentSlide.subtitle || '') + '. ' + (currentSlide.mascotTip || '');
+      }
+
+      if (!textToSpeak.trim()) return;
+
+      if (this.dom.voiceBtn) this.dom.voiceBtn.classList.add('speaking');
+      VoiceEngine.speak(
+        textToSpeak,
+        function () {
+          if (self.dom.voiceBtn) self.dom.voiceBtn.classList.add('speaking');
+        },
+        function () {
+          if (self.dom.voiceBtn) self.dom.voiceBtn.classList.remove('speaking');
+        }
+      );
     },
 
     /* Dynamic Faseeh Motion & Explanation Controller */
@@ -283,7 +390,7 @@
     renderLessonShell: function () {
       var self = this;
       this.dom.stage.innerHTML = '';
-      this.dom.dots.innerHTML = '';
+      if (this.dom.dots) this.dom.dots.innerHTML = '';
 
       this.data.slides.forEach(function (slide, idx) {
         var slideEl = document.createElement('div');
@@ -294,26 +401,31 @@
         self.dom.stage.appendChild(slideEl);
         self.bindSlideInteractivity(slideEl, slide, idx);
 
-        var dot = document.createElement('div');
-        dot.className = 'dot' + (idx === 0 ? ' active' : '');
-        dot.title = 'شريحة ' + (idx + 1);
-        dot.addEventListener('click', function () { self.goToSlide(idx); });
-        self.dom.dots.appendChild(dot);
+        if (self.dom.dots) {
+          var dot = document.createElement('div');
+          dot.className = 'dock-dot' + (idx === 0 ? ' active' : '');
+          dot.title = 'شريحة ' + (idx + 1);
+          dot.addEventListener('click', function () { self.goToSlide(idx); });
+          self.dom.dots.appendChild(dot);
+        }
       });
     },
 
     generateSlideHTML: function (slide, idx) {
-      var html = '<div class="slide-header">';
-      if (slide.eyebrow) {
-        html += '<div class="eyebrow">' + slide.eyebrow + '</div>';
+      var html = '';
+      if (slide.type !== 'quiz' && slide.type !== 'true_false') {
+        html += '<div class="challenge-header">';
+        if (slide.eyebrow) {
+          html += '<div class="badge-pill-purple">' + slide.eyebrow + '</div>';
+        }
+        if (slide.title) {
+          html += '<div class="title-sunburst-wrap"><h2 class="challenge-title">' + slide.title + '</h2></div>';
+        }
+        if (slide.subtitle) {
+          html += '<p class="challenge-subtitle">' + slide.subtitle + '</p>';
+        }
+        html += '</div>';
       }
-      if (slide.title) {
-        html += '<h1 class="title">' + slide.title + '</h1>';
-      }
-      if (slide.subtitle) {
-        html += '<p class="subtitle">' + slide.subtitle + '</p>';
-      }
-      html += '</div>';
 
       // 12 Slide Type Renderers with Staggered Motion and Visual Polish
       switch (slide.type) {
@@ -330,7 +442,7 @@
         case 'tap_to_count': html += this.renderTapToCount(slide); break;
         case 'summary': html += this.renderSummary(slide); break;
         default:
-          html += '<p style="text-align:center; font-weight:bold; color:var(--clay);">نوع الشريحة قيد التطوير: ' + slide.type + '</p>';
+          html += '<p style="text-align:center; font-weight:bold; color:var(--title-navy);">نوع الشريحة قيد التطوير: ' + slide.type + '</p>';
       }
       return html;
     },
@@ -402,18 +514,32 @@
       return html;
     },
 
-    /* 3. Quiz: Game card with tactile options */
+    /* 3. Quiz: Game card with tactile pill options & glowing selection */
     renderQuiz: function (slide) {
       var q = slide.quiz;
       if (!q) return '';
-      var html = '<div class="game-card stagger-item stagger-1">';
-      html += '<div class="game-q">' + (q.emoji ? q.emoji + ' ' : '') + q.question + '</div>';
-      html += '<div class="game-options">';
+      var html = '<div class="challenge-header">';
+      if (slide.eyebrow) {
+        html += '<div class="badge-pill-purple">' + slide.eyebrow + '</div>';
+      }
+      html += '<div class="title-sunburst-wrap">';
+      html += '<span class="sunburst-dash" aria-hidden="true">˗ˋˏ</span>';
+      html += '<h2 class="challenge-title">' + (slide.title || 'تحدي السؤال الذكي') + '</h2>';
+      html += '<span class="sunburst-dash" aria-hidden="true">ˎˊ˗</span>';
+      html += '</div>';
+      if (slide.subtitle) {
+        html += '<p class="challenge-subtitle">' + slide.subtitle + '</p>';
+      }
+      html += '</div>';
+
+      html += '<div class="white-question-card stagger-item stagger-1">';
+      html += '<div class="question-text-navy">' + (q.emoji ? q.emoji + ' ' : '') + q.question + '</div>';
+      html += '<div class="pill-options-grid">';
       (q.choices || []).forEach(function (choice, i) {
         html +=
-          '<button class="opt-btn stagger-item stagger-' + (i + 1) + '" type="button" data-choice-id="' + choice.id + '" data-is-correct="' + (choice.isCorrect ? 'true' : 'false') + '">' +
-          '<span>' + choice.text + '</span>' +
-          '<svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"></circle></svg>' +
+          '<button class="option-pill-btn stagger-item stagger-' + ((i % 4) + 1) + '" type="button" data-choice-id="' + choice.id + '" data-is-correct="' + (choice.isCorrect ? 'true' : 'false') + '">' +
+          '<div class="radio-indicator"><div class="radio-inner-dot"></div></div>' +
+          '<span class="option-text-wrap">' + choice.text + '</span>' +
           '</button>';
       });
       html += '</div>';
@@ -422,26 +548,40 @@
       return html;
     },
 
-    /* 4. True or False: Statement card with large ergonomic pills */
+    /* 4. True or False: Statement card with ergonomic pills */
     renderTrueFalse: function (slide) {
       var tf = slide.trueFalse;
       if (!tf) return '';
-      return (
-        '<div class="tf-card stagger-item stagger-1">' +
-        '<div class="tf-statement">' + tf.statement + '</div>' +
-        '<div class="tf-actions">' +
-        '<button class="tf-btn tf-btn-true stagger-item stagger-2" type="button" data-answer="true">' +
-        '<svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>' +
-        '<span>صح</span>' +
+      var html = '<div class="challenge-header">';
+      if (slide.eyebrow) {
+        html += '<div class="badge-pill-purple">' + slide.eyebrow + '</div>';
+      }
+      html += '<div class="title-sunburst-wrap">';
+      html += '<span class="sunburst-dash" aria-hidden="true">˗ˋˏ</span>';
+      html += '<h2 class="challenge-title">' + (slide.title || 'تحدي صواب أم خطأ') + '</h2>';
+      html += '<span class="sunburst-dash" aria-hidden="true">ˎˊ˗</span>';
+      html += '</div>';
+      if (slide.subtitle) {
+        html += '<p class="challenge-subtitle">' + slide.subtitle + '</p>';
+      }
+      html += '</div>';
+
+      html += '<div class="white-question-card stagger-item stagger-1">';
+      html += '<div class="question-text-navy">' + tf.statement + '</div>';
+      html += '<div class="pill-options-grid" style="flex-direction: row; gap: 14px; justify-content: center;">';
+      html +=
+        '<button class="option-pill-btn tf-pill-btn stagger-item stagger-2" type="button" data-answer="true" style="flex:1; justify-content:center; gap:10px;">' +
+        '<div class="radio-indicator"><div class="radio-inner-dot"></div></div>' +
+        '<span class="option-text-wrap" style="flex:none;">صواب</span>' +
         '</button>' +
-        '<button class="tf-btn tf-btn-false stagger-item stagger-3" type="button" data-answer="false">' +
-        '<svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>' +
-        '<span>خطأ</span>' +
-        '</button>' +
-        '</div>' +
-        '<div class="feedback-msg"></div>' +
-        '</div>'
-      );
+        '<button class="option-pill-btn tf-pill-btn stagger-item stagger-3" type="button" data-answer="false" style="flex:1; justify-content:center; gap:10px;">' +
+        '<div class="radio-indicator"><div class="radio-inner-dot"></div></div>' +
+        '<span class="option-text-wrap" style="flex:none;">خطأ</span>' +
+        '</button>';
+      html += '</div>';
+      html += '<div class="feedback-msg"></div>';
+      html += '</div>';
+      return html;
     },
 
     /* 5. Match Pairs: Two-column tactile connector */
@@ -714,50 +854,54 @@
       }
 
       // 3. Quiz with Dynamic Faseeh Explanation
-      var qBtns = slideEl.querySelectorAll('.opt-btn');
+      var qBtns = slideEl.querySelectorAll('.option-pill-btn:not(.tf-pill-btn)');
       var fb = slideEl.querySelector('.feedback-msg');
       qBtns.forEach(function (btn) {
         btn.addEventListener('click', function () {
           qBtns.forEach(function (b) { b.disabled = true; });
           var isCorrect = btn.getAttribute('data-is-correct') === 'true';
           if (isCorrect) {
-            btn.classList.add('correct');
-            if (fb) { fb.textContent = 'إجابة صحيحة وممتازة! أحسنت يا بطل! 🌟'; fb.style.color = 'var(--leaf)'; }
+            btn.classList.add('selected', 'correct');
+            if (fb) { fb.textContent = 'إجابة صحيحة وممتازة! أحسنت يا بطل! 🌟'; fb.style.color = 'var(--leaf-green, #22C55E)'; }
             self.addScore();
             AudioEngine.sndCorrect();
             launchConfetti(slideEl);
-            self.setMascotPose('top-center', '<span class="faseeh-name-tag">💡 فصيح يشرح لك:</span><br>إجابة ذكية وممتازة! النبات الأخضر كائن منتج يصنع غذاءه بنفسه من ضوء الشمس والماء والهواء!', true);
+            self.setMascotPose('top-center', '<div class="bubble-greeting">💡 فصيح يشرح لك:</div><div class="bubble-text">إجابة ذكية وممتازة! النبات الأخضر يصنع غذاءه بنفسه من ضوء الشمس والماء والهواء!</div>', true);
           } else {
             btn.classList.add('wrong');
             qBtns.forEach(function (b) {
-              if (b.getAttribute('data-is-correct') === 'true') b.classList.add('correct');
+              if (b.getAttribute('data-is-correct') === 'true') b.classList.add('selected', 'correct');
             });
             if (fb) { fb.textContent = 'محاولة طيبة، فكر في القاعدة العلمية!'; fb.style.color = 'var(--danger)'; }
             AudioEngine.sndWrong();
-            self.setMascotPose('top-center', '<span class="faseeh-name-tag">💡 فصيح ينصحك:</span><br>فكر جيداً يا بطل: النبات يحتاج عناصر طبيعية تصنع الغذاء في أوراقه، وليس سكريات أو رمال!', false);
+            self.setMascotPose('top-center', '<div class="bubble-greeting">💡 فصيح ينصحك:</div><div class="bubble-text">فكر جيداً يا بطل: النبات يحتاج عناصر طبيعية تصنع الغذاء في أوراقه، وليس سكريات أو رمال!</div>', false);
           }
         });
       });
 
       // 4. True or False with Dynamic Faseeh Explanation
-      var tfBtns = slideEl.querySelectorAll('.tf-btn');
+      var tfBtns = slideEl.querySelectorAll('.tf-pill-btn');
       tfBtns.forEach(function (btn) {
         btn.addEventListener('click', function () {
           tfBtns.forEach(function (b) { b.disabled = true; });
           var ans = btn.getAttribute('data-answer') === 'true';
           var isTrueTarget = slide.trueFalse ? slide.trueFalse.isTrue : true;
           if (ans === isTrueTarget) {
-            btn.style.boxShadow = '0 0 0 4px var(--leaf)';
-            if (fb) { fb.textContent = 'رائع جداً! إجابتك صحيحة 🎯'; fb.style.color = 'var(--leaf)'; }
+            btn.classList.add('selected', 'correct');
+            if (fb) { fb.textContent = 'رائع جداً! إجابتك صحيحة 🎯'; fb.style.color = 'var(--leaf-green, #22C55E)'; }
             self.addScore();
             AudioEngine.sndCorrect();
             launchConfetti(slideEl);
-            self.setMascotPose('top-center', '<span class="faseeh-name-tag">💡 فصيح يشرح لك:</span><br>رائع يا عبقري! الصخور من الجمادات غير الحية، فلا تنمو ولا تتنفس ولذلك لا تحتاج إلى غذاء أو ماء!', true);
+            self.setMascotPose('top-center', '<div class="bubble-greeting">💡 فصيح يشرح لك:</div><div class="bubble-text">رائع يا عبقري! الصخور من الجمادات غير الحية، فلا تنمو ولا تتنفس ولذلك لا تحتاج إلى غذاء أو ماء!</div>', true);
           } else {
-            btn.style.boxShadow = '0 0 0 4px var(--danger)';
+            btn.classList.add('wrong');
+            tfBtns.forEach(function (b) {
+              var bAns = b.getAttribute('data-answer') === 'true';
+              if (bAns === isTrueTarget) b.classList.add('selected', 'correct');
+            });
             if (fb) { fb.textContent = 'إجابة غير صحيحة، راجع طبيعة الجمادات!'; fb.style.color = 'var(--danger)'; }
             AudioEngine.sndWrong();
-            self.setMascotPose('top-center', '<span class="faseeh-name-tag">💡 فصيح ينصحك:</span><br>تأمل الصخور حولك: هل تكبر أو تجوع؟ إنها أشياء غير حية فلا تحتاج للغذاء!', false);
+            self.setMascotPose('top-center', '<div class="bubble-greeting">💡 فصيح ينصحك:</div><div class="bubble-text">تأمل الصخور حولك: هل تكبر أو تجوع؟ إنها أشياء غير حية فلا تحتاج للغذاء!</div>', false);
           }
         });
       });
@@ -999,7 +1143,7 @@
       if (!this.data || index < 0 || index >= this.data.slides.length) return;
 
       var slides = this.dom.stage.querySelectorAll('.il-slide');
-      var dots = this.dom.dots.querySelectorAll('.dot');
+      var dots = this.dom.dots ? this.dom.dots.querySelectorAll('.dock-dot') : [];
       var currentSlideData = this.data.slides[index];
 
       slides.forEach(function (s, i) { s.classList.toggle('active', i === index); });
@@ -1023,7 +1167,8 @@
       }
 
       var tip = currentSlideData.mascotTip || 'أهلاً بك يا بطل! أنا صديقك فصيح 💡 استكشف معنا أسرار هذا الدرس الممتع!';
-      this.setMascotPose(defaultPose, tip, currentSlideData.type === 'summary');
+      var tipFormatted = '<div class="bubble-greeting">💡 فصيح المرشد:</div><div class="bubble-text">' + tip + '</div>';
+      this.setMascotPose(defaultPose, tipFormatted, currentSlideData.type === 'summary');
 
       // Summary Slide handling
       if (currentSlideData.type === 'summary') {
