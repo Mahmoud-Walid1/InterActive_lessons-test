@@ -688,15 +688,93 @@
     renderHotspot: function (slide) {
       var hs = slide.hotspot;
       if (!hs || !hs.points) return '';
-      var html = '<div style="position:relative; width:100%; max-width:720px; height:240px; background:rgba(255,255,255,0.7); border-radius:22px; border:2px dashed var(--ink); margin-top:8px;">';
+      var html = '<div class="hotspot-diagram-card">';
+
+      // Canvas with rich SVG Plant illustration
+      html += '<div class="hotspot-canvas-wrap">';
+      html += '<svg class="hotspot-plant-svg" viewBox="0 0 600 270" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">';
+      html += '<defs>';
+      html += '  <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#E8F4F8"/><stop offset="100%" stop-color="#D7EFE0"/></linearGradient>';
+      html += '  <linearGradient id="soilGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#A0724C"/><stop offset="100%" stop-color="#5E3725"/></linearGradient>';
+      html += '  <linearGradient id="stemGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#4CAF50"/><stop offset="100%" stop-color="#2E7D32"/></linearGradient>';
+      html += '  <radialGradient id="sunGrad" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#FFF176"/><stop offset="100%" stop-color="#F57F17"/></radialGradient>';
+      html += '</defs>';
+
+      // Sun in the corner
+      html += '<circle cx="530" cy="45" r="28" fill="url(#sunGrad)"/>';
+      html += '<path d="M530,8 L530,14 M530,76 L530,82 M493,45 L499,45 M561,45 L567,45 M504,19 L508,23 M552,67 L556,71 M504,71 L508,67 M552,23 L556,19" stroke="#F57F17" stroke-width="3" stroke-linecap="round"/>';
+
+      // Soil ground layer (bottom 38%)
+      html += '<path d="M0,165 Q150,160 300,165 T600,165 L600,270 L0,270 Z" fill="url(#soilGrad)"/>';
+      html += '<path d="M0,165 Q150,160 300,165 T600,165" stroke="#3E2723" stroke-width="3.5" fill="none"/>';
+      // Soil texture dots
+      html += '<circle cx="120" cy="200" r="3" fill="#D7CCC8" opacity="0.4"/>';
+      html += '<circle cx="210" cy="235" r="4" fill="#D7CCC8" opacity="0.3"/>';
+      html += '<circle cx="420" cy="210" r="3.5" fill="#D7CCC8" opacity="0.4"/>';
+      html += '<circle cx="500" cy="245" r="2.5" fill="#D7CCC8" opacity="0.3"/>';
+
+      // Roots network (Underground)
+      html += '<g stroke="#EFEBE9" stroke-linecap="round" fill="none">';
+      html += '  <path d="M300,165 Q300,195 295,235" stroke="#FF7043" stroke-width="8"/>';
+      html += '  <path d="M298,180 Q250,195 210,215" stroke="#EFEBE9" stroke-width="3.5"/>';
+      html += '  <path d="M300,190 Q345,205 385,220" stroke="#EFEBE9" stroke-width="3.5"/>';
+      html += '  <path d="M296,210 Q265,225 240,245" stroke="#EFEBE9" stroke-width="2.5"/>';
+      html += '  <path d="M296,220 Q330,235 355,250" stroke="#EFEBE9" stroke-width="2.5"/>';
+      html += '  <path d="M230,205 Q215,220 200,230" stroke="#EFEBE9" stroke-width="1.8"/>';
+      html += '  <path d="M365,212 Q385,228 405,236" stroke="#EFEBE9" stroke-width="1.8"/>';
+      html += '</g>';
+
+      // Green Stem (Above ground)
+      html += '<path d="M300,165 Q296,110 300,68" stroke="url(#stemGrad)" stroke-width="11" stroke-linecap="round" fill="none"/>';
+
+      // Leaves
+      html += '<g transform="translate(300, 130) rotate(-22)">';
+      html += '  <path d="M0,0 Q-55,-35 -95,-15 Q-70,25 0,0" fill="#43A047" stroke="#1B5E20" stroke-width="2"/>';
+      html += '  <path d="M0,0 Q-45,-12 -88,-13" stroke="#2E7D32" stroke-width="2" fill="none"/>';
+      html += '</g>';
+      html += '<g transform="translate(300, 105) rotate(18)">';
+      html += '  <path d="M0,0 Q55,-35 95,-15 Q70,25 0,0" fill="#66BB6A" stroke="#1B5E20" stroke-width="2"/>';
+      html += '  <path d="M0,0 Q45,-12 88,-13" stroke="#2E7D32" stroke-width="2" fill="none"/>';
+      html += '</g>';
+
+      // Blooming Flower at top
+      html += '<g transform="translate(300, 60)">';
+      html += '  <circle cx="0" cy="-22" r="14" fill="#F06292" stroke="#C2185B" stroke-width="2"/>';
+      html += '  <circle cx="21" cy="-7" r="14" fill="#F06292" stroke="#C2185B" stroke-width="2"/>';
+      html += '  <circle cx="13" cy="18" r="14" fill="#F06292" stroke="#C2185B" stroke-width="2"/>';
+      html += '  <circle cx="-13" cy="18" r="14" fill="#F06292" stroke="#C2185B" stroke-width="2"/>';
+      html += '  <circle cx="-21" cy="-7" r="14" fill="#F06292" stroke="#C2185B" stroke-width="2"/>';
+      html += '  <circle cx="0" cy="0" r="16" fill="#FDD835" stroke="#F57F17" stroke-width="2.5"/>';
+      html += '  <circle cx="-4" cy="-4" r="3" fill="#FFF" opacity="0.6"/>';
+      html += '</g>';
+
+      html += '</svg>';
+
+      // Hotspot Buttons positioned on coordinates
       hs.points.forEach(function (pt, idx) {
+        var topVal = (pt.yPercent !== undefined) ? pt.yPercent + '%' : (pt.top || '50%');
+        var leftVal = (pt.xPercent !== undefined) ? pt.xPercent + '%' : (pt.left || '50%');
         html +=
-          '<button class="hotspot-btn" type="button" data-idx="' + idx + '" style="position:absolute; top:' + pt.top + '; left:' + pt.left + '; transform:translate(-50%, -50%); background:var(--gold); border:2px solid var(--ink); border-radius:50%; width:42px; height:42px; font-size:1.3rem; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.2);">' +
-          (pt.emoji || '📍') +
+          '<button class="hotspot-pin" type="button" data-idx="' + idx + '" style="top:' + topVal + '; left:' + leftVal + ';" title="' + pt.title + '">' +
+          '<span class="pin-radar"></span>' +
+          '<span style="font-size:1.1rem;">' + (pt.emoji || '📍') + '</span>' +
+          '<span>' + pt.title + '</span>' +
           '</button>';
       });
-      html += '<div class="card hotspot-popup" style="position:absolute; bottom:14px; left:50%; transform:translateX(-50%); width:90%; max-width:540px; text-align:center; display:none; padding:12px;"></div>';
-      html += '</div>';
+
+      html += '</div>'; // close .hotspot-canvas-wrap
+
+      // Hotspot detail info box below the diagram
+      html +=
+        '<div class="hotspot-detail-box" id="hotspot-detail-box">' +
+        '<div class="hotspot-detail-icon">🌱</div>' +
+        '<div class="hotspot-detail-text">' +
+        '<div class="hotspot-detail-title">استكشف أجزاء النبتة</div>' +
+        '<div class="hotspot-detail-desc">اضغط على أي زر من الأزرار النباضة بالأعلى لتكتشف وظيفة هذا الجزء وسرّه العلمي!</div>' +
+        '</div>' +
+        '</div>';
+
+      html += '</div>'; // close .hotspot-diagram-card
       return html;
     },
 
@@ -706,17 +784,21 @@
       if (!mc || !mc.pairs) return '';
       var cards = [];
       mc.pairs.forEach(function (p) {
-        cards.push({ matchId: p.id, emoji: p.emoji, name: p.name });
-        cards.push({ matchId: p.id, emoji: p.matchEmoji, name: p.matchName });
+        var aEmoji = (p.itemA && p.itemA.emoji) || p.emoji || '🦁';
+        var aText = (p.itemA && p.itemA.text) || p.name || '';
+        var bEmoji = (p.itemB && p.itemB.emoji) || p.matchEmoji || aEmoji;
+        var bText = (p.itemB && p.itemB.text) || p.matchName || '';
+        cards.push({ matchId: p.id, emoji: aEmoji, name: aText });
+        cards.push({ matchId: p.id, emoji: bEmoji, name: bText });
       });
       cards.sort(function () { return 0.5 - Math.random(); });
 
-      var html = '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(90px,1fr)); gap:10px; width:100%; max-width:680px; margin-top:10px;">';
+      var html = '<div class="memory-cards-grid">';
       cards.forEach(function (c, idx) {
         html +=
-          '<div class="card mem-card" data-idx="' + idx + '" data-match-id="' + c.matchId + '" style="height:90px; cursor:pointer; display:flex; align-items:center; justify-content:center; text-align:center; font-weight:800; border:2.5px solid var(--ink);">' +
-          '<div class="mem-back" style="font-size:2rem;">❓</div>' +
-          '<div class="mem-front" style="display:none; font-size:1.8rem;">' + c.emoji + '<div style="font-size:0.75rem;">' + c.name + '</div></div>' +
+          '<div class="mem-card" data-idx="' + idx + '" data-match-id="' + c.matchId + '">' +
+          '<div class="mem-back" style="font-size:2.2rem;">❓</div>' +
+          '<div class="mem-front" style="display:none; font-size:1.8rem;">' + c.emoji + '<div style="font-size:0.85rem; font-weight:800; color:var(--ink);">' + c.name + '</div></div>' +
           '</div>';
       });
       html += '</div>';
@@ -728,13 +810,13 @@
     renderTapToCount: function (slide) {
       var tc = slide.tapToCount;
       if (!tc) return '';
-      var html = '<div style="width:100%; max-width:640px; text-align:center;">';
-      html += '<div style="font-family:\'Baloo 2\'; font-size:2.2rem; font-weight:900; color:var(--clay); margin-bottom:12px;">العدد الحالي: <span id="tap-count-num">0</span> / ' + tc.targetCount + '</div>';
-      html += '<div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap;">';
+      var html = '<div class="tap-count-container">';
+      html += '<div class="tap-count-badge">🍎 العدد الحالي: <span id="tap-count-num" style="color:var(--leaf); margin:0 4px;">0</span> / ' + tc.targetCount + ' ' + (tc.itemName || '') + '</div>';
+      html += '<div class="tap-count-shelf">';
       for (var i = 0; i < tc.targetCount; i++) {
         html +=
-          '<button class="count-item-btn" type="button" style="background:var(--white); border:3px solid var(--ink); border-radius:50%; width:64px; height:64px; font-size:2.2rem; cursor:pointer; box-shadow:var(--clay-shadow-sm); transition:transform .15s;">' +
-          tc.itemEmoji +
+          '<button class="count-item-btn" type="button" title="اضغط للعد">' +
+          (tc.itemEmoji || '🍎') +
           '</button>';
       }
       html += '</div>';
@@ -979,15 +1061,36 @@
       });
 
       // 8. Hotspot Exploration
-      slideEl.querySelectorAll('.hotspot-btn').forEach(function (btn) {
+      var exploredHotspots = {};
+      var totalHotspots = (slide.hotspot && slide.hotspot.points) ? slide.hotspot.points.length : 0;
+      slideEl.querySelectorAll('.hotspot-pin').forEach(function (btn) {
         btn.addEventListener('click', function () {
           var i = parseInt(btn.getAttribute('data-idx'), 10);
           var pt = slide.hotspot ? slide.hotspot.points[i] : null;
-          var popup = slideEl.querySelector('.hotspot-popup');
-          if (pt && popup) {
-            popup.innerHTML = '<strong>' + (pt.emoji || '') + ' ' + pt.title + ':</strong> ' + pt.detail;
-            popup.style.display = 'block';
+          var detailBox = slideEl.querySelector('#hotspot-detail-box');
+
+          slideEl.querySelectorAll('.hotspot-pin').forEach(function (b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+
+          if (pt && detailBox) {
+            exploredHotspots[i] = true;
+            detailBox.classList.add('has-content');
+            var iconEl = detailBox.querySelector('.hotspot-detail-icon');
+            var titleEl = detailBox.querySelector('.hotspot-detail-title');
+            var descEl = detailBox.querySelector('.hotspot-detail-desc');
+            if (iconEl) iconEl.textContent = pt.emoji || '🌱';
+            if (titleEl) titleEl.textContent = pt.title + ':';
+            if (descEl) descEl.textContent = pt.detail;
             AudioEngine.sndCardOpen();
+
+            self.setMascotBubble('رائع! ' + pt.title + ': ' + pt.detail + ' 💡', false);
+
+            if (Object.keys(exploredHotspots).length >= totalHotspots) {
+              self.addScore();
+              launchConfetti(slideEl);
+              AudioEngine.sndWin();
+              self.setMascotBubble('أحسنت يا عبقري! لقد استكشفت جميع أجزاء النبتة وتعرفت على أسرارها كاملة 🌟', true);
+            }
           }
         });
       });
